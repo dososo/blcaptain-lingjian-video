@@ -172,3 +172,4 @@
 - 保持边界:不实现 MCP、不宣称 Web 完整可用、不 import/bundle Remotion/HyperFrames、不做平台知识包/爆款算法/声音克隆/ASR/默认下载视频。
 - 验证:`uv run pytest -q` 为 99 passed;ruff、5 个扫描器、Web lint/build 均通过;`run_verification.py` 为 52 PASS / 0 FAIL。
 - 详细说明: `docs/dev/21_OPEN_SOURCE_USABILITY.md`。
+- Claude 对抗式审查移交:`docs/dev/22_CLAUDE_ADVERSARIAL_REVIEW_HANDOFF.md`。

@@ -262,6 +262,7 @@
 - [x] 新增创作者向文档 `docs/CREATOR_QUICKSTART.md` 与能力矩阵 `docs/CAPABILITY_MATRIX.md`。
 - [x] 更新 README、SKILL、ONBOARDING、providers、troubleshooting、skill-and-mcp 的主线说明。
 - [x] 重跑 pytest、ruff、5 扫描器、Web lint/build 与 verification。
+- [x] 产出 Claude 对抗式审查移交文档,系统对标行业并列出可挑战问题。
 
 ### Review: 开源首用路径补强
 
@@ -269,3 +270,4 @@
 - 文档:普通用户入口拆为创作者快速开始与能力矩阵;明确插件/skill 不是灵剪内置,但 Codex 桌面版用户应被引导安装/启用。
 - 安全边界:用户录音只进入本地项目 artifact,导出 manifest 只写来源类型,不记录原始路径;Remotion/HyperFrames 仍不 import、不 bundle。
 - 验证:`uv run pytest -q` 为 99 passed;ruff、5 扫描器、Web lint/build 均通过;`run_verification.py` 为 52 PASS / 0 FAIL。
+- 对抗审查移交:`docs/dev/22_CLAUDE_ADVERSARIAL_REVIEW_HANDOFF.md`。
