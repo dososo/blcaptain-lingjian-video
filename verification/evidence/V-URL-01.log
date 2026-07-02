@@ -1,8 +1,8 @@
-command: uv run lj init projects/url_verify_20260702T062748Z --name URL合规 --json
+command: uv run lj init projects/url_verify_20260702T073330Z --name URL合规 --json
 exit_code: 0
 
 stdout:
-{"name": "URL合规", "ok": true, "project": "/Users/manxiaochu/Documents/Codex/lingjian-video/projects/url_verify_20260702T062748Z"}
+{"name": "URL合规", "ok": true, "project": "/Users/manxiaochu/Documents/Codex/lingjian-video/projects/url_verify_20260702T073330Z"}
 
 
 stderr:

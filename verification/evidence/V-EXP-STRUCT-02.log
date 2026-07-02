@@ -1,4 +1,4 @@
-command: test -f exports/verify_m1_20260702T062748Z/douyin/zh-CN/9x16/captions/subtitles.srt
+command: test -f exports/verify_m1_20260702T073330Z/douyin/zh-CN/9x16/captions/subtitles.srt
 exit_code: 0
 
 stdout:

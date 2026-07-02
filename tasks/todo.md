@@ -274,14 +274,16 @@
 
 ## 开源发布收尾整改清单
 
-- [ ] P0-1: 等待用户提供真实开源仓库地址后替换用户面 `<REPO_URL>`,配置 remote,提交并打 `v0.1.0` tag。
+- [x] P0-1: 使用真实仓库 `https://github.com/dososo/blcaptain-lingjian-video.git` 替换用户面 `<REPO_URL>`,配置 remote。
 - [x] P1-1: 校准 HyperFrames/Remotion skill 安装标识符,保留已由官方入口确认的标识符并补官方文档链接。
 - [x] P2-1: README Web 段就地补“静态骨架,不能替代 CLI 审批流”免责。
 - [ ] P2-2: `--strict` 为可选增强,本轮未动;如需改变 QA/export 行为需用户确认。
-- [ ] P0 完成后重跑全量验收命令并产出发布收尾说明。
+- [x] 产出发布收尾说明 `docs/dev/23_RELEASE_CLOSING.md`。
+- [x] P0 完成后重跑全量验收命令。
+- [ ] 提交、打 `v0.1.0` tag 并 push。
 
 ### Review: 开源发布收尾整改
 
 - P1-1 依据:HyperFrames 官方 quickstart/GitHub 均确认 `npx skills add heygen-com/hyperframes`;Remotion Agent Skills 官方文档确认 `npx skills add remotion-dev/skills`。
 - P2-1 已落地:README 顶部能力说明和 Web 控制台段均标明 Web 当前为静态骨架,完整主线以 CLI 为准。
-- 当前阻塞:真实开源仓库地址未提供,不能替换 `<REPO_URL>`、配置 remote 或打 `v0.1.0` tag。
+- 当前状态:真实开源仓库已创建并配置 remote;全量验收通过,等待提交、tag、push。

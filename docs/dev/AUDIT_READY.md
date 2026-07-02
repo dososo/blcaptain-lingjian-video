@@ -173,3 +173,13 @@
 - 验证:`uv run pytest -q` 为 99 passed;ruff、5 个扫描器、Web lint/build 均通过;`run_verification.py` 为 52 PASS / 0 FAIL。
 - 详细说明: `docs/dev/21_OPEN_SOURCE_USABILITY.md`。
 - Claude 对抗式审查移交:`docs/dev/22_CLAUDE_ADVERSARIAL_REVIEW_HANDOFF.md`。
+
+## 开源发布收尾
+
+- GitHub 仓库已创建:`https://github.com/dososo/blcaptain-lingjian-video`。
+- README 用户面安装命令已替换真实仓库地址;fork 用户说明已保留。
+- README Web 段已就地标明“静态骨架,不能替代 CLI 审批流”。
+- HyperFrames/Remotion skill 安装标识符已补官方入口链接;若入口变化,以官方文档或 Codex 插件市场为准。
+- `--strict` 为可选增强,本轮不改已通过 QA/export 行为。
+- 发布收尾验收:`pytest` 99 passed;ruff、5 扫描器、Web lint/build、`run_verification.py` 均通过;`results.json` 为 52 PASS / 0 FAIL。
+- 详细说明:`docs/dev/23_RELEASE_CLOSING.md`。

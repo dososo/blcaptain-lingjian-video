@@ -2,12 +2,12 @@
 
 ## 30 秒上手:对话式安装提示词
 
-把下面这段复制给 Codex 或 Claude Code。发布后请把 `<REPO_URL>` 替换为真实仓库地址。
+把下面这段复制给 Codex 或 Claude Code。如你使用自建或 fork 仓库,请把命令里的仓库地址替换为你自己的仓库。
 
 ```text
 请帮我安装并启用「灵剪 lingjian-video」短视频生产 skill。请一步步来,每步都用真实命令验证是否成功(不要只看文件是否存在),需要我提供东西时再停下问我:
 
-1. 把仓库 clone 到一个稳定目录:git clone <REPO_URL> ~/Developer/lingjian-video
+1. 把仓库 clone 到一个稳定目录:git clone https://github.com/dososo/blcaptain-lingjian-video.git ~/Developer/lingjian-video
 2. 安装依赖:cd ~/Developer/lingjian-video && uv sync
 3. 注册 skill:用 ln -sfn 把仓库里 SKILL.md 所在目录整个软链进你的 skills 目录(Claude Code 用 ~/.claude/skills/,Codex 用 ~/.codex/skills/);必须软链整个目录,保证 SKILL.md 和它的同级文件在一起。
 4. 能力自检:运行 uv run lj setup 和 uv run lj doctor --json,然后把结果分两栏告诉我 ——"已继承、可直接用的能力"(比如 claude/codex 作 LLM、macOS say 作 TTS)和"还缺、需要我处理的能力"(比如 ffmpeg 是否支持 drawtext、是否缺真实 TTS)。
@@ -29,7 +29,7 @@ uv run lj doctor --json
 若后续接入 skills.sh 生态,发布后可提供:
 
 ```bash
-npx skills add <REPO_URL> --skill lingjian-video
+npx skills add https://github.com/dososo/blcaptain-lingjian-video.git --skill lingjian-video
 ```
 
 灵剪 M1/M2 是一个可审核、可复跑、可归档的短视频生产主干。当前实现覆盖 CLI、核心状态机、mock 预览链路、宿主画面生成委托与产物消费、审批门禁、QA、导出包、Next.js Web 控制台与离线验证脚本。Web 控制台当前为静态骨架,不能替代 CLI 审批流,详见 [`docs/CAPABILITY_MATRIX.md`](docs/CAPABILITY_MATRIX.md)。
