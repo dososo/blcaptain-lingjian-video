@@ -12,6 +12,7 @@
 - 离线回落项:隐藏 `claude/codex` 并清空 provider env 后,`verification/results.offline_fallback_20260702.json` 为 51 PASS / 1 BLOCKED_ENV / 0 FAIL。
 - skill 交付项:根目录 `SKILL.md` 已落盘,README 顶部有对话式安装提示词,`scripts/install_skill_links.sh` 已验证可安装软链。
 - 发布准备项:`CHANGELOG.md`、`ROADMAP.md`、隐私/安全说明、跨平台 FFmpeg/TTS 指南、干净 clone 首用自检证据已落盘。
+- M2 画面委托项:visuals 生成每镜 storyboard,render 消费宿主/用户 mp4/png 产物并组装;缺产物回落卡片且 QA warning,不削弱 release hard gate。
 
 ## 证据入口
 
@@ -28,6 +29,7 @@
 - `docs/dev/15_REAL_VERIFY_FIX.md`
 - `docs/dev/16_CLOSING.md`
 - `docs/dev/17_RELEASE_PREP.md`
+- `docs/dev/18_M2_VISUAL_DELEGATION.md`
 - `verification/release_prep/*`
 
 ## results 对照表
@@ -131,3 +133,11 @@
 - `.gitignore` 已排除 `.env*`、`.lingjian/`、`projects/`、`exports/`、`.venv/`、`node_modules/` 与构建缓存。
 - 干净 clone 首用自检已完成:见 `verification/release_prep/setup.txt`、`doctor.json`、`preview_run.json`、`preview_qa.json`、`preview_export.json`。
 - 当前阻塞:本地没有 `git remote`,无法确认真实开源仓库地址;`README.md` 中 `<REPO_URL>` 待用户提供地址后替换,最终 `v0.1.0` tag 也需在该替换提交后创建。
+
+## M2 画面委托项
+
+- `apps/cli/lingjian_cli/main.py` 已让 visuals 产物写入每镜 generator/asset/motion/subtitle/brief。
+- `packages/core/rendering.py` 已按 visual_plan 消费宿主视频、静态图或用户素材;缺资产时 `fallback_solid` 回落。
+- `packages/core/qa.py` 已新增 `RELEASE_VISUAL_IS_BLANK_CARD` warning,不作为 hard failure。
+- `packages/core/capabilities.py` 已新增 `capabilities.visuals`,报告 HyperFrames/Remotion/imagegen 或回落卡片。
+- 扫描语义不回退:仍禁止 core/providers import Remotion/HyperFrames/Playwright;只允许 generator 字符串和宿主产物消费。

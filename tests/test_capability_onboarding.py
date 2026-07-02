@@ -194,6 +194,58 @@ def test_setup_text_names_preview_and_release_modes(monkeypatch):
     assert "下一步" in result.output
 
 
+def test_capability_detection_reports_visual_generation_tier(monkeypatch):
+    monkeypatch.setenv("LINGJIAN_HOST_HYPERFRAMES_READY", "1")
+    monkeypatch.setenv("PATH", "")
+
+    result = runner.invoke(app, ["setup", "--json"])
+
+    assert result.exit_code == 0
+    payload = json.loads(result.output)
+    assert payload["capabilities"]["visuals"]["best"]["id"] == "host_hyperframes"
+    assert payload["capabilities"]["visuals"]["best"]["source_type"] == "host-plugin"
+    assert payload["capabilities"]["visuals"]["best"]["safe_for_release"] is True
+
+
+def test_doctor_optional_notice_describes_host_visual_delegation(monkeypatch):
+    monkeypatch.setenv("PATH", "")
+
+    result = run_doctor(
+        tool_overrides={
+            "ffmpeg": True,
+            "ffprobe": True,
+            "ffmpeg_drawtext": True,
+            "cjk_font": True,
+            "host_hyperframes": False,
+        },
+        provider_overrides={
+            "llm": [
+                {
+                    "id": "real_llm",
+                    "type": "cli",
+                    "configured": True,
+                    "is_mock": False,
+                    "probe_ok": True,
+                    "command": "",
+                }
+            ],
+            "tts": [
+                {
+                    "id": "real_tts",
+                    "type": "cli",
+                    "configured": True,
+                    "is_mock": False,
+                    "probe_ok": True,
+                    "command": "",
+                }
+            ],
+        },
+    )
+
+    assert any(item.id == "host_visual_delegation_notice" for item in result.optional)
+    assert "不 import" in result.optional[0].message_zh
+
+
 def test_credentials_status_and_forget_are_safe_without_secret_store(monkeypatch):
     monkeypatch.setattr("packages.core.credentials.shutil.which", lambda name: None)
 

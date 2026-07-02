@@ -83,6 +83,7 @@ def detect_capabilities(
     groups = {
         "llm": _group("llm", _llm_candidates(env_map, lookup)),
         "tts": _group("tts", _tts_candidates(env_map, lookup)),
+        "visuals": _group("visuals", _visual_candidates(env_map, lookup, tool_overrides)),
         "render": _group("render", _render_candidates(lookup, tool_overrides)),
         "font": _group("font", _font_candidates(tool_overrides)),
     }
@@ -310,6 +311,62 @@ def _tts_candidates(env: Mapping[str, str], lookup: PathLookup) -> list[Capabili
     return candidates
 
 
+def _visual_candidates(
+    env: Mapping[str, str],
+    lookup: PathLookup,
+    tool_overrides: dict[str, bool] | None,
+) -> list[CapabilityCandidate]:
+    return [
+        _host_visual_candidate(
+            "host_hyperframes",
+            "HyperFrames 宿主动态图形",
+            "hyperframes",
+            env.get("LINGJIAN_HOST_HYPERFRAMES_READY") == "1",
+            lookup,
+            tool_overrides,
+            "已检测到宿主 HyperFrames 能力,可按镜渲染动态图形产物。",
+        ),
+        _host_visual_candidate(
+            "host_remotion",
+            "Remotion 宿主程序化视频",
+            "remotion",
+            env.get("LINGJIAN_HOST_REMOTION_READY") == "1",
+            lookup,
+            tool_overrides,
+            "已检测到宿主 Remotion 能力,可按镜渲染 React 视频产物。",
+        ),
+        CapabilityCandidate(
+            id="host_imagegen",
+            kind="visuals",
+            source_type="host-plugin",
+            configured=env.get("LINGJIAN_HOST_IMAGEGEN_READY") == "1"
+            or bool(tool_overrides and tool_overrides.get("host_imagegen")),
+            safe_for_release=env.get("LINGJIAN_HOST_IMAGEGEN_READY") == "1"
+            or bool(tool_overrides and tool_overrides.get("host_imagegen")),
+            label_zh="宿主 imagegen 静态图",
+            provider_type="host-plugin",
+            hint="已检测到宿主 imagegen 时,可生成静态图并由 lj 加 Ken Burns 运镜。",
+            setup_command=(
+                "在 Codex 中启用 imagegen 能力,"
+                "或提供 project/assets/scenes/<scene_id>.png。"
+            ),
+        ),
+        CapabilityCandidate(
+            id="fallback_solid",
+            kind="visuals",
+            source_type="fallback",
+            configured=True,
+            safe_for_release=False,
+            label_zh="回落卡片画面",
+            hint=(
+                "未检测到可自动继承的宿主画面生成能力;"
+                "将消费已有 project/assets/scenes 产物,否则回落纯色卡片并给 QA warning。"
+            ),
+            setup_command="在 Codex 启用 HyperFrames/Remotion/imagegen,或放置每镜 mp4/png 产物。",
+        ),
+    ]
+
+
 def _render_candidates(
     lookup: PathLookup,
     tool_overrides: dict[str, bool] | None,
@@ -400,6 +457,34 @@ def _cli_candidate(
     )
 
 
+def _host_visual_candidate(
+    provider_id: str,
+    label: str,
+    command: str,
+    env_ready: bool,
+    lookup: PathLookup,
+    overrides: dict[str, bool] | None,
+    ready_hint: str,
+) -> CapabilityCandidate:
+    override_key = provider_id
+    configured = env_ready or bool(overrides and overrides.get(override_key))
+    if not configured and lookup(command):
+        configured = _host_visual_cli_probe(command)
+    return CapabilityCandidate(
+        id=provider_id,
+        kind="visuals",
+        source_type="host-plugin",
+        configured=configured,
+        safe_for_release=configured,
+        label_zh=label,
+        provider_type="host-plugin",
+        command_name=command,
+        config={"command": command},
+        hint=ready_hint if configured else f"未检测到 {label}。",
+        setup_command=f"在 Codex 中启用 {label} 插件,或提供 project/assets/scenes/<scene_id>.mp4。",
+    )
+
+
 def _api_candidate(
     provider_id: str,
     kind: str,
@@ -436,7 +521,7 @@ def _missing(kind: str, label: str, hint: str, setup_command: str) -> Capability
 
 def _next_steps(groups: dict[str, CapabilityGroup]) -> list[str]:
     steps: list[str] = []
-    for kind in ("llm", "tts", "render", "font"):
+    for kind in ("llm", "tts", "visuals", "render", "font"):
         group = groups[kind]
         if group.best.safe_for_release:
             continue
@@ -454,6 +539,20 @@ def _tool_available(
     if overrides and name in overrides:
         return overrides[name]
     return lookup(name) is not None
+
+
+def _host_visual_cli_probe(command: str) -> bool:
+    try:
+        completed = subprocess.run(
+            [command, "--version"],
+            text=True,
+            capture_output=True,
+            check=False,
+            timeout=5,
+        )
+    except (OSError, subprocess.TimeoutExpired):
+        return False
+    return completed.returncode == 0
 
 
 def ffmpeg_drawtext_available(

@@ -193,19 +193,122 @@ def _write_voice_for_run(project: ProjectRef, provider: str, voice_id: str) -> b
     return True
 
 
-def _write_visuals_for_run(project: ProjectRef, engine: str, template: str) -> bool:
+def _visual_generator_for_scene(project: ProjectRef, scene_id: str) -> dict:
+    assets_dir = project.path / "assets" / "scenes"
+    video_asset = assets_dir / f"{scene_id}.mp4"
+    image_asset = assets_dir / f"{scene_id}.png"
+    if video_asset.exists():
+        return {
+            "generator": "user-asset",
+            "asset_path": str(video_asset.relative_to(project.path)),
+            "subtitle_burn": False,
+            "motion": {"main": "asset_video", "one_main_only": True},
+        }
+    if image_asset.exists():
+        return {
+            "generator": "user-asset",
+            "asset_path": str(image_asset.relative_to(project.path)),
+            "subtitle_burn": True,
+            "motion": {"main": "kenburns_zoom_in", "one_main_only": True},
+        }
+    capabilities = detect_capabilities()
+    best_visual = capabilities.groups["visuals"].best.id
+    if best_visual == "host_hyperframes":
+        return {
+            "generator": "hyperframes",
+            "asset_path": f"assets/scenes/{scene_id}.mp4",
+            "subtitle_burn": False,
+            "motion": {"main": "kinetic_reveal", "one_main_only": True},
+        }
+    if best_visual == "host_remotion":
+        return {
+            "generator": "remotion",
+            "asset_path": f"assets/scenes/{scene_id}.mp4",
+            "subtitle_burn": False,
+            "motion": {"main": "programmatic_scene", "one_main_only": True},
+        }
+    if best_visual == "host_imagegen":
+        return {
+            "generator": "image-gen",
+            "asset_path": f"assets/scenes/{scene_id}.png",
+            "subtitle_burn": True,
+            "motion": {"main": "kenburns_zoom_in", "one_main_only": True},
+        }
+    return {
+        "generator": "fallback_solid",
+        "asset_path": None,
+        "subtitle_burn": True,
+        "motion": {"main": "solid_card", "one_main_only": True},
+    }
+
+
+def _visual_scenes_for_project(project: ProjectRef, ratio: str) -> list[dict]:
+    from packages.core.artifacts import artifact_path, read_json
+
+    script_path = artifact_path(project, "script")
+    voice_path = artifact_path(project, "voice")
+    script = read_json(script_path) if script_path.exists() else {"scenes": []}
+    voice = read_json(voice_path) if voice_path.exists() else {"segments": []}
+    durations = {
+        str(segment.get("scene_id")): float(segment.get("duration_sec") or 1.0)
+        for segment in voice.get("segments", [])
+        if isinstance(segment, dict) and segment.get("scene_id")
+    }
+    scenes = []
+    for index, script_scene in enumerate(script.get("scenes", []), start=1):
+        if not isinstance(script_scene, dict):
+            continue
+        scene_id = str(script_scene.get("id") or script_scene.get("scene_id") or f"s{index}")
+        route = _visual_generator_for_scene(project, scene_id)
+        scenes.append(
+            {
+                "scene_id": scene_id,
+                "narration_text": str(script_scene.get("narration_text") or ""),
+                "duration_sec": durations.get(scene_id, 1.0),
+                "brief": {
+                    "aspect": ratio,
+                    "safe_zone": "下三分之一留字幕",
+                    "forbidden": "画面别再嵌大段文字",
+                },
+                **route,
+            }
+        )
+    return scenes or [
+        {
+            "scene_id": "s1",
+            "narration_text": "灵剪",
+            "duration_sec": 1.0,
+            "generator": "fallback_solid",
+            "asset_path": None,
+            "motion": {"main": "solid_card", "one_main_only": True},
+            "subtitle_burn": True,
+            "brief": {
+                "aspect": ratio,
+                "safe_zone": "下三分之一留字幕",
+                "forbidden": "画面别再嵌大段文字",
+            },
+        }
+    ]
+
+
+def _write_visuals_for_run(project: ProjectRef, engine: str, template: str, ratio: str) -> bool:
     from packages.core.artifacts import artifact_path, write_artifact
 
     if artifact_path(project, "visuals").exists():
         return False
+    scenes = _visual_scenes_for_project(project, ratio)
+    visual_real_count = sum(1 for scene in scenes if scene["generator"] != "fallback_solid")
     write_artifact(
         project,
         "visuals",
         {
             "id": "visuals",
+            "ratio": ratio,
             "engine": engine,
             "template": template,
-            "scenes": [{"scene_id": "s1", "layout_template": template}],
+            "scenes": scenes,
+            "visual_real_count": visual_real_count,
+            "visual_total": len(scenes),
         },
     )
     return True
@@ -516,19 +619,25 @@ def visuals(
     project: Path,
     engine: str = typer.Option("ffmpeg_card"),
     template: str = typer.Option("card_default"),
+    ratio: str = typer.Option("9:16"),
     json_output: bool = typer.Option(False, "--json"),
 ):
     from packages.core.artifacts import write_artifact
 
     ref = ProjectRef(project, project.name)
+    scenes = _visual_scenes_for_project(ref, ratio)
+    visual_real_count = sum(1 for scene in scenes if scene["generator"] != "fallback_solid")
     write_artifact(
         ref,
         "visuals",
         {
             "id": "visuals",
+            "ratio": ratio,
             "engine": engine,
             "template": template,
-            "scenes": [{"scene_id": "s1", "layout_template": template}],
+            "scenes": scenes,
+            "visual_real_count": visual_real_count,
+            "visual_total": len(scenes),
         },
     )
     _emit(
@@ -756,7 +865,7 @@ def run_workflow(
                 return
             approve_target(ref, "voice", approved_by)
             steps.append("approve_voice")
-        if _write_visuals_for_run(ref, engine, template):
+        if _write_visuals_for_run(ref, engine, template, ratio):
             steps.append("visuals")
         if not _approval_exists(ref, "visuals"):
             if not yes:

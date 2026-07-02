@@ -225,11 +225,11 @@ def run_doctor(
 
     optional.append(
         DoctorItem(
-            id="remotion_license_notice",
+            id="host_visual_delegation_notice",
             ok=True,
             message_zh=(
-                "Remotion 是 M3 opt-in,不默认、不捆绑;"
-                "4+ 人营利或自动化生成工具需自行确认 license。"
+                "HyperFrames/Remotion/imagegen 为宿主委托能力;"
+                "灵剪不默认、不捆绑、不 import 相关 SDK。"
             ),
         )
     )

@@ -8,20 +8,20 @@ rootdir: /Users/manxiaochu/Documents/Codex/lingjian-video
 configfile: pyproject.toml
 testpaths: tests
 plugins: anyio-4.14.1
-collected 83 items
+collected 87 items
 
-tests/test_batch2_release_export.py .....................                [ 25%]
-tests/test_batch2_text_provider.py ...                                   [ 28%]
-tests/test_capability_onboarding.py ..........                           [ 40%]
-tests/test_cli_contract.py ...............                               [ 59%]
-tests/test_core_gate.py .........                                        [ 69%]
-tests/test_doctor.py ......                                              [ 77%]
-tests/test_provider_contract.py .......                                  [ 85%]
+tests/test_batch2_release_export.py .......................              [ 26%]
+tests/test_batch2_text_provider.py ...                                   [ 29%]
+tests/test_capability_onboarding.py ............                         [ 43%]
+tests/test_cli_contract.py ...............                               [ 60%]
+tests/test_core_gate.py .........                                        [ 71%]
+tests/test_doctor.py ......                                              [ 78%]
+tests/test_provider_contract.py .......                                  [ 86%]
 tests/test_run_verification.py ...                                       [ 89%]
 tests/test_skill_packaging.py ..                                         [ 91%]
 tests/test_static_guards.py .......                                      [100%]
 
-============================== 83 passed in 5.73s ==============================
+============================== 87 passed in 5.37s ==============================
 
 
 stderr:

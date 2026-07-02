@@ -297,6 +297,196 @@ def test_release_render_uses_ffmpeg_and_writes_non_stub_video(tmp_path, monkeypa
     assert "aac" in commands[0]
 
 
+def test_release_render_consumes_delegated_video_and_image_scene_assets(
+    tmp_path, monkeypatch
+):
+    project = _approved_mock_project(tmp_path)
+    assets_dir = project.path / "assets" / "scenes"
+    assets_dir.mkdir(parents=True)
+    (assets_dir / "s1.mp4").write_bytes(b"HOST VIDEO")
+    (assets_dir / "s2.png").write_bytes(b"HOST IMAGE")
+    audio_path = project.path / "artifacts" / "voice_segments" / "voice.aiff"
+    audio_path.parent.mkdir(parents=True, exist_ok=True)
+    audio_path.write_bytes(b"REAL AUDIO")
+    write_artifact(
+        project,
+        "script",
+        {
+            "id": "script",
+            "provider_id": "real_llm",
+            "provider_is_mock": False,
+            "scenes": [
+                {"id": "s1", "narration_text": "动态图形"},
+                {"id": "s2", "narration_text": "静态图片"},
+            ],
+        },
+    )
+    write_artifact(
+        project,
+        "voice",
+        {
+            "id": "voice",
+            "provider_id": "real_tts",
+            "provider_is_mock": False,
+            "segments": [
+                {
+                    "scene_id": "s1",
+                    "audio_path": "artifacts/voice_segments/voice.aiff",
+                    "duration_sec": 2.0,
+                },
+                {
+                    "scene_id": "s2",
+                    "audio_path": "artifacts/voice_segments/voice.aiff",
+                    "duration_sec": 3.0,
+                },
+            ],
+            "total_duration_sec": 5.0,
+        },
+    )
+    write_artifact(
+        project,
+        "visuals",
+        {
+            "id": "visuals",
+            "ratio": "9:16",
+            "scenes": [
+                {
+                    "scene_id": "s1",
+                    "narration_text": "动态图形",
+                    "duration_sec": 2.0,
+                    "generator": "hyperframes",
+                    "asset_path": "assets/scenes/s1.mp4",
+                    "subtitle_burn": False,
+                },
+                {
+                    "scene_id": "s2",
+                    "narration_text": "静态图片",
+                    "duration_sec": 3.0,
+                    "generator": "image-gen",
+                    "asset_path": "assets/scenes/s2.png",
+                    "subtitle_burn": True,
+                },
+            ],
+        },
+    )
+    approve_target(project, "script", "tester")
+    approve_target(project, "voice", "tester")
+    approve_target(project, "visuals", "tester")
+    monkeypatch.setattr(
+        "packages.core.rendering.shutil.which",
+        lambda name: f"/usr/bin/{name}" if name in {"ffmpeg", "ffprobe"} else None,
+    )
+    commands = []
+
+    def fake_run(command, **kwargs):
+        commands.append(command)
+        Path(command[-1]).write_bytes(b"MP4")
+        return subprocess.CompletedProcess(command, 0, stdout="", stderr="")
+
+    monkeypatch.setattr("packages.core.rendering.subprocess.run", fake_run)
+
+    result = render_project(project, "douyin", "zh-CN", "9:16", mode="release")
+
+    manifest = json.loads(result.manifest_path.read_text(encoding="utf-8"))
+    command_text = "\n".join(" ".join(command) for command in commands)
+    assert "assets/scenes/s1.mp4" in command_text
+    assert "assets/scenes/s2.png" in command_text
+    assert "zoompan" in command_text
+    assert "concat" in command_text
+    assert "-c:a" in commands[-1]
+    assert manifest["visual_real_count"] == 2
+    assert manifest["visual_total"] == 2
+    assert [scene["render_source"] for scene in manifest["scenes"]] == ["video", "image"]
+
+
+def test_release_render_falls_back_to_solid_when_delegated_asset_missing_and_qa_warns(
+    tmp_path, monkeypatch
+):
+    project = _approved_mock_project(tmp_path)
+    audio_path = project.path / "artifacts" / "voice_segments" / "voice.aiff"
+    audio_path.parent.mkdir(parents=True, exist_ok=True)
+    audio_path.write_bytes(b"REAL AUDIO")
+    write_artifact(
+        project,
+        "script",
+        {
+            "id": "script",
+            "provider_id": "real_llm",
+            "provider_is_mock": False,
+            "scenes": [{"id": "s1", "narration_text": "缺少宿主产物"}],
+        },
+    )
+    write_artifact(
+        project,
+        "voice",
+        {
+            "id": "voice",
+            "provider_id": "real_tts",
+            "provider_is_mock": False,
+            "segments": [
+                {
+                    "scene_id": "s1",
+                    "audio_path": "artifacts/voice_segments/voice.aiff",
+                    "duration_sec": 2.0,
+                }
+            ],
+            "total_duration_sec": 2.0,
+        },
+    )
+    write_artifact(
+        project,
+        "visuals",
+        {
+            "id": "visuals",
+            "ratio": "9:16",
+            "scenes": [
+                {
+                    "scene_id": "s1",
+                    "narration_text": "缺少宿主产物",
+                    "duration_sec": 2.0,
+                    "generator": "hyperframes",
+                    "asset_path": "assets/scenes/missing.mp4",
+                    "subtitle_burn": False,
+                }
+            ],
+        },
+    )
+    approve_target(project, "script", "tester")
+    approve_target(project, "voice", "tester")
+    approve_target(project, "visuals", "tester")
+    monkeypatch.setattr(
+        "packages.core.rendering.shutil.which",
+        lambda name: f"/usr/bin/{name}" if name in {"ffmpeg", "ffprobe"} else None,
+    )
+
+    def fake_render_run(command, **kwargs):
+        Path(command[-1]).write_bytes(b"MP4")
+        return subprocess.CompletedProcess(command, 0, stdout="", stderr="")
+
+    monkeypatch.setattr("packages.core.rendering.subprocess.run", fake_render_run)
+
+    result = render_project(project, "douyin", "zh-CN", "9:16", mode="release")
+    manifest = json.loads(result.manifest_path.read_text(encoding="utf-8"))
+
+    monkeypatch.setattr("packages.core.qa.shutil.which", lambda name: "/usr/bin/ffprobe")
+    monkeypatch.setattr(
+        "packages.core.qa.subprocess.run",
+        lambda *args, **kwargs: subprocess.CompletedProcess(
+            args[0],
+            0,
+            stdout='{"streams":[{"codec_type":"video"},{"codec_type":"audio"}]}',
+            stderr="",
+        ),
+    )
+    report = run_qa(project, release=True)
+
+    assert manifest["visual_real_count"] == 0
+    assert manifest["visual_total"] == 1
+    assert manifest["scenes"][0]["render_source"] == "fallback_solid"
+    assert report.release_ready is True
+    assert any(issue.code == "RELEASE_VISUAL_IS_BLANK_CARD" for issue in report.warnings)
+
+
 def test_release_render_reports_ffmpeg_filter_error_with_stderr(tmp_path, monkeypatch):
     project = _approved_mock_project(tmp_path)
     audio_path = project.path / "artifacts" / "voice_segments" / "s1.aiff"

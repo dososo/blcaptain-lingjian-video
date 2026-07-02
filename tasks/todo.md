@@ -205,3 +205,20 @@
 - 验证结果:`run_verification.py` 为 52 PASS / 0 FAIL;`uv run pytest -q` 为 83 passed;ruff、5 个扫描器、Web lint/build 均通过。
 - 交付包:`lingjian_M1_codex_delivery_iter_9.zip`,已通过 `unzip -t`,并排除 `.git`、`.venv`、`node_modules`、`projects`、`exports` 与旧 zip。
 - 当前阻塞:本地无 `git remote`,无法确认真实开源仓库地址;`README.md` 中 `<REPO_URL>` 未替换,最终 `v0.1.0` tag 暂不创建。
+
+## M2 画面委托主轨清单
+
+- [x] RED:新增测试覆盖 visual_plan 每镜 generator 字段、宿主视频资产消费、静态图 zoompan、缺资产 fallback_solid、render_manifest 反 PPT 统计、QA warning、capability 画面分档。
+- [x] GREEN:实现 visuals artifact 生成 storyboard 字段,按 hyperframes/remotion/image-gen/user-asset/fallback_solid 消费资产并用 FFmpeg 组装。
+- [x] GREEN:doctor/setup 增加视觉能力分档,只报告可用性,不把宿主插件缺失当 release 硬门。
+- [x] 扫描语义:保持 core/providers 禁 import remotion/hyperframes/playwright;更新扫描文档说明“委托宿主产物消费”被允许。
+- [x] 文档与证据:更新 SKILL/README/AUDIT_READY/FORBIDDEN_SCAN,新增 `docs/dev/18_M2_VISUAL_DELEGATION.md`,重跑验证并打包。
+
+## M2 画面委托主轨 Review
+
+- 已完成:visuals 生成每镜 storyboard;release/real-preview 可消费宿主或用户 mp4/png,图片走 zoompan,缺资产走 `fallback_solid`;render_manifest 写 `visual_real_count/visual_total/scenes`。
+- QA:新增 `RELEASE_VISUAL_IS_BLANK_CARD` warning,当前不作为 hard failure;release 原有 mock/stub/ffprobe/audio hard gate 未削弱。
+- 能力检测:`lj setup --json` 新增 `capabilities.visuals`;宿主 HyperFrames/Remotion/imagegen 可通过环境显式声明或 CLI probe 识别,缺失时报告回落卡片。
+- 扫描纪律:未在 core/providers import Remotion/HyperFrames/Playwright;FORBIDDEN_SCAN 记录“宿主产物消费允许,SDK bundle 禁止”。
+- 验证结果:`uv run pytest -q` 为 87 passed;`uv run python scripts/ci/run_verification.py` 为 52 PASS / 0 FAIL;ruff、5 扫描器、Web lint/build 均通过。
+- 交付包:`lingjian_M2_visual_delegation_iter_1.zip`,已通过 `unzip -t`,并排除 `.git`、`.venv`、`node_modules`、`projects`、`exports` 与旧 zip。

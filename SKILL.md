@@ -23,6 +23,12 @@ uv run lj doctor --json  # 逐项体检;required 缺失时 exit code 非 0
 - lj setup 优先继承已登录官方 CLI(claude/codex 作 LLM)与本机 TTS(macOS say / Piper / espeak-ng),尽量零 key。
 - doctor 未 ready 时不要继续 release。
 
+画面能力:
+- visuals 会按场景生成 storyboard,字段包含 generator、asset_path、motion、subtitle_burn 与 brief。
+- generator 优先级:hyperframes -> remotion -> image-gen -> user-asset -> fallback_solid。
+- 宿主 agent 若启用了 HyperFrames/Remotion/imagegen,应在 visuals 审批通过前或通过后按 storyboard 渲染每镜产物到 `project/assets/scenes/<scene_id>.mp4|png`;lj 不 import、不 bundle 这些引擎,只消费产物并用 FFmpeg 组装。
+- 宿主插件缺失时要诚实说明,可让用户放置自有 mp4/png;仍缺失则回落 fallback_solid,QA 会提示画面全部为回落卡片。
+
 两档模式:
 - 预览档(零配置):--provider mock 出脚本/配音,render 默认 preview。mock 产物仅预览,禁止当发布质量。
 - 发布档(需三项齐备才可 --release):① 真实 LLM(继承 claude/codex,或 OpenAI-compatible 需 key,或 LINGJIAN_LLM_CLI);② 真实 TTS(订阅通常不含;优先 say[仅 macOS]/Piper/espeak-ng,或 OpenAI-compatible TTS,或 LINGJIAN_TTS_CLI);③ FFmpeg/ffprobe 且支持 drawtext/libfreetype(默认 Homebrew 精简版可能无 —— 以 doctor 的 ready 为准,缺失硬失败不写 stub)。
@@ -64,6 +70,7 @@ uv run lj approve script ./projects/demo --approved-by <用户> --json
 uv run lj voice ./projects/demo --provider mock --voice test-voice --json
 uv run lj approve voice ./projects/demo --approved-by <用户> --json
 uv run lj visuals ./projects/demo --engine ffmpeg_card --template product --json
+# 审阅 artifacts/visual_plan.json:确认每镜 generator 与 asset_path;如需动态画面,由宿主 HyperFrames/Remotion/imagegen 产物落到 assets/scenes/。
 uv run lj approve visuals ./projects/demo --approved-by <用户> --json
 uv run lj render ./projects/demo --platform douyin --language zh-CN --ratio 9:16 --json   # 发布档追加 --release
 uv run lj qa ./projects/demo --json                                                       # 发布前:qa --release --platform douyin
@@ -78,6 +85,7 @@ uv run lj export ./projects/demo --platform douyin --language zh-CN --ratio 9:16
 - 缺能力就诚实停:doctor 未 ready(FFmpeg 无 drawtext、无真实 TTS/LLM 等)时不硬凑、不写假产物,告知缺什么再停。
 - 绝不把真实 key 写进仓库/日志/导出包;doctor 只输出脱敏状态;不在对话回显完整 key。
 - 发布前先 QA:qa --release 有 hard_failures 时不导出发布包。
+- 不假装动态画面:宿主产物不存在时只能回落 fallback_solid,必须把 QA warning 告诉用户。
 
 ## Honesty(必须遵守)
 - 绝不编造产物/统计/成功结果:没真跑出来的不许写"已完成"。
@@ -88,7 +96,8 @@ uv run lj export ./projects/demo --platform douyin --language zh-CN --ratio 9:16
 
 ## 已知边界(如实告知用户)
 - mock 仅预览,非发布质量。
-- ffmpeg_card 是最小卡片(纯色底+字幕+配音),无高级动效/timeline/HyperFrames/Remotion/插件市场。
+- HyperFrames/Remotion/imagegen 由宿主 agent 能力提供;灵剪核心不内置、不 bundle、不 import。
+- ffmpeg_card/fallback_solid 是回落卡片路径,不是动态画面质量承诺。
 - 订阅通常不含 TTS;LLM 可继承 claude/codex,TTS 一般需本机或单独配置。
 - say 仅 macOS;其他系统用 Piper/espeak-ng 或 OpenAI-compatible TTS。
 - 默认 Homebrew FFmpeg 可能缺 drawtext;render --release 会硬失败,以 doctor 为准。

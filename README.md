@@ -32,7 +32,7 @@ uv run lj doctor --json
 npx skills add <REPO_URL> --skill lingjian-video
 ```
 
-灵剪 M1 是一个可审核、可复跑、可归档的短视频生产主干。当前实现覆盖 CLI、核心状态机、mock 预览链路、审批门禁、QA、导出包、Next.js Web 控制台与离线验证脚本。
+灵剪 M1/M2 是一个可审核、可复跑、可归档的短视频生产主干。当前实现覆盖 CLI、核心状态机、mock 预览链路、宿主画面产物消费、审批门禁、QA、导出包、Next.js Web 控制台与离线验证脚本。
 
 ## 当前边界
 
@@ -41,7 +41,8 @@ npx skills add <REPO_URL> --skill lingjian-video
 - `render --release` 必须具备 FFmpeg/ffprobe,且 FFmpeg 支持 `drawtext/libfreetype`;缺失时硬失败,不会写离线 stub。
 - 能提供本机 CLI provider 时,不强制提供 API key。必须使用 key 时,doctor 只输出脱敏状态,不会把 key 写入日志、artifact 或导出包。
 - 新用户先跑 `lj setup`,系统会优先继承已登录的官方 CLI 或本机能力,缺失时才引导提供 key。
-- M1 渲染只包含 `ffmpeg_card` 最小卡片引擎;HyperFrames、Remotion、复杂 timeline、插件市场均不在 M1 范围内。
+- M2 不 bundle HyperFrames/Remotion,只消费宿主 agent 落到 `project/assets/scenes/` 的每镜 mp4/png 产物,再由 lj 用 FFmpeg 统一组装。
+- 宿主 HyperFrames/Remotion/imagegen 能力取决于当前 Codex 环境是否启用;缺失时可消费用户自带素材,否则回落 `fallback_solid` 卡片并在 QA 中 warning。
 
 ## 隐私与安全
 
@@ -111,6 +112,7 @@ uv run lj approve script ./projects/demo --approved-by tester --json
 uv run lj voice ./projects/demo --provider mock --voice test-voice --json
 uv run lj approve voice ./projects/demo --approved-by tester --json
 uv run lj visuals ./projects/demo --engine ffmpeg_card --template product --json
+# visuals 会生成每镜 storyboard:优先宿主 HyperFrames/Remotion/imagegen,其次消费 assets/scenes/<scene_id>.mp4|png,最后 fallback_solid。
 uv run lj approve visuals ./projects/demo --approved-by tester --json
 uv run lj render ./projects/demo --platform douyin --language zh-CN --ratio 9:16 --json
 uv run lj qa ./projects/demo --json

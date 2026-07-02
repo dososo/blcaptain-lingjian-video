@@ -1,8 +1,8 @@
-command: uv run lj approve voice projects/verify_m1_20260702T020420Z --approved-by tester --json
+command: uv run lj approve voice projects/verify_m1_20260702T032511Z --approved-by tester --json
 exit_code: 0
 
 stdout:
-{"approval": {"approved_at": "2026-07-02T02:04:41.283856+00:00", "approved_by": "tester", "artifact_path": "artifacts/voice_plan.json", "artifact_sha256": "f82b580b14798a9ec417c956ec44008e09aff087fb077f9dfb52768866db6af3", "comment": null, "signature": "886790c2379e39ed76dc431de2db4d16e14ab541209359bd039d666749b22366", "target": "voice"}, "ok": true}
+{"approval": {"approved_at": "2026-07-02T03:25:32.904839+00:00", "approved_by": "tester", "artifact_path": "artifacts/voice_plan.json", "artifact_sha256": "f82b580b14798a9ec417c956ec44008e09aff087fb077f9dfb52768866db6af3", "comment": null, "signature": "654b9e78c00481a3d0b79c9bf5e609659818c114b384a97d18f33999226c4d47", "target": "voice"}, "ok": true}
 
 
 stderr:

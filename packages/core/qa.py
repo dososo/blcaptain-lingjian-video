@@ -96,6 +96,16 @@ def _check_release_video_body(project: ProjectRef, manifest: dict, report: QARep
         report.hard_failures.append(
             QAIssue("RELEASE_AUDIO_MISSING", "hard", "ffprobe 未能确认 release 音频流。")
         )
+    visual_total = int(manifest.get("visual_total") or 0)
+    visual_real_count = int(manifest.get("visual_real_count") or 0)
+    if visual_total > 0 and visual_real_count == 0:
+        report.warnings.append(
+            QAIssue(
+                "RELEASE_VISUAL_IS_BLANK_CARD",
+                "warning",
+                "release 画面全部为回落卡片,未消费宿主动态图形/图片产物。",
+            )
+        )
 
 
 def run_qa(project: ProjectRef, release: bool = False, platform: str = "douyin") -> QAReport:
