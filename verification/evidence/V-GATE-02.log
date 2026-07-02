@@ -1,8 +1,8 @@
-command: uv run lj extract projects/verify_m1_20260702T160117Z --json
+command: uv run lj extract projects/verify_m1_20260702T232732Z --json
 exit_code: 0
 
 stdout:
-{"ok": true, "project": "projects/verify_m1_20260702T160117Z", "routing": {"legacy_provider": null, "ocr_provider": "none", "url_extractor": "trafilatura"}, "status": "extracted"}
+{"ok": true, "project": "projects/verify_m1_20260702T232732Z", "routing": {"legacy_provider": null, "ocr_provider": "none", "url_extractor": "trafilatura"}, "status": "extracted"}
 
 
 stderr:

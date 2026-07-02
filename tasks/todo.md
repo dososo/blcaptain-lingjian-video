@@ -395,3 +395,23 @@
 - Track B 证据:`codex plugin marketplace add dososo/blcaptain-lingjian-video` 与 `codex plugin add lingjian-video@blcaptain-lingjian-video` 成功;只读 Codex 新会话识别 `lingjian-video:lingjian-video` 并返回灵剪主线第一步。
 - 文档:`docs/dev/29_POLISH_AND_PLUGIN_VERIFY.md` 已新增,`docs/dev/AUDIT_READY.md` 已同步。
 - 全量回归:`uv run pytest -q` 为 111 passed;ruff 通过;5 个扫描器通过;`pnpm --dir apps/web lint` 与 `build` 通过;`run_verification.py` 为 52 PASS / 0 FAIL,`V-REAL-01=PASS`;`git diff --check` 通过。
+
+## v0.2.0 封版清单
+
+- [x] cosmetic:清理 `scripts/providers/hyperframes_scene_cli.py` 中可见的原始 motion 基元名,并用离线单测断言 HTML 不含 `kinetic` 等基元字面。
+- [x] 版本号:同步 `pyproject.toml`、`.codex-plugin/plugin.json`、根 `package.json` 与 `apps/web/package.json` 到 `0.2.0`。
+- [x] 文档:更新 `CHANGELOG.md` 与 `docs/dev/30_RELEASE_V0_2_0.md`,诚实记录 v0.1.0 -> v0.2.0 变化、边界与证据。
+- [x] 发布前自检:跑 pytest、ruff、5 扫描器、Web build、`run_verification.py`。
+- [x] 真机验收:复现 HyperFrames + Kokoro 的 `--release --strict` 成片,抽帧确认多版式、底部字幕、无原始 motion 字样、QA 0 warning、h264+aac。
+- [x] 安装验收:复核 Codex plugin/skill 安装与一句话触发烟测,并做干净态首用自检。
+- [x] 发布:提交改动,打 annotated tag `v0.2.0`,推送 commit 与 tag。
+
+### Review: v0.2.0 封版
+
+- cosmetic:`scripts/providers/hyperframes_scene_cli.py` 不再把 `motion_spec.main` 写进可见 accent 或 HTML `data-motion`;新增测试 `test_hyperframes_scene_html_does_not_expose_raw_motion_primitive`。
+- 版本:`pyproject.toml`、`.codex-plugin/plugin.json`、`package.json`、`apps/web/package.json`、`uv.lock` 与 egg-info 已对齐为 `0.2.0`。
+- 验证:`uv run pytest -q` 为 112 passed;`uv run ruff check .`、5 个扫描器、`pnpm --dir apps/web lint`、`pnpm --dir apps/web build`、`run_verification.py` 与 `git diff --check` 均通过;`verification/results.json` 为 52 PASS / 0 FAIL。
+- 真机成片:项目 `projects/release_v0_2_0_verify_20260703` 跑 `--release --strict` 成功;QA `hard_failures=[]`,`warnings=[]`;render manifest `visual_real_count=6/6`;ffprobe 为 h264 1080x1920 + aac;抽帧见 `verification/release_v0_2_0_frames/`。
+- Codex 安装:刷新 marketplace 后 `lingjian-video@blcaptain-lingjian-video` 为 installed/enabled `0.2.0`;只读 Codex 会话触发 `lingjian-video:lingjian-video`,进入视频需求澄清阶段。
+- 干净态:本地 git clean clone 运行 `uv sync`、安装 skill 软链、`lj setup`、mock 预览 `lj run --yes`、`lj qa`,结果 `status=exported`,`mode=preview`,`video_exists=True`。
+- 发布:已打 annotated tag `v0.2.0` 并推送 `main` 与 tag 到 origin。

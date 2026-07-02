@@ -148,6 +148,21 @@ def test_hyperframes_scene_visual_text_does_not_repeat_full_narration():
     assert "旁白/画面信息" not in rendered
 
 
+def test_hyperframes_scene_html_does_not_expose_raw_motion_primitive():
+    payload = {
+        "scene_id": "3",
+        "visual_prompt": "灵剪发布级画面验收",
+        "motion_spec": {"main": "kinetic_pan", "one_main_only": True},
+        "duration_sec": 1.0,
+    }
+
+    rendered = _html(payload, 1.0)
+
+    assert "kinetic_pan" not in rendered
+    assert "kinetic" not in rendered
+    assert "kenburns_zoom_in" not in rendered
+
+
 def test_release_qa_allows_kokoro_zero_key_tts(tmp_path, monkeypatch):
     project = ProjectRef(tmp_path / "project", "project")
     release_dir = project.path / "renders" / "release" / "douyin"

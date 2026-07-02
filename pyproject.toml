@@ -1,7 +1,7 @@
 [project]
 name = "lingjian-video-studio"
-version = "0.1.0"
-description = "LingJian Video Studio M1"
+version = "0.2.0"
+description = "LingJian Video Studio"
 readme = "README.md"
 requires-python = ">=3.11,<3.13"
 license = { text = "Apache-2.0" }

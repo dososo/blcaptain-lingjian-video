@@ -1,4 +1,4 @@
-command: uv run lj voice projects/verify_m1_20260702T160117Z --provider mock --voice test-voice --json
+command: uv run lj voice projects/verify_m1_20260702T232732Z --provider mock --voice test-voice --json
 exit_code: 0
 
 stdout:

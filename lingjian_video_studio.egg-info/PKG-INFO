@@ -1,7 +1,7 @@
 Metadata-Version: 2.4
 Name: lingjian-video-studio
-Version: 0.1.0
-Summary: LingJian Video Studio M1
+Version: 0.2.0
+Summary: LingJian Video Studio
 License: Apache-2.0
 Requires-Python: <3.13,>=3.11
 Description-Content-Type: text/markdown

@@ -20,6 +20,13 @@ LAYOUT_LABELS = {
     "proof": "证据聚焦",
     "cta": "行动收口",
 }
+ACCENT_LABELS = {
+    "hook": "注意力拉满",
+    "pain": "流程卡点",
+    "solution": "一条主线",
+    "proof": "可复核",
+    "cta": "马上试用",
+}
 
 
 def main() -> int:
@@ -119,8 +126,7 @@ def _html(payload: dict[str, Any], duration: float) -> str:
     accent = html.escape(_accent_word(payload, layout))
     label = html.escape(LAYOUT_LABELS[layout])
     scene_no = html.escape(_scene_number(payload))
-    motion = payload.get("motion_spec") if isinstance(payload.get("motion_spec"), dict) else {}
-    motion_name = html.escape(str(motion.get("main") or "motion"))
+    motion_name = html.escape(f"layout-{layout}")
     safe_duration = f"{duration:.2f}"
     return f"""<!doctype html>
 <html lang="zh-CN" data-resolution="portrait">
@@ -320,17 +326,7 @@ def _visual_keyword(payload: dict[str, Any]) -> str:
 
 
 def _accent_word(payload: dict[str, Any], layout: str) -> str:
-    motion = payload.get("motion_spec") if isinstance(payload.get("motion_spec"), dict) else {}
-    main = str(motion.get("main") or "")
-    if main and main != "kinetic_reveal":
-        return _compact_visual_text(main.replace("_", " "))[:10] or LAYOUT_LABELS[layout]
-    return {
-        "hook": "注意力拉满",
-        "pain": "流程卡点",
-        "solution": "一条主线",
-        "proof": "可复核",
-        "cta": "马上试用",
-    }[layout]
+    return ACCENT_LABELS[layout]
 
 
 def _remove_redundant_words(text: str) -> str:

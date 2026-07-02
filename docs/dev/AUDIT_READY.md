@@ -1,12 +1,14 @@
 # AUDIT_READY
 
-日期: 2026-07-02
+日期: 2026-07-03
 
 ## 置顶结论
 
-本轮在 M2 底座上补做「Codex Plugin 发布级主线重定位」:工程底座保持可复现,产品入口从开发者 CLI-first 调整为 Codex app Plugin/Skill prompt-first。
+本轮在已通过复审的 M2/生态底座上做 `v0.2.0` 封版收尾:只做 cosmetic 清理、版本对齐、发布说明与最终证据补验,不新增主线功能,不削弱任何门禁。
 
 - 真实环境项: `V-REAL-01=PASS`,主 `verification/results.json` 为 52 PASS / 0 FAIL。
+- v0.2.0 版本项:`pyproject.toml`、`.codex-plugin/plugin.json`、根 `package.json`、`apps/web/package.json`、`uv.lock` 与 `lingjian_video_studio.egg-info/PKG-INFO` 已对齐为 `0.2.0`。
+- v0.2.0 cosmetic 项:HyperFrames 场景 HTML 不再暴露 `motion_spec.main` 的原始 motion 基元字面;离线测试断言 `kinetic_pan`、`kinetic`、`kenburns_zoom_in` 不出现在 HTML。
 - 默认环境规格: macOS,默认 `/opt/homebrew/bin/ffmpeg` 已链接到 `ffmpeg-full`,继承 `claude_cli` LLM,检测到 `npx hyperframes` 与 Kokoro 中文本地 TTS。
 - 发布视频抽验: `verification/evidence/V-REAL-01.log` 记录 ffmpeg 路径、版本配置、drawtext、OS 与 ffprobe;最终视频包含 `h264` 视频流与 `aac` 音频流。
 - 离线回落项:隐藏 `claude/codex` 并清空 provider env 后,`verification/results.offline_fallback_20260702.json` 为 51 PASS / 1 BLOCKED_ENV / 0 FAIL。
@@ -18,6 +20,7 @@
 - Codex Plugin 项:新增 `.codex-plugin/plugin.json`、`.agents/plugins/marketplace.json` 与 `skills/lingjian-video/SKILL.md`;安装脚本改用 Codex 官方 `~/.agents/skills`。
 - 发布级视觉项:`fallback_solid` 普通 release 默认 warning,`--strict --release` 阻断;HyperFrames 零 key 自动生成已真机通过,自备每镜 mp4/png 仍是稳定回落路径。
 - 画面打磨项:HyperFrames 场景适配器已按 role/index 确定性选择 `hook/pain/solution/proof/cta` 多版式;最终真机 strict 成片 `visual_real_count=6/6`,相邻版式不重复,画面只放短关键词,口播全文由底部字幕承载。
+- v0.2.0 真机项:`projects/release_v0_2_0_verify_20260703` 已跑 `--release --strict`;QA `hard_failures=[]`,`warnings=[]`,render manifest `visual_real_count=6/6`,ffprobe 为 h264+aac,抽帧见 `verification/release_v0_2_0_frames/`。
 - Plugin 真机项:`codex plugin marketplace add dososo/blcaptain-lingjian-video` 与 `codex plugin add lingjian-video@blcaptain-lingjian-video` 已成功;只读 Codex 新会话识别到 `lingjian-video:lingjian-video`。
 
 ## 证据入口
@@ -38,6 +41,8 @@
 - `docs/dev/18_M2_VISUAL_DELEGATION.md`
 - `docs/dev/19_M2_VISUAL_GEN_AND_TTS.md`
 - `docs/dev/20_M2_REFERENCE_GAP_AUDIT.md`
+- `docs/dev/30_RELEASE_V0_2_0.md`
+- `verification/release_v0_2_0_frames/`
 - `docs/dev/26_CODEX_PLUGIN_REPOSITIONING.md`
 - `docs/dev/28_ECOSYSTEM_INTEGRATION.md`
 - `docs/dev/29_POLISH_AND_PLUGIN_VERIFY.md`
@@ -137,14 +142,14 @@
 - P1-B4/B5 已落地:`lj setup` 文本模式明确预览档/发布档;README/SKILL.md 写清零 key 预览、隐私、安全、成熟度边界。
 - P2-C1/C2 已落地:`lj run <project>` 默认在三审点暂停;显式 `--yes` 会写真实 approval 并完成预览 render -> qa -> export,不绕过审批门。
 
-## 发布准备项
+## v0.1.0 发布准备项（历史）
 
-- 版本已对齐:`pyproject.toml`、`package.json`、`apps/web/package.json` 均为 `0.1.0`。
+- 当时版本已对齐:`pyproject.toml`、`package.json`、`apps/web/package.json` 均为 `0.1.0`。
 - 变更与路线图已落盘:`CHANGELOG.md` 与 `ROADMAP.md`。
 - README 已补隐私、安全、可选依赖审计、macOS/Linux/Windows FFmpeg 与 TTS 路径。
 - `.gitignore` 已排除 `.env*`、`.lingjian/`、`projects/`、`exports/`、`.venv/`、`node_modules/` 与构建缓存。
 - 干净 clone 首用自检已完成:见 `verification/release_prep/setup.txt`、`doctor.json`、`preview_run.json`、`preview_qa.json`、`preview_export.json`。
-- 发布地址已确认:`https://github.com/dososo/blcaptain-lingjian-video.git`;用户面安装命令已替换真实地址,`v0.1.0` tag 在最终发布提交后更新。
+- 发布地址已确认:`https://github.com/dososo/blcaptain-lingjian-video.git`;用户面安装命令已替换真实地址,`v0.1.0` tag 已作为历史封版 tag 保留。
 
 ## M2 画面委托项
 

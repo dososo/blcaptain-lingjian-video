@@ -2,7 +2,7 @@
   {
     "id": "V-REAL-01",
     "title": "真实 provider release 包补验",
-    "command": "uv run lj doctor --json && which ffmpeg && ffmpeg -version && ffprobe -version && sh -c ffmpeg -hide_banner -filters | grep drawtext && sh -c sw_vers 2>/dev/null || uname -a && uv run lj init projects/verify_real_20260702T160117Z --name 真实发布补验 --json && uv run lj ingest text projects/verify_real_20260702T160117Z --file examples/product_intro_zh.txt --json && uv run lj extract projects/verify_real_20260702T160117Z --json && uv run lj script projects/verify_real_20260702T160117Z --type product --platform douyin --language zh-CN --ratio 9:16 --duration 45 --provider claude_cli --json && uv run lj approve script projects/verify_real_20260702T160117Z --approved-by ci --json && uv run lj voice projects/verify_real_20260702T160117Z --provider kokoro_zh_tts --voice release-voice --json && uv run lj approve voice projects/verify_real_20260702T160117Z --approved-by ci --json && uv run lj visuals projects/verify_real_20260702T160117Z --engine ffmpeg_card --template product --json && uv run lj approve visuals projects/verify_real_20260702T160117Z --approved-by ci --json && uv run lj render projects/verify_real_20260702T160117Z --platform douyin --language zh-CN --ratio 9:16 --release --json && uv run lj qa projects/verify_real_20260702T160117Z --release --platform douyin --json && uv run lj export projects/verify_real_20260702T160117Z --platform douyin --language zh-CN --ratio 9:16 --release --json && ffprobe -v error -show_entries stream=codec_type,codec_name -of json exports/verify_real_20260702T160117Z/douyin/zh-CN/9x16/video.mp4",
+    "command": "uv run lj doctor --json && which ffmpeg && ffmpeg -version && ffprobe -version && sh -c ffmpeg -hide_banner -filters | grep drawtext && sh -c sw_vers 2>/dev/null || uname -a && uv run lj init projects/verify_real_20260702T232732Z --name 真实发布补验 --json && uv run lj ingest text projects/verify_real_20260702T232732Z --file examples/product_intro_zh.txt --json && uv run lj extract projects/verify_real_20260702T232732Z --json && uv run lj script projects/verify_real_20260702T232732Z --type product --platform douyin --language zh-CN --ratio 9:16 --duration 45 --provider claude_cli --json && uv run lj approve script projects/verify_real_20260702T232732Z --approved-by ci --json && uv run lj voice projects/verify_real_20260702T232732Z --provider kokoro_zh_tts --voice release-voice --json && uv run lj approve voice projects/verify_real_20260702T232732Z --approved-by ci --json && uv run lj visuals projects/verify_real_20260702T232732Z --engine ffmpeg_card --template product --json && uv run lj approve visuals projects/verify_real_20260702T232732Z --approved-by ci --json && uv run lj render projects/verify_real_20260702T232732Z --platform douyin --language zh-CN --ratio 9:16 --release --json && uv run lj qa projects/verify_real_20260702T232732Z --release --platform douyin --json && uv run lj export projects/verify_real_20260702T232732Z --platform douyin --language zh-CN --ratio 9:16 --release --json && ffprobe -v error -show_entries stream=codec_type,codec_name -of json exports/verify_real_20260702T232732Z/douyin/zh-CN/9x16/video.mp4",
     "expect": "doctor ready 后真实 release render/export/ffprobe 全链路通过",
     "exit_code": 0,
     "error_code": null,
@@ -90,7 +90,7 @@
   {
     "id": "V-GATE-00",
     "title": "初始化项目",
-    "command": "uv run lj init projects/verify_m1_20260702T160117Z --name 门禁测试 --json",
+    "command": "uv run lj init projects/verify_m1_20260702T232732Z --name 门禁测试 --json",
     "expect": "init 成功",
     "exit_code": 0,
     "error_code": null,
@@ -101,7 +101,7 @@
   {
     "id": "V-GATE-01",
     "title": "文本输入",
-    "command": "uv run lj ingest text projects/verify_m1_20260702T160117Z --file examples/product_intro_zh.txt --json",
+    "command": "uv run lj ingest text projects/verify_m1_20260702T232732Z --file examples/product_intro_zh.txt --json",
     "expect": "input_ready",
     "exit_code": 0,
     "error_code": null,
@@ -112,7 +112,7 @@
   {
     "id": "V-GATE-02",
     "title": "extract 路由",
-    "command": "uv run lj extract projects/verify_m1_20260702T160117Z --json",
+    "command": "uv run lj extract projects/verify_m1_20260702T232732Z --json",
     "expect": "extract 成功",
     "exit_code": 0,
     "error_code": null,
@@ -123,7 +123,7 @@
   {
     "id": "V-GATE-03",
     "title": "生成文案",
-    "command": "uv run lj script projects/verify_m1_20260702T160117Z --type product --platform douyin --language zh-CN --ratio 9:16 --duration 45 --provider mock --json",
+    "command": "uv run lj script projects/verify_m1_20260702T232732Z --type product --platform douyin --language zh-CN --ratio 9:16 --duration 45 --provider mock --json",
     "expect": "script 进入待审",
     "exit_code": 0,
     "error_code": null,
@@ -134,7 +134,7 @@
   {
     "id": "V-GATE-04",
     "title": "未审批 render 阻断",
-    "command": "uv run lj render projects/verify_m1_20260702T160117Z --platform douyin --language zh-CN --ratio 9:16 --json",
+    "command": "uv run lj render projects/verify_m1_20260702T232732Z --platform douyin --language zh-CN --ratio 9:16 --json",
     "expect": "APPROVAL_REQUIRED",
     "exit_code": 1,
     "error_code": "APPROVAL_REQUIRED",
@@ -145,7 +145,7 @@
   {
     "id": "V-GATE-05",
     "title": "审批文案",
-    "command": "uv run lj approve script projects/verify_m1_20260702T160117Z --approved-by tester --json",
+    "command": "uv run lj approve script projects/verify_m1_20260702T232732Z --approved-by tester --json",
     "expect": "文案审批成功",
     "exit_code": 0,
     "error_code": null,
@@ -156,7 +156,7 @@
   {
     "id": "V-GATE-05A",
     "title": "生成语音以完成三审基线",
-    "command": "uv run lj voice projects/verify_m1_20260702T160117Z --provider mock --voice test-voice --json",
+    "command": "uv run lj voice projects/verify_m1_20260702T232732Z --provider mock --voice test-voice --json",
     "expect": "voice 待审",
     "exit_code": 0,
     "error_code": null,
@@ -167,7 +167,7 @@
   {
     "id": "V-GATE-05B",
     "title": "审批语音以完成三审基线",
-    "command": "uv run lj approve voice projects/verify_m1_20260702T160117Z --approved-by tester --json",
+    "command": "uv run lj approve voice projects/verify_m1_20260702T232732Z --approved-by tester --json",
     "expect": "语音审批成功",
     "exit_code": 0,
     "error_code": null,
@@ -178,7 +178,7 @@
   {
     "id": "V-GATE-05C",
     "title": "生成画面以完成三审基线",
-    "command": "uv run lj visuals projects/verify_m1_20260702T160117Z --engine ffmpeg_card --template product --json",
+    "command": "uv run lj visuals projects/verify_m1_20260702T232732Z --engine ffmpeg_card --template product --json",
     "expect": "visuals 待审",
     "exit_code": 0,
     "error_code": null,
@@ -189,7 +189,7 @@
   {
     "id": "V-GATE-05D",
     "title": "审批画面以完成三审基线",
-    "command": "uv run lj approve visuals projects/verify_m1_20260702T160117Z --approved-by tester --json",
+    "command": "uv run lj approve visuals projects/verify_m1_20260702T232732Z --approved-by tester --json",
     "expect": "画面审批成功",
     "exit_code": 0,
     "error_code": null,
@@ -200,7 +200,7 @@
   {
     "id": "V-GATE-06",
     "title": "改稿后下游 stale",
-    "command": "uv run lj script projects/verify_m1_20260702T160117Z --type product --platform douyin --language zh-CN --ratio 9:16 --duration 45 --provider mock --json",
+    "command": "uv run lj script projects/verify_m1_20260702T232732Z --type product --platform douyin --language zh-CN --ratio 9:16 --duration 45 --provider mock --json",
     "expect": "第二版脚本生成",
     "exit_code": 0,
     "error_code": null,
@@ -211,7 +211,7 @@
   {
     "id": "V-GATE-07",
     "title": "stale render 阻断",
-    "command": "uv run lj render projects/verify_m1_20260702T160117Z --platform douyin --language zh-CN --ratio 9:16 --json",
+    "command": "uv run lj render projects/verify_m1_20260702T232732Z --platform douyin --language zh-CN --ratio 9:16 --json",
     "expect": "APPROVAL_STALE",
     "exit_code": 1,
     "error_code": "APPROVAL_STALE",
@@ -222,7 +222,7 @@
   {
     "id": "V-GATE-08",
     "title": "重审文案",
-    "command": "uv run lj approve script projects/verify_m1_20260702T160117Z --approved-by tester --json",
+    "command": "uv run lj approve script projects/verify_m1_20260702T232732Z --approved-by tester --json",
     "expect": "重审成功",
     "exit_code": 0,
     "error_code": null,
@@ -233,7 +233,7 @@
   {
     "id": "V-GATE-09",
     "title": "生成语音",
-    "command": "uv run lj voice projects/verify_m1_20260702T160117Z --provider mock --voice test-voice --json",
+    "command": "uv run lj voice projects/verify_m1_20260702T232732Z --provider mock --voice test-voice --json",
     "expect": "voice 待审",
     "exit_code": 0,
     "error_code": null,
@@ -244,7 +244,7 @@
   {
     "id": "V-GATE-10",
     "title": "审批语音",
-    "command": "uv run lj approve voice projects/verify_m1_20260702T160117Z --approved-by tester --json",
+    "command": "uv run lj approve voice projects/verify_m1_20260702T232732Z --approved-by tester --json",
     "expect": "语音审批成功",
     "exit_code": 0,
     "error_code": null,
@@ -255,7 +255,7 @@
   {
     "id": "V-GATE-11",
     "title": "生成画面",
-    "command": "uv run lj visuals projects/verify_m1_20260702T160117Z --engine ffmpeg_card --template product --json",
+    "command": "uv run lj visuals projects/verify_m1_20260702T232732Z --engine ffmpeg_card --template product --json",
     "expect": "visuals 待审",
     "exit_code": 0,
     "error_code": null,
@@ -266,7 +266,7 @@
   {
     "id": "V-GATE-12",
     "title": "审批画面",
-    "command": "uv run lj approve visuals projects/verify_m1_20260702T160117Z --approved-by tester --json",
+    "command": "uv run lj approve visuals projects/verify_m1_20260702T232732Z --approved-by tester --json",
     "expect": "画面审批成功",
     "exit_code": 0,
     "error_code": null,
@@ -277,7 +277,7 @@
   {
     "id": "V-GATE-13",
     "title": "三审后 preview render",
-    "command": "uv run lj render projects/verify_m1_20260702T160117Z --platform douyin --language zh-CN --ratio 9:16 --json",
+    "command": "uv run lj render projects/verify_m1_20260702T232732Z --platform douyin --language zh-CN --ratio 9:16 --json",
     "expect": "render 成功",
     "exit_code": 0,
     "error_code": null,
@@ -288,7 +288,7 @@
   {
     "id": "V-QA-01",
     "title": "QA",
-    "command": "uv run lj qa projects/verify_m1_20260702T160117Z --json",
+    "command": "uv run lj qa projects/verify_m1_20260702T232732Z --json",
     "expect": "QA 执行成功",
     "exit_code": 0,
     "error_code": null,
@@ -299,7 +299,7 @@
   {
     "id": "V-REL-01",
     "title": "mock release 阻断",
-    "command": "uv run lj export projects/verify_m1_20260702T160117Z --platform douyin --language zh-CN --ratio 9:16 --release --json",
+    "command": "uv run lj export projects/verify_m1_20260702T232732Z --platform douyin --language zh-CN --ratio 9:16 --release --json",
     "expect": "MOCK_PROVIDER_NOT_ALLOWED_FOR_RELEASE",
     "exit_code": 1,
     "error_code": "MOCK_PROVIDER_NOT_ALLOWED_FOR_RELEASE",
@@ -310,7 +310,7 @@
   {
     "id": "V-EXP-01",
     "title": "canonical export",
-    "command": "uv run lj export projects/verify_m1_20260702T160117Z --platform douyin --language zh-CN --ratio 9:16 --json",
+    "command": "uv run lj export projects/verify_m1_20260702T232732Z --platform douyin --language zh-CN --ratio 9:16 --json",
     "expect": "导出包成功",
     "exit_code": 0,
     "error_code": null,
@@ -321,7 +321,7 @@
   {
     "id": "V-EXP-STRUCT-01",
     "title": "导出结构 douyin/zh-CN/9x16/video.mp4",
-    "command": "test -f exports/verify_m1_20260702T160117Z/douyin/zh-CN/9x16/video.mp4",
+    "command": "test -f exports/verify_m1_20260702T232732Z/douyin/zh-CN/9x16/video.mp4",
     "expect": "文件存在",
     "exit_code": 0,
     "error_code": null,
@@ -332,7 +332,7 @@
   {
     "id": "V-EXP-STRUCT-02",
     "title": "导出结构 douyin/zh-CN/9x16/captions/subtitles.srt",
-    "command": "test -f exports/verify_m1_20260702T160117Z/douyin/zh-CN/9x16/captions/subtitles.srt",
+    "command": "test -f exports/verify_m1_20260702T232732Z/douyin/zh-CN/9x16/captions/subtitles.srt",
     "expect": "文件存在",
     "exit_code": 0,
     "error_code": null,
@@ -343,7 +343,7 @@
   {
     "id": "V-EXP-STRUCT-03",
     "title": "导出结构 douyin/zh-CN/9x16/captions/subtitles.vtt",
-    "command": "test -f exports/verify_m1_20260702T160117Z/douyin/zh-CN/9x16/captions/subtitles.vtt",
+    "command": "test -f exports/verify_m1_20260702T232732Z/douyin/zh-CN/9x16/captions/subtitles.vtt",
     "expect": "文件存在",
     "exit_code": 0,
     "error_code": null,
@@ -354,7 +354,7 @@
   {
     "id": "V-EXP-STRUCT-04",
     "title": "导出结构 douyin/zh-CN/9x16/captions/subtitles.ass",
-    "command": "test -f exports/verify_m1_20260702T160117Z/douyin/zh-CN/9x16/captions/subtitles.ass",
+    "command": "test -f exports/verify_m1_20260702T232732Z/douyin/zh-CN/9x16/captions/subtitles.ass",
     "expect": "文件存在",
     "exit_code": 0,
     "error_code": null,
@@ -365,7 +365,7 @@
   {
     "id": "V-EXP-STRUCT-05",
     "title": "导出结构 douyin/zh-CN/9x16/provider_manifest.json",
-    "command": "test -f exports/verify_m1_20260702T160117Z/douyin/zh-CN/9x16/provider_manifest.json",
+    "command": "test -f exports/verify_m1_20260702T232732Z/douyin/zh-CN/9x16/provider_manifest.json",
     "expect": "文件存在",
     "exit_code": 0,
     "error_code": null,
@@ -376,7 +376,7 @@
   {
     "id": "V-EXP-STRUCT-06",
     "title": "导出结构 douyin/zh-CN/9x16/license_manifest.md",
-    "command": "test -f exports/verify_m1_20260702T160117Z/douyin/zh-CN/9x16/license_manifest.md",
+    "command": "test -f exports/verify_m1_20260702T232732Z/douyin/zh-CN/9x16/license_manifest.md",
     "expect": "文件存在",
     "exit_code": 0,
     "error_code": null,
@@ -387,7 +387,7 @@
   {
     "id": "V-EXP-STRUCT-07",
     "title": "导出结构 douyin/zh-CN/9x16/export_manifest.json",
-    "command": "test -f exports/verify_m1_20260702T160117Z/douyin/zh-CN/9x16/export_manifest.json",
+    "command": "test -f exports/verify_m1_20260702T232732Z/douyin/zh-CN/9x16/export_manifest.json",
     "expect": "文件存在",
     "exit_code": 0,
     "error_code": null,
@@ -398,7 +398,7 @@
   {
     "id": "V-EXP-02",
     "title": "YouTube 附加文件",
-    "command": "uv run lj export projects/verify_m1_20260702T160117Z --platform youtube --language en-US --ratio 16:9 --json",
+    "command": "uv run lj export projects/verify_m1_20260702T232732Z --platform youtube --language en-US --ratio 16:9 --json",
     "expect": "YouTube 导出成功",
     "exit_code": 0,
     "error_code": null,
@@ -409,7 +409,7 @@
   {
     "id": "V-EXP-YT-01",
     "title": "YouTube 文件 youtube/en-US/16x9/thumbnail.png",
-    "command": "test -f exports/verify_m1_20260702T160117Z/youtube/en-US/16x9/thumbnail.png",
+    "command": "test -f exports/verify_m1_20260702T232732Z/youtube/en-US/16x9/thumbnail.png",
     "expect": "文件存在",
     "exit_code": 0,
     "error_code": null,
@@ -420,7 +420,7 @@
   {
     "id": "V-EXP-YT-02",
     "title": "YouTube 文件 youtube/en-US/16x9/description.md",
-    "command": "test -f exports/verify_m1_20260702T160117Z/youtube/en-US/16x9/description.md",
+    "command": "test -f exports/verify_m1_20260702T232732Z/youtube/en-US/16x9/description.md",
     "expect": "文件存在",
     "exit_code": 0,
     "error_code": null,
@@ -431,7 +431,7 @@
   {
     "id": "V-EXP-YT-03",
     "title": "YouTube 文件 youtube/en-US/16x9/chapters.md",
-    "command": "test -f exports/verify_m1_20260702T160117Z/youtube/en-US/16x9/chapters.md",
+    "command": "test -f exports/verify_m1_20260702T232732Z/youtube/en-US/16x9/chapters.md",
     "expect": "文件存在",
     "exit_code": 0,
     "error_code": null,
@@ -442,7 +442,7 @@
   {
     "id": "V-EXP-03",
     "title": "多平台导出",
-    "command": "uv run lj export projects/verify_m1_20260702T160117Z --all-platforms --language zh-CN --ratio 9:16 --json",
+    "command": "uv run lj export projects/verify_m1_20260702T232732Z --all-platforms --language zh-CN --ratio 9:16 --json",
     "expect": "多平台导出成功",
     "exit_code": 0,
     "error_code": null,
@@ -453,7 +453,7 @@
   {
     "id": "V-REINDEX-01",
     "title": "reindex",
-    "command": "uv run lj reindex projects/verify_m1_20260702T160117Z --json",
+    "command": "uv run lj reindex projects/verify_m1_20260702T232732Z --json",
     "expect": "索引重建成功",
     "exit_code": 0,
     "error_code": null,
@@ -464,7 +464,7 @@
   {
     "id": "V-REINDEX-02",
     "title": "status",
-    "command": "uv run lj status projects/verify_m1_20260702T160117Z --json",
+    "command": "uv run lj status projects/verify_m1_20260702T232732Z --json",
     "expect": "状态可读",
     "exit_code": 0,
     "error_code": null,
@@ -475,7 +475,7 @@
   {
     "id": "V-CN-01",
     "title": "中文路径 init",
-    "command": "uv run lj init projects/中文路径验证_20260702T160117Z --name 中文路径 --json",
+    "command": "uv run lj init projects/中文路径验证_20260702T232732Z --name 中文路径 --json",
     "expect": "中文路径 init 成功",
     "exit_code": 0,
     "error_code": null,
@@ -486,7 +486,7 @@
   {
     "id": "V-CN-02",
     "title": "中文路径 script",
-    "command": "uv run lj script projects/中文路径验证_20260702T160117Z --type product --platform douyin --language zh-CN --ratio 9:16 --duration 45 --provider mock --json",
+    "command": "uv run lj script projects/中文路径验证_20260702T232732Z --type product --platform douyin --language zh-CN --ratio 9:16 --duration 45 --provider mock --json",
     "expect": "中文路径不乱码",
     "exit_code": 0,
     "error_code": null,
@@ -497,7 +497,7 @@
   {
     "id": "V-URL-01",
     "title": "URL 输入合规",
-    "command": "uv run lj init projects/url_verify_20260702T160117Z --name URL合规 --json",
+    "command": "uv run lj init projects/url_verify_20260702T232732Z --name URL合规 --json",
     "expect": "URL 项目 init",
     "exit_code": 0,
     "error_code": null,
@@ -508,7 +508,7 @@
   {
     "id": "V-URL-02",
     "title": "URL 不默认下载视频",
-    "command": "uv run lj ingest url projects/url_verify_20260702T160117Z --url https://example.com/article --json",
+    "command": "uv run lj ingest url projects/url_verify_20260702T232732Z --url https://example.com/article --json",
     "expect": "URL 输入记录为不可信输入",
     "exit_code": 0,
     "error_code": null,

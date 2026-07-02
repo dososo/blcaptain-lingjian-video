@@ -1,8 +1,8 @@
-command: uv run lj init projects/中文路径验证_20260702T160117Z --name 中文路径 --json
+command: uv run lj init projects/中文路径验证_20260702T232732Z --name 中文路径 --json
 exit_code: 0
 
 stdout:
-{"name": "中文路径", "ok": true, "project": "/Users/manxiaochu/Documents/Codex/lingjian-video/projects/中文路径验证_20260702T160117Z"}
+{"name": "中文路径", "ok": true, "project": "/Users/manxiaochu/Documents/Codex/lingjian-video/projects/中文路径验证_20260702T232732Z"}
 
 
 stderr:

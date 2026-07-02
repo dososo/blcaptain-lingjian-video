@@ -1,4 +1,4 @@
-command: uv run lj reindex projects/verify_m1_20260702T160117Z --json
+command: uv run lj reindex projects/verify_m1_20260702T232732Z --json
 exit_code: 0
 
 stdout:
