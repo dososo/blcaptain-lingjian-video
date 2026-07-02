@@ -70,7 +70,7 @@
 
 - [x] M2-1: 实现 CLI 与 OpenAI-compatible LLM/TTS provider,配置后 `resolve_provider` 可返回 `is_mock=False`,script/voice 正确写真实 provider 产物。
 - [x] M2-2: release `ffmpeg_card` 使用 FFmpeg 生成可 ffprobe 验证的非 stub MP4;preview/stub 路径保持不变。
-- [ ] M2-3: `V-REAL-01` 在真实环境走 ready 分支;当前无 ffmpeg/provider 环境保留 `BLOCKED_ENV` 并记录阻塞。
+- [x] M2-3: `V-REAL-01` 在真实环境走 ready 分支;当前无 ffmpeg/provider 环境保留 `BLOCKED_ENV` 并记录阻塞。
 - [x] M2-4: `_video_stream_is_verifiable` 添加 timeout,超时判 `RENDER_NOT_VERIFIABLE`。
 - [x] 新增 provider/渲染/timeout 离线测试,并先验证失败再实现。
 - [x] 重跑 `run_verification.py`、5 个扫描器、pytest、ruff、Web lint/build。
@@ -80,7 +80,7 @@
 
 - M2-1: `providers/cli.py` 新增真实 CLI provider;`providers/openai_compatible.py` 新增 API provider;`providers/registry.py` 注册 `llm_cli`/`tts_cli`/`openai_compatible`/`openai_compatible_tts`;`apps/cli/lingjian_cli/main.py` 的 script/voice 已接线。
 - M2-2: `packages/core/rendering.py` release 路径改为 FFmpeg 真出片,preview stub 不变,release stub 哨兵仍被拒绝。
-- M2-3: 当前机器缺 FFmpeg、ffprobe、真实 LLM/TTS provider,`V-REAL-01` 仍为 `BLOCKED_ENV`;未伪装 PASS。
+- M2-3: 后续已在本机补齐 FFmpeg/ffprobe、继承 `claude_cli` LLM 与 `kokoro_zh_tts` TTS,`V-REAL-01=PASS`;离线回落仍保留 `BLOCKED_ENV` 证据。
 - M2-4: `packages/core/qa.py` ffprobe 增加 20 秒 timeout,超时进入 `RENDER_NOT_VERIFIABLE`。
 - 新增测试: CLI/API provider resolve、script/voice fake CLI、script/voice fake API、API HTTP 错误映射、release ffmpeg fake run、ffprobe timeout、license manifest 记录 CLI/API provider。
 - 当前验证: `uv run python scripts/ci/run_verification.py` failures=0;`uv run pytest -q` 56 passed;`uv run ruff check .`、5 个扫描器、`pnpm --dir apps/web lint`、`pnpm --dir apps/web build` 均通过。
@@ -93,14 +93,14 @@
 - [x] 运行 `uv run lj doctor --json`:返回 `ready=false`,缺 `ffmpeg`、`ffprobe`、`real_llm_provider`、`real_tts_provider`。
 - [x] 保持 `V-REAL-01=BLOCKED_ENV`,未用假 CLI/固定 JSON 桩冒充真实 provider。
 - [x] 新增 `docs/dev/11_REAL_VERIFY.md`,记录真实环境 runbook、当前阻塞证据、离线回归要求与 M3 前瞻。
-- [ ] 在具备 FFmpeg/ffprobe + 真实 provider 的机器上补跑 `uv run python scripts/ci/run_verification.py`,使 `V-REAL-01=PASS`。
-- [ ] 归档真实 PASS 的 ffprobe 输出、provider 类型、OS/FFmpeg 版本与离线回归 results。
+- [x] 在具备 FFmpeg/ffprobe + 真实 provider 的机器上补跑 `uv run python scripts/ci/run_verification.py`,使 `V-REAL-01=PASS`。
+- [x] 归档真实 PASS 的 ffprobe 输出、provider 类型、OS/FFmpeg 版本与离线回归 results。
 
 ## 真实终验 Review
 
 - 当前机器规格:macOS 26.5, Darwin 25.5.0, arm64。
-- 当前阻塞:`ffmpeg` 与 `ffprobe` command not found;`LINGJIAN_LLM_CLI`、`LINGJIAN_TTS_CLI`、OpenAI-compatible LLM/TTS env 全缺失。
-- 当前结论:本机只能完成离线态回归与 runbook 交付,不能宣称真实 V-REAL-01 PASS。
+- 历史阻塞:`ffmpeg` 与 `ffprobe` command not found;`LINGJIAN_LLM_CLI`、`LINGJIAN_TTS_CLI`、OpenAI-compatible LLM/TTS env 全缺失。
+- 当前结论:真实环境已补齐并通过 `V-REAL-01=PASS`;历史离线 runbook 保留为回落证据。
 - 离线回归:`uv run python scripts/ci/run_verification.py` 为 51 PASS / 1 BLOCKED_ENV / 0 FAIL;`uv run pytest -q` 为 56 passed;ruff、5 个扫描器、Web lint/build 均通过。
 - 交付包:`lingjian_M1_codex_delivery_iter_4.zip`。
 - 真实终验说明:`docs/dev/11_REAL_VERIFY.md`。
@@ -293,11 +293,11 @@
 - [x] P0-1: 使用真实仓库 `https://github.com/dososo/blcaptain-lingjian-video.git` 替换用户面 `<REPO_URL>`,配置 remote。
 - [x] P1-1: 校准 HyperFrames/Remotion skill 安装标识符,保留已由官方入口确认的标识符并补官方文档链接。
 - [x] P2-1: README Web 段就地补“静态骨架,不能替代 CLI 审批流”免责。
-- [ ] P2-2: `--strict` 为可选增强,本轮未动;如需改变 QA/export 行为需用户确认。
+- [x] P2-2: `--strict` 后续已落地;默认非 strict 保持 warning,strict release 将预览音轨/纯色回落画面升为 hard failure。
 - [x] 产出发布收尾说明 `docs/dev/23_RELEASE_CLOSING.md`。
 - [x] P0 完成后重跑全量验收命令。
 - [x] 干净 clone 首用自检通过,证据归档到 `verification/release_closing/`。
-- [ ] 提交自检证据,更新 `v0.1.0` tag 并 push。
+- [x] 提交自检证据,更新 `v0.1.0` tag 并 push。
 
 ### Review: 开源发布收尾整改
 
