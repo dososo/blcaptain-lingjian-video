@@ -1,0 +1,36 @@
+{
+  "project_id": "user_experience_live_20260702T081937Z",
+  "platform": "douyin",
+  "language": "zh-CN",
+  "ratio": "9:16",
+  "release": true,
+  "approvals": [
+    {
+      "approved_at": "2026-07-02T08:20:15.013702+00:00",
+      "approved_by": "杰哥体验",
+      "artifact_path": "artifacts/script.json",
+      "artifact_sha256": "4762b4f2e1d88e37d74fcaf48ba50e00b4cadbb7ab1acb89226aadce0c1f2fc5",
+      "comment": null,
+      "signature": "829bbbb5ea2e53e7289d3d6c814a2637f59c7b9ac413f25dccb945ccf5adff44",
+      "target": "script"
+    },
+    {
+      "approved_at": "2026-07-02T08:30:46.136493+00:00",
+      "approved_by": "杰哥体验",
+      "artifact_path": "artifacts/visual_plan.json",
+      "artifact_sha256": "fbb8adbc9307650c3a7bf17ba690fe20367f68df52f0e5309eddf43b0147cfdf",
+      "comment": null,
+      "signature": "4c79fabc7b2b8c2237e54c990c0b26621a34be0f390bb879c6972b88a7d43b3c",
+      "target": "visuals"
+    },
+    {
+      "approved_at": "2026-07-02T08:20:16.138329+00:00",
+      "approved_by": "杰哥体验",
+      "artifact_path": "artifacts/voice_plan.json",
+      "artifact_sha256": "71d7a5ff962076492ba460109b3bec70deca1a11f9cb656fc8979c6e7c192399",
+      "comment": null,
+      "signature": "22b7d76b3e38fb3733a449f1241f65ce2d42ba7be1bf164433dea8f8ad0b31c6",
+      "target": "voice"
+    }
+  ]
+}

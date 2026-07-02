@@ -1,0 +1,148 @@
+{
+  "engine": "ffmpeg_card",
+  "id": "visuals",
+  "ratio": "9:16",
+  "scenes": [
+    {
+      "asset_path": "assets/scenes/1.png",
+      "brief": {
+        "aspect": "9:16",
+        "forbidden": "画面别再嵌大段文字",
+        "safe_zone": "下三分之一留字幕"
+      },
+      "duration_sec": 1.0,
+      "expected_asset_path": "assets/scenes/1.png",
+      "generator": "user-asset",
+      "motion": {
+        "main": "kenburns_zoom_in",
+        "one_main_only": true
+      },
+      "motion_spec": {
+        "main": "kenburns_zoom_in",
+        "one_main_only": true
+      },
+      "narration_text": "先别划走!如果你也天天为这件事头疼,这条视频看完能帮你省一半时间。",
+      "scene_id": "1",
+      "subtitle_burn": true,
+      "visual_prompt": "为竖屏短视频生成一镜画面。画幅 9:16,风格为干净的中文产品说明动态图形,主体清晰,背景简洁。旁白/画面信息:先别划走!如果你也天天为这件事头疼,这条视频看完能帮你省一半时间。"
+    },
+    {
+      "asset_path": "assets/scenes/2.png",
+      "brief": {
+        "aspect": "9:16",
+        "forbidden": "画面别再嵌大段文字",
+        "safe_zone": "下三分之一留字幕"
+      },
+      "duration_sec": 1.0,
+      "expected_asset_path": "assets/scenes/2.png",
+      "generator": "user-asset",
+      "motion": {
+        "main": "kenburns_zoom_in",
+        "one_main_only": true
+      },
+      "motion_spec": {
+        "main": "kenburns_zoom_in",
+        "one_main_only": true
+      },
+      "narration_text": "以前想搞定它,不是步骤太麻烦,就是效果不稳定,花了钱还不省心。",
+      "scene_id": "2",
+      "subtitle_burn": true,
+      "visual_prompt": "为竖屏短视频生成一镜画面。画幅 9:16,风格为干净的中文产品说明动态图形,主体清晰,背景简洁。旁白/画面信息:以前想搞定它,不是步骤太麻烦,就是效果不稳定,花了钱还不省心。"
+    },
+    {
+      "asset_path": "assets/scenes/3.png",
+      "brief": {
+        "aspect": "9:16",
+        "forbidden": "画面别再嵌大段文字",
+        "safe_zone": "下三分之一留字幕"
+      },
+      "duration_sec": 1.0,
+      "expected_asset_path": "assets/scenes/3.png",
+      "generator": "user-asset",
+      "motion": {
+        "main": "kenburns_zoom_in",
+        "one_main_only": true
+      },
+      "motion_spec": {
+        "main": "kenburns_zoom_in",
+        "one_main_only": true
+      },
+      "narration_text": "而现在,「产品名称」把整个流程压缩成一步——上手就会,新手也能立刻做出效果。",
+      "scene_id": "3",
+      "subtitle_burn": true,
+      "visual_prompt": "为竖屏短视频生成一镜画面。画幅 9:16,风格为干净的中文产品说明动态图形,主体清晰,背景简洁。旁白/画面信息:而现在,「产品名称」把整个流程压缩成一步——上手就会,新手也能立刻做出效果。"
+    },
+    {
+      "asset_path": "assets/scenes/4.png",
+      "brief": {
+        "aspect": "9:16",
+        "forbidden": "画面别再嵌大段文字",
+        "safe_zone": "下三分之一留字幕"
+      },
+      "duration_sec": 1.0,
+      "expected_asset_path": "assets/scenes/4.png",
+      "generator": "user-asset",
+      "motion": {
+        "main": "kenburns_zoom_in",
+        "one_main_only": true
+      },
+      "motion_spec": {
+        "main": "kenburns_zoom_in",
+        "one_main_only": true
+      },
+      "narration_text": "它的核心优势就三点:速度快、结果稳、还能省下不少成本,数据摆在这儿一目了然。",
+      "scene_id": "4",
+      "subtitle_burn": true,
+      "visual_prompt": "为竖屏短视频生成一镜画面。画幅 9:16,风格为干净的中文产品说明动态图形,主体清晰,背景简洁。旁白/画面信息:它的核心优势就三点:速度快、结果稳、还能省下不少成本,数据摆在这儿一目了然。"
+    },
+    {
+      "asset_path": "assets/scenes/5.png",
+      "brief": {
+        "aspect": "9:16",
+        "forbidden": "画面别再嵌大段文字",
+        "safe_zone": "下三分之一留字幕"
+      },
+      "duration_sec": 1.0,
+      "expected_asset_path": "assets/scenes/5.png",
+      "generator": "user-asset",
+      "motion": {
+        "main": "kenburns_zoom_in",
+        "one_main_only": true
+      },
+      "motion_spec": {
+        "main": "kenburns_zoom_in",
+        "one_main_only": true
+      },
+      "narration_text": "已经有很多人用上了,回购和好评一直在涨,用过的都说相见恨晚。",
+      "scene_id": "5",
+      "subtitle_burn": true,
+      "visual_prompt": "为竖屏短视频生成一镜画面。画幅 9:16,风格为干净的中文产品说明动态图形,主体清晰,背景简洁。旁白/画面信息:已经有很多人用上了,回购和好评一直在涨,用过的都说相见恨晚。"
+    },
+    {
+      "asset_path": "assets/scenes/6.png",
+      "brief": {
+        "aspect": "9:16",
+        "forbidden": "画面别再嵌大段文字",
+        "safe_zone": "下三分之一留字幕"
+      },
+      "duration_sec": 1.0,
+      "expected_asset_path": "assets/scenes/6.png",
+      "generator": "user-asset",
+      "motion": {
+        "main": "kenburns_zoom_in",
+        "one_main_only": true
+      },
+      "motion_spec": {
+        "main": "kenburns_zoom_in",
+        "one_main_only": true
+      },
+      "narration_text": "点击左下角小黄车,今天下单还有专属福利,手慢就没啦,冲!",
+      "scene_id": "6",
+      "subtitle_burn": true,
+      "visual_prompt": "为竖屏短视频生成一镜画面。画幅 9:16,风格为干净的中文产品说明动态图形,主体清晰,背景简洁。旁白/画面信息:点击左下角小黄车,今天下单还有专属福利,手慢就没啦,冲!"
+    }
+  ],
+  "template": "product",
+  "visual_real_count": 6,
+  "visual_total": 6
+}

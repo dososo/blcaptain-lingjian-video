@@ -1,0 +1,36 @@
+{
+  "project": "projects/user_experience_live_20260702T081937Z",
+  "export_video": "exports/user_experience_live_20260702T081937Z/douyin/zh-CN/9x16/video.mp4",
+  "visual_real_count": 6,
+  "visual_total": 6,
+  "render_visual_real_count": 6,
+  "render_visual_total": 6,
+  "render_sources": [
+    "image",
+    "image",
+    "image",
+    "image",
+    "image",
+    "image"
+  ],
+  "streams": [
+    [
+      "video",
+      "h264",
+      1080,
+      1920
+    ],
+    [
+      "audio",
+      "aac",
+      null,
+      null
+    ]
+  ],
+  "qa": {
+    "hard_failures": [],
+    "warnings": [
+      "RELEASE_AUDIO_IS_PREVIEW_VOICE"
+    ]
+  }
+}

@@ -193,3 +193,12 @@
 - 当前已验证的发布级视觉首选路径调整为自备每镜 mp4/png 到 `project/assets/scenes/`;HyperFrames/Remotion/imagegen 为可选进阶。
 - 自备图片 release 链路已真跑,未出现 `RELEASE_VISUAL_IS_BLANK_CARD`,ffprobe 确认 h264+aac;证据见 `verification/release_visual_user_assets/`。
 - 详细说明:`docs/dev/24_REAL_USER_EXPERIENCE_NOTES.md`。
+
+## 真实用户现场体验
+
+- 已按用户视角从 setup/doctor 跑到 script/voice/visuals 三审,再由 Codex 宿主 `imagegen` 生成 6 张每镜图片放入 `assets/scenes/`。
+- 重跑 `lj visuals` 后 `visual_real_count=6/6`,6 个 scene 均为 `user-asset`;release render/QA/export/ffprobe 通过。
+- QA `hard_failures=[]`,未出现 `RELEASE_VISUAL_IS_BLANK_CARD`;仍保留 `RELEASE_AUDIO_IS_PREVIEW_VOICE`,因为当前音轨来自 macOS say 预览级 TTS。
+- 视频:`exports/user_experience_live_20260702T081937Z/douyin/zh-CN/9x16/video.mp4`。
+- 现场证据:`verification/user_experience_live_user_experience_live_20260702T081937Z/`。
+- 详细说明:`docs/dev/25_USER_EXPERIENCE_LIVE_RUN.md`。

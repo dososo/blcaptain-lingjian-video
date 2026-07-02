@@ -1,0 +1,76 @@
+{
+  "language": "zh-CN",
+  "mode": "release",
+  "platform": "douyin",
+  "providers": [
+    {
+      "id": "claude_cli",
+      "is_mock": false,
+      "kind": "llm"
+    },
+    {
+      "id": "macos_say",
+      "is_mock": false,
+      "kind": "tts"
+    },
+    {
+      "id": "delegated_scene_assembly",
+      "is_mock": false,
+      "kind": "renderer"
+    }
+  ],
+  "ratio": "9:16",
+  "scenes": [
+    {
+      "asset_path": "assets/scenes/1.png",
+      "duration_sec": 1.0,
+      "generator": "user-asset",
+      "render_source": "image",
+      "scene_id": "1",
+      "subtitle_burn": true
+    },
+    {
+      "asset_path": "assets/scenes/2.png",
+      "duration_sec": 1.0,
+      "generator": "user-asset",
+      "render_source": "image",
+      "scene_id": "2",
+      "subtitle_burn": true
+    },
+    {
+      "asset_path": "assets/scenes/3.png",
+      "duration_sec": 1.0,
+      "generator": "user-asset",
+      "render_source": "image",
+      "scene_id": "3",
+      "subtitle_burn": true
+    },
+    {
+      "asset_path": "assets/scenes/4.png",
+      "duration_sec": 1.0,
+      "generator": "user-asset",
+      "render_source": "image",
+      "scene_id": "4",
+      "subtitle_burn": true
+    },
+    {
+      "asset_path": "assets/scenes/5.png",
+      "duration_sec": 1.0,
+      "generator": "user-asset",
+      "render_source": "image",
+      "scene_id": "5",
+      "subtitle_burn": true
+    },
+    {
+      "asset_path": "assets/scenes/6.png",
+      "duration_sec": 1.0,
+      "generator": "user-asset",
+      "render_source": "image",
+      "scene_id": "6",
+      "subtitle_burn": true
+    }
+  ],
+  "video_path": "renders/release/douyin/video.mp4",
+  "visual_real_count": 6,
+  "visual_total": 6
+}

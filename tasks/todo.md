@@ -303,3 +303,21 @@
 - 证据目录:`verification/release_visual_user_assets/`。
 - 当前事实:开箱能出可打开预览片;发布级视觉可通过自备图片/视频避免 blank-card;宿主插件自动生成动态画面仍缺真实端到端成片证据。
 - 验收:`uv run pytest -q` 为 99 passed;ruff、5 扫描器、Web lint/build 均通过;`run_verification.py` 为 52 PASS / 0 FAIL。
+
+## 真实用户现场体验清单
+
+- [x] 以用户视角跑 `uv run lj setup --json` 与 `uv run lj doctor --json`,分清已继承能力与缺失能力。
+- [x] 创建现场体验项目,使用 `auto` 生成真实脚本与 macOS say 预览音轨。
+- [x] 跑到 `visual_plan` 后确认初始 visuals 为 fallback,向用户说明体验落差。
+- [x] 用 Codex 宿主 `imagegen` 生成 6 张每镜图片,放入项目 `assets/scenes/`。
+- [x] 重跑 `lj visuals`,确认 `visual_real_count=6/6`,6 镜均为 `user-asset`。
+- [x] 批准 visuals 后跑 release render / QA / export / ffprobe。
+- [x] 抽帧核查非纯色画面,并落盘现场体验证据。
+
+### Review: 真实用户现场体验
+
+- 项目:`projects/user_experience_live_20260702T081937Z`。
+- 视频:`exports/user_experience_live_20260702T081937Z/douyin/zh-CN/9x16/video.mp4`。
+- 证据:`verification/user_experience_live_user_experience_live_20260702T081937Z/`。
+- 结果:render manifest 为 `visual_real_count=6/6`,6 个 scene 的 `render_source=image`;QA `hard_failures=[]`,未出现 `RELEASE_VISUAL_IS_BLANK_CARD`;ffprobe 为 h264 1080x1920 + aac。
+- 诚实边界:本轮音轨仍是 macOS say 预览级,所以保留 `RELEASE_AUDIO_IS_PREVIEW_VOICE` warning。
