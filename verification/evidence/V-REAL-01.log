@@ -92,11 +92,11 @@ stderr:
 
 ---
 
-command: uv run lj init projects/verify_real_20260702T012910Z --name 真实发布补验 --json
+command: uv run lj init projects/verify_real_20260702T020420Z --name 真实发布补验 --json
 exit_code: 0
 
 stdout:
-{"name": "真实发布补验", "ok": true, "project": "/Users/manxiaochu/Documents/Codex/lingjian-video/projects/verify_real_20260702T012910Z"}
+{"name": "真实发布补验", "ok": true, "project": "/Users/manxiaochu/Documents/Codex/lingjian-video/projects/verify_real_20260702T020420Z"}
 
 
 stderr:
@@ -104,7 +104,7 @@ stderr:
 
 ---
 
-command: uv run lj ingest text projects/verify_real_20260702T012910Z --file examples/product_intro_zh.txt --json
+command: uv run lj ingest text projects/verify_real_20260702T020420Z --file examples/product_intro_zh.txt --json
 exit_code: 0
 
 stdout:
@@ -116,11 +116,11 @@ stderr:
 
 ---
 
-command: uv run lj extract projects/verify_real_20260702T012910Z --json
+command: uv run lj extract projects/verify_real_20260702T020420Z --json
 exit_code: 0
 
 stdout:
-{"ok": true, "project": "projects/verify_real_20260702T012910Z", "routing": {"legacy_provider": null, "ocr_provider": "none", "url_extractor": "trafilatura"}, "status": "extracted"}
+{"ok": true, "project": "projects/verify_real_20260702T020420Z", "routing": {"legacy_provider": null, "ocr_provider": "none", "url_extractor": "trafilatura"}, "status": "extracted"}
 
 
 stderr:
@@ -128,7 +128,7 @@ stderr:
 
 ---
 
-command: uv run lj script projects/verify_real_20260702T012910Z --type product --platform douyin --language zh-CN --ratio 9:16 --duration 45 --provider claude_cli --json
+command: uv run lj script projects/verify_real_20260702T020420Z --type product --platform douyin --language zh-CN --ratio 9:16 --duration 45 --provider claude_cli --json
 exit_code: 0
 
 stdout:
@@ -140,11 +140,11 @@ stderr:
 
 ---
 
-command: uv run lj approve script projects/verify_real_20260702T012910Z --approved-by ci --json
+command: uv run lj approve script projects/verify_real_20260702T020420Z --approved-by ci --json
 exit_code: 0
 
 stdout:
-{"approval": {"approved_at": "2026-07-02T01:30:19.944992+00:00", "approved_by": "ci", "artifact_path": "artifacts/script.json", "artifact_sha256": "765c9ff504454bba769a02e2a8047d59a00971e3be864a7902d3252b58698c7b", "comment": null, "signature": "eaacff5422a72ec10215da7668a428f61574a1810fb65fe0911bebf2519df152", "target": "script"}, "ok": true}
+{"approval": {"approved_at": "2026-07-02T02:05:20.480178+00:00", "approved_by": "ci", "artifact_path": "artifacts/script.json", "artifact_sha256": "71377a609f1cd87a3127d69d34be628eba450839f2a4247f1cab4a6e09462ccf", "comment": null, "signature": "162bf540d98a2257211d96c53109230f34fc2365e288cd5636055232e7b7738d", "target": "script"}, "ok": true}
 
 
 stderr:
@@ -152,7 +152,7 @@ stderr:
 
 ---
 
-command: uv run lj voice projects/verify_real_20260702T012910Z --provider macos_say --voice release-voice --json
+command: uv run lj voice projects/verify_real_20260702T020420Z --provider macos_say --voice release-voice --json
 exit_code: 0
 
 stdout:
@@ -164,11 +164,11 @@ stderr:
 
 ---
 
-command: uv run lj approve voice projects/verify_real_20260702T012910Z --approved-by ci --json
+command: uv run lj approve voice projects/verify_real_20260702T020420Z --approved-by ci --json
 exit_code: 0
 
 stdout:
-{"approval": {"approved_at": "2026-07-02T01:30:20.960390+00:00", "approved_by": "ci", "artifact_path": "artifacts/voice_plan.json", "artifact_sha256": "748eb84897a8a130872c0525e5fc0c12493d4fbbc9e264a570022e8eb6ef5945", "comment": null, "signature": "5e1cf2ec0e22570165e98085ca7ac0c438f0873b0352ddb36a583f0c14d9315a", "target": "voice"}, "ok": true}
+{"approval": {"approved_at": "2026-07-02T02:05:21.683758+00:00", "approved_by": "ci", "artifact_path": "artifacts/voice_plan.json", "artifact_sha256": "dd20df724cd61fdd8189cd888a59df2939f99c3cb802ae4a1a812f8eff012ed0", "comment": null, "signature": "a0b04030b0d2bd61923677cd80bf0c14339c66e4be70d7c06f74d90168df443e", "target": "voice"}, "ok": true}
 
 
 stderr:
@@ -176,7 +176,7 @@ stderr:
 
 ---
 
-command: uv run lj visuals projects/verify_real_20260702T012910Z --engine ffmpeg_card --template product --json
+command: uv run lj visuals projects/verify_real_20260702T020420Z --engine ffmpeg_card --template product --json
 exit_code: 0
 
 stdout:
@@ -188,11 +188,11 @@ stderr:
 
 ---
 
-command: uv run lj approve visuals projects/verify_real_20260702T012910Z --approved-by ci --json
+command: uv run lj approve visuals projects/verify_real_20260702T020420Z --approved-by ci --json
 exit_code: 0
 
 stdout:
-{"approval": {"approved_at": "2026-07-02T01:30:21.182287+00:00", "approved_by": "ci", "artifact_path": "artifacts/visual_plan.json", "artifact_sha256": "e118af935fd71969c382784d1fc799e0bc1d8d7a81d0e0d955c56f7cad8384f0", "comment": null, "signature": "b4193250245e1046415f77e9d1a1b1fa0d4b16a7cd41fb74c19df2283fe075b1", "target": "visuals"}, "ok": true}
+{"approval": {"approved_at": "2026-07-02T02:05:21.916311+00:00", "approved_by": "ci", "artifact_path": "artifacts/visual_plan.json", "artifact_sha256": "e118af935fd71969c382784d1fc799e0bc1d8d7a81d0e0d955c56f7cad8384f0", "comment": null, "signature": "43327a36104a86bc028482aa1f66c807d0fb36f5c597c12919dbdfcf854f9f3f", "target": "visuals"}, "ok": true}
 
 
 stderr:
@@ -200,11 +200,11 @@ stderr:
 
 ---
 
-command: uv run lj render projects/verify_real_20260702T012910Z --platform douyin --language zh-CN --ratio 9:16 --release --json
+command: uv run lj render projects/verify_real_20260702T020420Z --platform douyin --language zh-CN --ratio 9:16 --release --json
 exit_code: 0
 
 stdout:
-{"language": "zh-CN", "mode": "release", "ok": true, "platform": "douyin", "ratio": "9:16", "status": "rendered", "video_path": "/Users/manxiaochu/Documents/Codex/lingjian-video/projects/verify_real_20260702T012910Z/renders/release/douyin/video.mp4"}
+{"language": "zh-CN", "mode": "release", "ok": true, "platform": "douyin", "ratio": "9:16", "status": "rendered", "video_path": "/Users/manxiaochu/Documents/Codex/lingjian-video/projects/verify_real_20260702T020420Z/renders/release/douyin/video.mp4"}
 
 
 stderr:
@@ -212,7 +212,7 @@ stderr:
 
 ---
 
-command: uv run lj qa projects/verify_real_20260702T012910Z --release --platform douyin --json
+command: uv run lj qa projects/verify_real_20260702T020420Z --release --platform douyin --json
 exit_code: 0
 
 stdout:
@@ -224,11 +224,11 @@ stderr:
 
 ---
 
-command: uv run lj export projects/verify_real_20260702T012910Z --platform douyin --language zh-CN --ratio 9:16 --release --json
+command: uv run lj export projects/verify_real_20260702T020420Z --platform douyin --language zh-CN --ratio 9:16 --release --json
 exit_code: 0
 
 stdout:
-{"export_dir": "/Users/manxiaochu/Documents/Codex/lingjian-video/exports/verify_real_20260702T012910Z/douyin/zh-CN/9x16", "export_manifest": {"approvals": [{"approved_at": "2026-07-02T01:30:19.944992+00:00", "approved_by": "ci", "artifact_path": "artifacts/script.json", "artifact_sha256": "765c9ff504454bba769a02e2a8047d59a00971e3be864a7902d3252b58698c7b", "comment": null, "signature": "eaacff5422a72ec10215da7668a428f61574a1810fb65fe0911bebf2519df152", "target": "script"}, {"approved_at": "2026-07-02T01:30:21.182287+00:00", "approved_by": "ci", "artifact_path": "artifacts/visual_plan.json", "artifact_sha256": "e118af935fd71969c382784d1fc799e0bc1d8d7a81d0e0d955c56f7cad8384f0", "comment": null, "signature": "b4193250245e1046415f77e9d1a1b1fa0d4b16a7cd41fb74c19df2283fe075b1", "target": "visuals"}, {"approved_at": "2026-07-02T01:30:20.960390+00:00", "approved_by": "ci", "artifact_path": "artifacts/voice_plan.json", "artifact_sha256": "748eb84897a8a130872c0525e5fc0c12493d4fbbc9e264a570022e8eb6ef5945", "comment": null, "signature": "5e1cf2ec0e22570165e98085ca7ac0c438f0873b0352ddb36a583f0c14d9315a", "target": "voice"}], "language": "zh-CN", "platform": "douyin", "project_id": "verify_real_20260702T012910Z", "ratio": "9:16", "release": true}, "exports": [{"export_dir": "/Users/manxiaochu/Documents/Codex/lingjian-video/exports/verify_real_20260702T012910Z/douyin/zh-CN/9x16", "export_manifest": {"approvals": [{"approved_at": "2026-07-02T01:30:19.944992+00:00", "approved_by": "ci", "artifact_path": "artifacts/script.json", "artifact_sha256": "765c9ff504454bba769a02e2a8047d59a00971e3be864a7902d3252b58698c7b", "comment": null, "signature": "eaacff5422a72ec10215da7668a428f61574a1810fb65fe0911bebf2519df152", "target": "script"}, {"approved_at": "2026-07-02T01:30:21.182287+00:00", "approved_by": "ci", "artifact_path": "artifacts/visual_plan.json", "artifact_sha256": "e118af935fd71969c382784d1fc799e0bc1d8d7a81d0e0d955c56f7cad8384f0", "comment": null, "signature": "b4193250245e1046415f77e9d1a1b1fa0d4b16a7cd41fb74c19df2283fe075b1", "target": "visuals"}, {"approved_at": "2026-07-02T01:30:20.960390+00:00", "approved_by": "ci", "artifact_path": "artifacts/voice_plan.json", "artifact_sha256": "748eb84897a8a130872c0525e5fc0c12493d4fbbc9e264a570022e8eb6ef5945", "comment": null, "signature": "5e1cf2ec0e22570165e98085ca7ac0c438f0873b0352ddb36a583f0c14d9315a", "target": "voice"}], "language": "zh-CN", "platform": "douyin", "project_id": "verify_real_20260702T012910Z", "ratio": "9:16", "release": true}, "platform": "douyin"}], "ok": true, "release": true}
+{"export_dir": "/Users/manxiaochu/Documents/Codex/lingjian-video/exports/verify_real_20260702T020420Z/douyin/zh-CN/9x16", "export_manifest": {"approvals": [{"approved_at": "2026-07-02T02:05:20.480178+00:00", "approved_by": "ci", "artifact_path": "artifacts/script.json", "artifact_sha256": "71377a609f1cd87a3127d69d34be628eba450839f2a4247f1cab4a6e09462ccf", "comment": null, "signature": "162bf540d98a2257211d96c53109230f34fc2365e288cd5636055232e7b7738d", "target": "script"}, {"approved_at": "2026-07-02T02:05:21.916311+00:00", "approved_by": "ci", "artifact_path": "artifacts/visual_plan.json", "artifact_sha256": "e118af935fd71969c382784d1fc799e0bc1d8d7a81d0e0d955c56f7cad8384f0", "comment": null, "signature": "43327a36104a86bc028482aa1f66c807d0fb36f5c597c12919dbdfcf854f9f3f", "target": "visuals"}, {"approved_at": "2026-07-02T02:05:21.683758+00:00", "approved_by": "ci", "artifact_path": "artifacts/voice_plan.json", "artifact_sha256": "dd20df724cd61fdd8189cd888a59df2939f99c3cb802ae4a1a812f8eff012ed0", "comment": null, "signature": "a0b04030b0d2bd61923677cd80bf0c14339c66e4be70d7c06f74d90168df443e", "target": "voice"}], "language": "zh-CN", "platform": "douyin", "project_id": "verify_real_20260702T020420Z", "ratio": "9:16", "release": true}, "exports": [{"export_dir": "/Users/manxiaochu/Documents/Codex/lingjian-video/exports/verify_real_20260702T020420Z/douyin/zh-CN/9x16", "export_manifest": {"approvals": [{"approved_at": "2026-07-02T02:05:20.480178+00:00", "approved_by": "ci", "artifact_path": "artifacts/script.json", "artifact_sha256": "71377a609f1cd87a3127d69d34be628eba450839f2a4247f1cab4a6e09462ccf", "comment": null, "signature": "162bf540d98a2257211d96c53109230f34fc2365e288cd5636055232e7b7738d", "target": "script"}, {"approved_at": "2026-07-02T02:05:21.916311+00:00", "approved_by": "ci", "artifact_path": "artifacts/visual_plan.json", "artifact_sha256": "e118af935fd71969c382784d1fc799e0bc1d8d7a81d0e0d955c56f7cad8384f0", "comment": null, "signature": "43327a36104a86bc028482aa1f66c807d0fb36f5c597c12919dbdfcf854f9f3f", "target": "visuals"}, {"approved_at": "2026-07-02T02:05:21.683758+00:00", "approved_by": "ci", "artifact_path": "artifacts/voice_plan.json", "artifact_sha256": "dd20df724cd61fdd8189cd888a59df2939f99c3cb802ae4a1a812f8eff012ed0", "comment": null, "signature": "a0b04030b0d2bd61923677cd80bf0c14339c66e4be70d7c06f74d90168df443e", "target": "voice"}], "language": "zh-CN", "platform": "douyin", "project_id": "verify_real_20260702T020420Z", "ratio": "9:16", "release": true}, "platform": "douyin"}], "ok": true, "release": true}
 
 
 stderr:
@@ -236,7 +236,7 @@ stderr:
 
 ---
 
-command: ffprobe -v error -show_entries stream=codec_type,codec_name -of json exports/verify_real_20260702T012910Z/douyin/zh-CN/9x16/video.mp4
+command: ffprobe -v error -show_entries stream=codec_type,codec_name -of json exports/verify_real_20260702T020420Z/douyin/zh-CN/9x16/video.mp4
 exit_code: 0
 
 stdout:

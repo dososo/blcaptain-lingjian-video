@@ -1,4 +1,4 @@
-command: test -f exports/verify_m1_20260702T012910Z/youtube/en-US/16x9/chapters.md
+command: test -f exports/verify_m1_20260702T020420Z/youtube/en-US/16x9/chapters.md
 exit_code: 0
 
 stdout:

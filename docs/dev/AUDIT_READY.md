@@ -4,13 +4,14 @@
 
 ## 置顶结论
 
-本轮 iter_8 为收官审计就绪:
+本轮 iter_9 为 M1 封版与开源发布准备就绪,但真实仓库 URL 仍待用户提供:
 
 - 真实环境项: `V-REAL-01=PASS`,主 `verification/results.json` 为 52 PASS / 0 FAIL。
 - 默认环境规格: macOS,默认 `/opt/homebrew/bin/ffmpeg` 已链接到 `ffmpeg-full`,继承 `claude_cli` LLM,本机 `macos_say` TTS。
 - 发布视频抽验: `verification/evidence/V-REAL-01.log` 记录 ffmpeg 路径、版本配置、drawtext、OS 与 ffprobe;最终视频包含 `h264` 视频流与 `aac` 音频流。
 - 离线回落项:隐藏 `claude/codex` 并清空 provider env 后,`verification/results.offline_fallback_20260702.json` 为 51 PASS / 1 BLOCKED_ENV / 0 FAIL。
 - skill 交付项:根目录 `SKILL.md` 已落盘,README 顶部有对话式安装提示词,`scripts/install_skill_links.sh` 已验证可安装软链。
+- 发布准备项:`CHANGELOG.md`、`ROADMAP.md`、隐私/安全说明、跨平台 FFmpeg/TTS 指南、干净 clone 首用自检证据已落盘。
 
 ## 证据入口
 
@@ -26,6 +27,8 @@
 - `docs/dev/11_REAL_VERIFY.md`
 - `docs/dev/15_REAL_VERIFY_FIX.md`
 - `docs/dev/16_CLOSING.md`
+- `docs/dev/17_RELEASE_PREP.md`
+- `verification/release_prep/*`
 
 ## results 对照表
 
@@ -119,3 +122,12 @@
 - P1-B3 已落地:本轮不实现 MCP,`packages/mcp_server/README.md` 与 `docs/skill-and-mcp.md` 均明确 MCP 为后续里程碑。
 - P1-B4/B5 已落地:`lj setup` 文本模式明确预览档/发布档;README/SKILL.md 写清零 key 预览、隐私、安全、成熟度边界。
 - P2-C1/C2 已落地:`lj run <project>` 默认在三审点暂停;显式 `--yes` 会写真实 approval 并完成预览 render -> qa -> export,不绕过审批门。
+
+## 发布准备项
+
+- 版本已对齐:`pyproject.toml`、`package.json`、`apps/web/package.json` 均为 `0.1.0`。
+- 变更与路线图已落盘:`CHANGELOG.md` 与 `ROADMAP.md`。
+- README 已补隐私、安全、可选依赖审计、macOS/Linux/Windows FFmpeg 与 TTS 路径。
+- `.gitignore` 已排除 `.env*`、`.lingjian/`、`projects/`、`exports/`、`.venv/`、`node_modules/` 与构建缓存。
+- 干净 clone 首用自检已完成:见 `verification/release_prep/setup.txt`、`doctor.json`、`preview_run.json`、`preview_qa.json`、`preview_export.json`。
+- 当前阻塞:本地没有 `git remote`,无法确认真实开源仓库地址;`README.md` 中 `<REPO_URL>` 待用户提供地址后替换,最终 `v0.1.0` tag 也需在该替换提交后创建。

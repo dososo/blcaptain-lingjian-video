@@ -1,4 +1,4 @@
-command: test -f exports/verify_m1_20260702T012910Z/douyin/zh-CN/9x16/export_manifest.json
+command: test -f exports/verify_m1_20260702T020420Z/douyin/zh-CN/9x16/export_manifest.json
 exit_code: 0
 
 stdout:

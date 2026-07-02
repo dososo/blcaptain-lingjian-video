@@ -192,8 +192,16 @@
 
 ## M1 封版与开源发布准备清单
 
-- [ ] 仓库与版本:确认 git 状态,对齐 `pyproject.toml`、`package.json`、`apps/web/package.json` 的 `0.1.0`,准备 `v0.1.0` tag。
-- [ ] 发布文档:新增 `CHANGELOG.md`、`ROADMAP.md`,README 补隐私、安全与跨平台开通说明。
+- [x] 仓库与版本:确认 git 状态,对齐 `pyproject.toml`、`package.json`、`apps/web/package.json` 的 `0.1.0`,准备 `v0.1.0` tag。
+- [x] 发布文档:新增 `CHANGELOG.md`、`ROADMAP.md`,README 补隐私、安全与跨平台开通说明。
 - [ ] 占位替换:将 README/ONBOARDING/SKILL 中的 `<REPO_URL>` 替换为真实开源仓库地址;本地无 remote 时标为阻塞并等待用户提供。
-- [ ] 首用自检:在干净 clone 中按 README 顶部流程跑到预览档出片,留存 doctor 与预览证据。
-- [ ] 验证与打包:重跑 run_verification、pytest、ruff、5 扫描器、pnpm lint/build,打包 `iter_9` 并记录发布准备说明。
+- [x] 首用自检:在干净 clone 中按 README 顶部流程跑到预览档出片,留存 doctor 与预览证据。
+- [x] 验证与打包:重跑 run_verification、pytest、ruff、5 扫描器、pnpm lint/build,打包 `iter_9` 并记录发布准备说明。
+
+## M1 封版与开源发布准备 Review
+
+- 已完成:版本对齐为 `0.1.0`;新增 `CHANGELOG.md`、`ROADMAP.md`、`docs/dev/17_RELEASE_PREP.md`;README 补隐私、安全、可选依赖审计与跨平台 FFmpeg/TTS;`.gitignore` 补 `.env*` 与 `.lingjian/`。
+- 首用自检:本地 clean clone 运行 `uv sync`、`scripts/install_skill_links.sh`、`uv run lj setup`、`uv run lj doctor --json`、`lj run --yes` 预览档、QA、export,证据在 `verification/release_prep/`。
+- 验证结果:`run_verification.py` 为 52 PASS / 0 FAIL;`uv run pytest -q` 为 83 passed;ruff、5 个扫描器、Web lint/build 均通过。
+- 交付包:`lingjian_M1_codex_delivery_iter_9.zip`,已通过 `unzip -t`,并排除 `.git`、`.venv`、`node_modules`、`projects`、`exports` 与旧 zip。
+- 当前阻塞:本地无 `git remote`,无法确认真实开源仓库地址;`README.md` 中 `<REPO_URL>` 未替换,最终 `v0.1.0` tag 暂不创建。

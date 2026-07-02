@@ -1,9 +1,1 @@
-command: uv run lj qa projects/verify_m1_20260702T020420Z --json
-exit_code: 0
-
-stdout:
 {"hard_failures": [], "info": [{"code": "QA_STUB", "message_zh": "Batch 2 最小 QA 已执行。", "severity": "info"}], "ok": true, "release_ready": true, "warnings": []}
-
-
-stderr:
-

@@ -21,7 +21,7 @@ tests/test_run_verification.py ...                                       [ 89%]
 tests/test_skill_packaging.py ..                                         [ 91%]
 tests/test_static_guards.py .......                                      [100%]
 
-============================== 83 passed in 5.99s ==============================
+============================== 83 passed in 5.73s ==============================
 
 
 stderr:

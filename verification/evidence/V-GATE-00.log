@@ -1,8 +1,8 @@
-command: uv run lj init projects/verify_m1_20260702T012910Z --name 门禁测试 --json
+command: uv run lj init projects/verify_m1_20260702T020420Z --name 门禁测试 --json
 exit_code: 0
 
 stdout:
-{"name": "门禁测试", "ok": true, "project": "/Users/manxiaochu/Documents/Codex/lingjian-video/projects/verify_m1_20260702T012910Z"}
+{"name": "门禁测试", "ok": true, "project": "/Users/manxiaochu/Documents/Codex/lingjian-video/projects/verify_m1_20260702T020420Z"}
 
 
 stderr:
