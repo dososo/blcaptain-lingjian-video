@@ -1,0 +1,40 @@
+command: pnpm --dir apps/web build
+exit_code: 0
+
+stdout:
+   ▲ Next.js 15.5.19
+
+   Creating an optimized production build ...
+ ✓ Compiled successfully in 670ms
+   Linting and checking validity of types ...
+   Collecting page data ...
+   Generating static pages (0/10) ...
+   Generating static pages (2/10) 
+   Generating static pages (4/10) 
+   Generating static pages (7/10) 
+ ✓ Generating static pages (10/10)
+   Finalizing page optimization ...
+   Collecting build traces ...
+
+Route (app)                                 Size  First Load JS
+┌ ○ /                                      138 B         102 kB
+├ ○ /_not-found                            992 B         103 kB
+├ ○ /export                                138 B         102 kB
+├ ○ /icon.svg                                0 B            0 B
+├ ○ /new                                   138 B         102 kB
+├ ○ /script-review                         138 B         102 kB
+├ ○ /visuals-review                        138 B         102 kB
+└ ○ /voice-review                          138 B         102 kB
++ First Load JS shared by all             102 kB
+  ├ chunks/4557610a-fefa5be19e77ed4a.js  54.2 kB
+  ├ chunks/785-778584e14f2dca51.js       45.8 kB
+  └ other shared chunks (total)           1.9 kB
+
+
+○  (Static)  prerendered as static content
+
+
+
+stderr:
+$ next build
+

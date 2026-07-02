@@ -1,0 +1,9 @@
+command: uv run lj ingest url projects/url_verify_20260702T012910Z --url https://example.com/article --json
+exit_code: 0
+
+stdout:
+{"is_untrusted_input": true, "ok": true, "screenshot_opt_in": false, "status": "input_ready"}
+
+
+stderr:
+

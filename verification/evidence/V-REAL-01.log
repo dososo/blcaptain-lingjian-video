@@ -1,0 +1,266 @@
+command: uv run lj doctor --json
+exit_code: 0
+
+stdout:
+{"ready":true,"exit_code":0,"required":[],"optional":[{"id":"remotion_license_notice","ok":true,"message_zh":"Remotion 是 M3 opt-in,不默认、不捆绑;4+ 人营利或自动化生成工具需自行确认 license。"}],"providers":{"llm":{"ready":true,"usable_real":true,"methods":[{"id":"claude_cli","type":"cli","configured":true,"is_mock":false,"safe_for_release":true,"source_type":"inherited-cli","label_zh":"Claude Code CLI","config_redacted":{"command":"***"},"hint":"已检测到 Claude Code CLI，将继承当前登录订阅能力。"},{"id":"codex_cli","type":"cli","configured":true,"is_mock":false,"safe_for_release":true,"source_type":"inherited-cli","label_zh":"Codex CLI","config_redacted":{"command":"***"},"hint":"已检测到 Codex CLI，将继承当前登录订阅能力。"},{"id":"llm_cli","type":"cli","configured":false,"is_mock":false,"safe_for_release":false,"source_type":"local-cli","label_zh":"自定义 LLM CLI","config_redacted":{"command":""},"hint":"未检测到 自定义 LLM CLI。"},{"id":"ollama_cli","type":"cli","configured":false,"is_mock":false,"safe_for_release":false,"source_type":"local-cli","label_zh":"Ollama CLI","config_redacted":{"command":"***"},"hint":"未检测到 Ollama CLI。"},{"id":"llm_local_cli","type":"cli","configured":false,"is_mock":false,"safe_for_release":false,"source_type":"local-cli","label_zh":"llm CLI","config_redacted":{"command":"***"},"hint":"未检测到 llm CLI。"},{"id":"openai_compatible","type":"openai_compatible","configured":false,"is_mock":false,"safe_for_release":false,"source_type":"api-key","label_zh":"OpenAI-compatible LLM","config_redacted":{"api_key":"","base_url":"","model":""},"hint":"可配置 OpenAI-compatible 三件套,或优先使用可继承的 CLI 能力。"}]},"tts":{"ready":true,"usable_real":true,"methods":[{"id":"macos_say","type":"cli","configured":true,"is_mock":false,"safe_for_release":true,"source_type":"local-cli","label_zh":"macOS say","config_redacted":{"command":"***"},"hint":"已检测到 macOS say，本机零 key TTS 可用。"},{"id":"tts_cli","type":"cli","configured":false,"is_mock":false,"safe_for_release":false,"source_type":"local-cli","label_zh":"自定义 TTS CLI","config_redacted":{"command":""},"hint":"未检测到 自定义 TTS CLI。"},{"id":"piper_cli","type":"cli","configured":false,"is_mock":false,"safe_for_release":false,"source_type":"local-cli","label_zh":"Piper CLI","config_redacted":{"command":"***"},"hint":"未检测到 Piper CLI。"},{"id":"espeak_ng","type":"cli","configured":false,"is_mock":false,"safe_for_release":false,"source_type":"local-cli","label_zh":"espeak-ng","config_redacted":{"command":"***"},"hint":"未检测到 espeak-ng。"},{"id":"openai_compatible_tts","type":"openai_compatible","configured":false,"is_mock":false,"safe_for_release":false,"source_type":"api-key","label_zh":"OpenAI-compatible TTS","config_redacted":{"api_key":"","base_url":"","model":""},"hint":"可配置 OpenAI-compatible 三件套,或优先使用可继承的 CLI 能力。"}]}},"capabilities":{"llm":{"id":"claude_cli","source_type":"inherited-cli","configured":true,"safe_for_release":true,"label_zh":"Claude Code CLI","command_name":"claude"},"tts":{"id":"macos_say","source_type":"local-cli","configured":true,"safe_for_release":true,"label_zh":"macOS say","command_name":"say"},"render":{"id":"ffmpeg_suite","source_type":"local-cli","configured":true,"safe_for_release":true,"label_zh":"FFmpeg/ffprobe","command_name":"ffmpeg"},"font":{"id":"cjk_font","source_type":"local-cli","configured":true,"safe_for_release":true,"label_zh":"中文字体","command_name":null}}}
+
+
+stderr:
+
+
+---
+
+command: which ffmpeg
+exit_code: 0
+
+stdout:
+/opt/homebrew/bin/ffmpeg
+
+
+stderr:
+
+
+---
+
+command: ffmpeg -version
+exit_code: 0
+
+stdout:
+ffmpeg version 8.1.2 Copyright (c) 2000-2026 the FFmpeg developers
+built with Apple clang version 21.0.0 (clang-2100.0.123.102)
+configuration: --prefix=/opt/homebrew/Cellar/ffmpeg-full/8.1.2 --enable-shared --enable-pthreads --enable-version3 --cc=clang --host-cflags= --host-ldflags= --enable-ffplay --enable-gnutls --enable-gpl --enable-libaom --enable-libaribb24 --enable-libbluray --enable-libdav1d --enable-libharfbuzz --enable-libjxl --enable-libmp3lame --enable-libopus --enable-libplacebo --enable-libqrencode --enable-librav1e --enable-librist --enable-librubberband --enable-libsnappy --enable-libsrt --enable-libssh --enable-libsvtav1 --enable-libtesseract --enable-libtheora --enable-libvidstab --enable-libvmaf --enable-libvorbis --enable-libvpx --enable-libwebp --enable-libx264 --enable-libx265 --enable-libxml2 --enable-libxvid --enable-lzma --enable-libfontconfig --enable-libfreetype --enable-frei0r --enable-libass --enable-libopencore-amrnb --enable-libopencore-amrwb --enable-libopenjpeg --enable-libspeex --enable-libsoxr --enable-libzmq --enable-libzimg --enable-whisper --disable-libjack --disable-indev=jack --enable-videotoolbox --enable-audiotoolbox --enable-neon
+libavutil      60. 26.102 / 60. 26.102
+libavcodec     62. 28.102 / 62. 28.102
+libavformat    62. 12.102 / 62. 12.102
+libavdevice    62.  3.102 / 62.  3.102
+libavfilter    11. 14.102 / 11. 14.102
+libswscale      9.  5.102 /  9.  5.102
+libswresample   6.  3.102 /  6.  3.102
+
+Exiting with exit code 0
+
+
+stderr:
+
+
+---
+
+command: ffprobe -version
+exit_code: 0
+
+stdout:
+ffprobe version 8.1.2 Copyright (c) 2007-2026 the FFmpeg developers
+built with Apple clang version 21.0.0 (clang-2100.0.123.102)
+configuration: --prefix=/opt/homebrew/Cellar/ffmpeg-full/8.1.2 --enable-shared --enable-pthreads --enable-version3 --cc=clang --host-cflags= --host-ldflags= --enable-ffplay --enable-gnutls --enable-gpl --enable-libaom --enable-libaribb24 --enable-libbluray --enable-libdav1d --enable-libharfbuzz --enable-libjxl --enable-libmp3lame --enable-libopus --enable-libplacebo --enable-libqrencode --enable-librav1e --enable-librist --enable-librubberband --enable-libsnappy --enable-libsrt --enable-libssh --enable-libsvtav1 --enable-libtesseract --enable-libtheora --enable-libvidstab --enable-libvmaf --enable-libvorbis --enable-libvpx --enable-libwebp --enable-libx264 --enable-libx265 --enable-libxml2 --enable-libxvid --enable-lzma --enable-libfontconfig --enable-libfreetype --enable-frei0r --enable-libass --enable-libopencore-amrnb --enable-libopencore-amrwb --enable-libopenjpeg --enable-libspeex --enable-libsoxr --enable-libzmq --enable-libzimg --enable-whisper --disable-libjack --disable-indev=jack --enable-videotoolbox --enable-audiotoolbox --enable-neon
+libavutil      60. 26.102 / 60. 26.102
+libavcodec     62. 28.102 / 62. 28.102
+libavformat    62. 12.102 / 62. 12.102
+libavdevice    62.  3.102 / 62.  3.102
+libavfilter    11. 14.102 / 11. 14.102
+libswscale      9.  5.102 /  9.  5.102
+libswresample   6.  3.102 /  6.  3.102
+
+
+stderr:
+
+
+---
+
+command: sh -c ffmpeg -hide_banner -filters | grep drawtext
+exit_code: 0
+
+stdout:
+ T. drawtext          V->V       Draw text on top of video frames using libfreetype library.
+
+
+stderr:
+
+
+---
+
+command: sh -c sw_vers 2>/dev/null || uname -a
+exit_code: 0
+
+stdout:
+ProductName:		macOS
+ProductVersion:		26.5
+BuildVersion:		25F71
+
+
+stderr:
+
+
+---
+
+command: uv run lj init projects/verify_real_20260702T012910Z --name 真实发布补验 --json
+exit_code: 0
+
+stdout:
+{"name": "真实发布补验", "ok": true, "project": "/Users/manxiaochu/Documents/Codex/lingjian-video/projects/verify_real_20260702T012910Z"}
+
+
+stderr:
+
+
+---
+
+command: uv run lj ingest text projects/verify_real_20260702T012910Z --file examples/product_intro_zh.txt --json
+exit_code: 0
+
+stdout:
+{"ok": true, "status": "input_ready"}
+
+
+stderr:
+
+
+---
+
+command: uv run lj extract projects/verify_real_20260702T012910Z --json
+exit_code: 0
+
+stdout:
+{"ok": true, "project": "projects/verify_real_20260702T012910Z", "routing": {"legacy_provider": null, "ocr_provider": "none", "url_extractor": "trafilatura"}, "status": "extracted"}
+
+
+stderr:
+
+
+---
+
+command: uv run lj script projects/verify_real_20260702T012910Z --type product --platform douyin --language zh-CN --ratio 9:16 --duration 45 --provider claude_cli --json
+exit_code: 0
+
+stdout:
+{"artifact": "artifacts/script.json", "ok": true, "status": "awaiting_review"}
+
+
+stderr:
+
+
+---
+
+command: uv run lj approve script projects/verify_real_20260702T012910Z --approved-by ci --json
+exit_code: 0
+
+stdout:
+{"approval": {"approved_at": "2026-07-02T01:30:19.944992+00:00", "approved_by": "ci", "artifact_path": "artifacts/script.json", "artifact_sha256": "765c9ff504454bba769a02e2a8047d59a00971e3be864a7902d3252b58698c7b", "comment": null, "signature": "eaacff5422a72ec10215da7668a428f61574a1810fb65fe0911bebf2519df152", "target": "script"}, "ok": true}
+
+
+stderr:
+
+
+---
+
+command: uv run lj voice projects/verify_real_20260702T012910Z --provider macos_say --voice release-voice --json
+exit_code: 0
+
+stdout:
+{"artifact": "artifacts/voice_plan.json", "ok": true, "status": "awaiting_review"}
+
+
+stderr:
+
+
+---
+
+command: uv run lj approve voice projects/verify_real_20260702T012910Z --approved-by ci --json
+exit_code: 0
+
+stdout:
+{"approval": {"approved_at": "2026-07-02T01:30:20.960390+00:00", "approved_by": "ci", "artifact_path": "artifacts/voice_plan.json", "artifact_sha256": "748eb84897a8a130872c0525e5fc0c12493d4fbbc9e264a570022e8eb6ef5945", "comment": null, "signature": "5e1cf2ec0e22570165e98085ca7ac0c438f0873b0352ddb36a583f0c14d9315a", "target": "voice"}, "ok": true}
+
+
+stderr:
+
+
+---
+
+command: uv run lj visuals projects/verify_real_20260702T012910Z --engine ffmpeg_card --template product --json
+exit_code: 0
+
+stdout:
+{"artifact": "artifacts/visual_plan.json", "ok": true, "status": "awaiting_review"}
+
+
+stderr:
+
+
+---
+
+command: uv run lj approve visuals projects/verify_real_20260702T012910Z --approved-by ci --json
+exit_code: 0
+
+stdout:
+{"approval": {"approved_at": "2026-07-02T01:30:21.182287+00:00", "approved_by": "ci", "artifact_path": "artifacts/visual_plan.json", "artifact_sha256": "e118af935fd71969c382784d1fc799e0bc1d8d7a81d0e0d955c56f7cad8384f0", "comment": null, "signature": "b4193250245e1046415f77e9d1a1b1fa0d4b16a7cd41fb74c19df2283fe075b1", "target": "visuals"}, "ok": true}
+
+
+stderr:
+
+
+---
+
+command: uv run lj render projects/verify_real_20260702T012910Z --platform douyin --language zh-CN --ratio 9:16 --release --json
+exit_code: 0
+
+stdout:
+{"language": "zh-CN", "mode": "release", "ok": true, "platform": "douyin", "ratio": "9:16", "status": "rendered", "video_path": "/Users/manxiaochu/Documents/Codex/lingjian-video/projects/verify_real_20260702T012910Z/renders/release/douyin/video.mp4"}
+
+
+stderr:
+
+
+---
+
+command: uv run lj qa projects/verify_real_20260702T012910Z --release --platform douyin --json
+exit_code: 0
+
+stdout:
+{"hard_failures": [], "info": [{"code": "QA_STUB", "message_zh": "Batch 2 最小 QA 已执行。", "severity": "info"}], "ok": true, "release_ready": true, "warnings": []}
+
+
+stderr:
+
+
+---
+
+command: uv run lj export projects/verify_real_20260702T012910Z --platform douyin --language zh-CN --ratio 9:16 --release --json
+exit_code: 0
+
+stdout:
+{"export_dir": "/Users/manxiaochu/Documents/Codex/lingjian-video/exports/verify_real_20260702T012910Z/douyin/zh-CN/9x16", "export_manifest": {"approvals": [{"approved_at": "2026-07-02T01:30:19.944992+00:00", "approved_by": "ci", "artifact_path": "artifacts/script.json", "artifact_sha256": "765c9ff504454bba769a02e2a8047d59a00971e3be864a7902d3252b58698c7b", "comment": null, "signature": "eaacff5422a72ec10215da7668a428f61574a1810fb65fe0911bebf2519df152", "target": "script"}, {"approved_at": "2026-07-02T01:30:21.182287+00:00", "approved_by": "ci", "artifact_path": "artifacts/visual_plan.json", "artifact_sha256": "e118af935fd71969c382784d1fc799e0bc1d8d7a81d0e0d955c56f7cad8384f0", "comment": null, "signature": "b4193250245e1046415f77e9d1a1b1fa0d4b16a7cd41fb74c19df2283fe075b1", "target": "visuals"}, {"approved_at": "2026-07-02T01:30:20.960390+00:00", "approved_by": "ci", "artifact_path": "artifacts/voice_plan.json", "artifact_sha256": "748eb84897a8a130872c0525e5fc0c12493d4fbbc9e264a570022e8eb6ef5945", "comment": null, "signature": "5e1cf2ec0e22570165e98085ca7ac0c438f0873b0352ddb36a583f0c14d9315a", "target": "voice"}], "language": "zh-CN", "platform": "douyin", "project_id": "verify_real_20260702T012910Z", "ratio": "9:16", "release": true}, "exports": [{"export_dir": "/Users/manxiaochu/Documents/Codex/lingjian-video/exports/verify_real_20260702T012910Z/douyin/zh-CN/9x16", "export_manifest": {"approvals": [{"approved_at": "2026-07-02T01:30:19.944992+00:00", "approved_by": "ci", "artifact_path": "artifacts/script.json", "artifact_sha256": "765c9ff504454bba769a02e2a8047d59a00971e3be864a7902d3252b58698c7b", "comment": null, "signature": "eaacff5422a72ec10215da7668a428f61574a1810fb65fe0911bebf2519df152", "target": "script"}, {"approved_at": "2026-07-02T01:30:21.182287+00:00", "approved_by": "ci", "artifact_path": "artifacts/visual_plan.json", "artifact_sha256": "e118af935fd71969c382784d1fc799e0bc1d8d7a81d0e0d955c56f7cad8384f0", "comment": null, "signature": "b4193250245e1046415f77e9d1a1b1fa0d4b16a7cd41fb74c19df2283fe075b1", "target": "visuals"}, {"approved_at": "2026-07-02T01:30:20.960390+00:00", "approved_by": "ci", "artifact_path": "artifacts/voice_plan.json", "artifact_sha256": "748eb84897a8a130872c0525e5fc0c12493d4fbbc9e264a570022e8eb6ef5945", "comment": null, "signature": "5e1cf2ec0e22570165e98085ca7ac0c438f0873b0352ddb36a583f0c14d9315a", "target": "voice"}], "language": "zh-CN", "platform": "douyin", "project_id": "verify_real_20260702T012910Z", "ratio": "9:16", "release": true}, "platform": "douyin"}], "ok": true, "release": true}
+
+
+stderr:
+
+
+---
+
+command: ffprobe -v error -show_entries stream=codec_type,codec_name -of json exports/verify_real_20260702T012910Z/douyin/zh-CN/9x16/video.mp4
+exit_code: 0
+
+stdout:
+{
+    "programs": [
+
+    ],
+    "stream_groups": [
+
+    ],
+    "streams": [
+        {
+            "codec_name": "h264",
+            "codec_type": "video"
+        },
+        {
+            "codec_name": "aac",
+            "codec_type": "audio"
+        }
+    ]
+}
+
+
+stderr:
+
+
+---

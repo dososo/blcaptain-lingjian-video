@@ -1,0 +1,10 @@
+command: uv sync
+exit_code: 0
+
+stdout:
+
+
+stderr:
+Resolved 24 packages in 3ms
+Checked 23 packages in 0.47ms
+

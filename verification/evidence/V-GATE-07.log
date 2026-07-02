@@ -1,0 +1,9 @@
+command: uv run lj render projects/verify_m1_20260702T012910Z --platform douyin --language zh-CN --ratio 9:16 --json
+exit_code: 1
+
+stdout:
+{"error_code": "APPROVAL_STALE", "hint": "请重新审核失效步骤后再渲染。", "message_zh": "审批对应的内容已经变更。", "ok": false, "stale": ["script"]}
+
+
+stderr:
+

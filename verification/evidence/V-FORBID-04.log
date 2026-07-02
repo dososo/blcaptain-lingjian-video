@@ -1,0 +1,8 @@
+command: uv run python scripts/ci/check_render_engine_m1.py
+exit_code: 0
+
+stdout:
+
+
+stderr:
+

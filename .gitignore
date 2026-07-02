@@ -1,0 +1,17 @@
+.DS_Store
+
+.venv/
+node_modules/
+*/node_modules/
+apps/web/.next/
+apps/web/tsconfig.tsbuildinfo
+
+.pytest_cache/
+.ruff_cache/
+.playwright-cli/
+__pycache__/
+*.pyc
+
+projects/
+exports/
+lingjian_M1_codex_delivery_iter_*.zip

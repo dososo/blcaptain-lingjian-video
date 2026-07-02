@@ -1,0 +1,8 @@
+command: test -f exports/verify_m1_20260702T012910Z/youtube/en-US/16x9/thumbnail.png
+exit_code: 0
+
+stdout:
+
+
+stderr:
+

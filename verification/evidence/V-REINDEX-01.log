@@ -1,0 +1,9 @@
+command: uv run lj reindex projects/verify_m1_20260702T012910Z --json
+exit_code: 0
+
+stdout:
+{"ok": true, "status": {"artifacts": {"script": true, "visuals": true, "voice": true}, "state": "visuals_review"}}
+
+
+stderr:
+

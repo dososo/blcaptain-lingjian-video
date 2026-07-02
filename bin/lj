@@ -1,0 +1,18 @@
+#!/usr/bin/env python3
+from __future__ import annotations
+
+import sys
+from pathlib import Path
+
+script_path = Path(__file__).resolve()
+candidates = [script_path.parents[2], script_path.parents[1]]
+for candidate in candidates:
+    if (candidate / "apps" / "cli" / "lingjian_cli" / "main.py").exists():
+        sys.path.insert(0, str(candidate))
+        break
+
+from apps.cli.lingjian_cli.main import app
+
+
+if __name__ == "__main__":
+    sys.exit(app())

@@ -1,0 +1,8 @@
+command: test -f output/playwright/web-smoke.png
+exit_code: 0
+
+stdout:
+
+
+stderr:
+

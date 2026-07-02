@@ -1,0 +1,9 @@
+command: uv run lj render projects/verify_m1_20260702T012910Z --platform douyin --language zh-CN --ratio 9:16 --json
+exit_code: 0
+
+stdout:
+{"language": "zh-CN", "mode": "preview", "ok": true, "platform": "douyin", "ratio": "9:16", "status": "rendered", "video_path": "/Users/manxiaochu/Documents/Codex/lingjian-video/projects/verify_m1_20260702T012910Z/renders/preview/douyin/video.mp4"}
+
+
+stderr:
+

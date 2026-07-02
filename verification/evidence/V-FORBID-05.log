@@ -1,0 +1,8 @@
+command: uv run python scripts/ci/check_ffmpeg_card_scope.py
+exit_code: 0
+
+stdout:
+
+
+stderr:
+

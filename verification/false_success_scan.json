@@ -1,0 +1,80 @@
+[
+  {
+    "id": "FS-01",
+    "title": "无强制跳过入口",
+    "ok": true,
+    "findings": []
+  },
+  {
+    "id": "FS-02",
+    "title": "release 遇 mock 有稳定错误码",
+    "ok": true,
+    "findings": []
+  },
+  {
+    "id": "FS-03",
+    "title": "preview 产物不能被 release 引用",
+    "ok": true,
+    "findings": []
+  },
+  {
+    "id": "FS-04",
+    "title": "core/provider 无禁用引擎 SDK import",
+    "ok": true,
+    "findings": []
+  },
+  {
+    "id": "FS-05",
+    "title": "M1 渲染引擎范围冻结",
+    "ok": true,
+    "findings": []
+  },
+  {
+    "id": "FS-06",
+    "title": "ffmpeg_card 无越界动效能力",
+    "ok": true,
+    "findings": []
+  },
+  {
+    "id": "FS-07",
+    "title": "render/export 无平台名控制流;静态 dict 为受控例外",
+    "ok": true,
+    "findings": []
+  },
+  {
+    "id": "FS-08",
+    "title": "离线测试不依赖网络或真实 key",
+    "ok": true,
+    "findings": []
+  },
+  {
+    "id": "FS-09",
+    "title": "SQLite 为派生索引且可重建",
+    "ok": true,
+    "findings": []
+  },
+  {
+    "id": "FS-10",
+    "title": "审批 stale 与 reindex 有测试覆盖",
+    "ok": true,
+    "findings": []
+  },
+  {
+    "id": "FS-11",
+    "title": "未引入高风险第三方项目代码名",
+    "ok": true,
+    "findings": []
+  },
+  {
+    "id": "FS-12",
+    "title": "默认路径未引入视频下载器",
+    "ok": true,
+    "findings": []
+  },
+  {
+    "id": "FS-13",
+    "title": "doctor 区分真实发布 provider",
+    "ok": true,
+    "findings": []
+  }
+]

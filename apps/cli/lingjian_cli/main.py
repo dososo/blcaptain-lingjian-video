@@ -1,0 +1,831 @@
+from __future__ import annotations
+
+import json
+import sys
+from dataclasses import asdict
+from pathlib import Path
+from typing import Optional
+
+import typer
+
+from packages.core.approvals import approve_target, validate_render_gate
+from packages.core.capabilities import detect_capabilities
+from packages.core.credentials import credential_status, forget_credential
+from packages.core.doctor import run_doctor
+from packages.core.errors import LingjianError
+from packages.core.exporting import export_project
+from packages.core.project import ProjectRef, init_project, reindex_project, status_project
+from packages.core.qa import run_qa
+from packages.core.rendering import render_project
+from providers.registry import resolve_provider
+
+app = typer.Typer(no_args_is_help=True)
+ingest_app = typer.Typer()
+approve_app = typer.Typer()
+credentials_app = typer.Typer(no_args_is_help=True)
+app.add_typer(ingest_app, name="ingest")
+app.add_typer(approve_app, name="approve")
+app.add_typer(credentials_app, name="credentials")
+
+
+def _emit(payload: dict, as_json: bool) -> None:
+    if as_json:
+        typer.echo(json.dumps(payload, ensure_ascii=False, sort_keys=True))
+    else:
+        typer.echo(payload)
+
+
+def _fail(exc: LingjianError, as_json: bool) -> None:
+    _emit(
+        {
+            "ok": False,
+            "error_code": exc.error_code,
+            "message_zh": exc.message_zh,
+            "hint": exc.hint,
+            **exc.details,
+        },
+        as_json,
+    )
+    raise typer.Exit(1)
+
+
+def _approval_exists(project: ProjectRef, target: str) -> bool:
+    approvals_path = project.path / "artifacts" / "approvals.json"
+    if not approvals_path.exists():
+        return False
+    approvals = json.loads(approvals_path.read_text(encoding="utf-8"))
+    return target in approvals
+
+
+def _pause_for_approval(project: ProjectRef, target: str, artifact: str, as_json: bool) -> None:
+    next_command = f"uv run lj approve {target} {project.path} --approved-by <用户> --json"
+    _emit(
+        {
+            "ok": True,
+            "status": "awaiting_approval",
+            "current_step": target,
+            "artifact": artifact,
+            "message_zh": f"已生成 {target} 产物,请人工审阅后再批准或驳回。",
+            "actions": [
+                {"label": "查看", "command": f"cat {project.path / artifact}"},
+                {"label": "批准", "command": next_command},
+                {"label": "驳回", "command": f"重新运行 lj {target} 或修改输入后再跑 lj run"},
+            ],
+            "next_command": next_command,
+        },
+        as_json,
+    )
+
+
+def _ensure_text_input(project: ProjectRef, input_file: Path | None) -> bool:
+    assets_path = project.path / "assets" / "input_assets.json"
+    if assets_path.exists():
+        return False
+    if input_file is None:
+        raise LingjianError(
+            "INPUT_REQUIRED",
+            "缺少输入素材。",
+            "首次运行 lj run 时请传入 --input-file。",
+        )
+    assets_path.parent.mkdir(parents=True, exist_ok=True)
+    text = input_file.read_text(encoding="utf-8")
+    assets_path.write_text(
+        json.dumps(
+            [{"type": "text", "source_uri": str(input_file), "language_hint": None, "text": text}],
+            ensure_ascii=False,
+            indent=2,
+        ),
+        encoding="utf-8",
+    )
+    return True
+
+
+def _write_script_for_run(
+    project: ProjectRef,
+    type_: str,
+    platform: str,
+    language: str,
+    ratio: str,
+    duration: int,
+    provider: str,
+) -> bool:
+    from packages.core.artifacts import artifact_path, read_json, write_artifact
+
+    current_path = artifact_path(project, "script")
+    if current_path.exists():
+        return False
+    provider_ref = resolve_provider(provider, "llm")
+    scenes = [{"id": "s1", "narration_text": "这是一段测试脚本。"}]
+    generate_script = getattr(provider_ref, "generate_script", None)
+    if callable(generate_script):
+        generated = generate_script(
+            {
+                "type": type_,
+                "platform": platform,
+                "language": language,
+                "ratio": ratio,
+                "target_duration_sec": duration,
+            }
+        )
+        if isinstance(generated.get("scenes"), list) and generated["scenes"]:
+            scenes = generated["scenes"]
+    revision = read_json(current_path).get("revision", 0) + 1 if current_path.exists() else 1
+    write_artifact(
+        project,
+        "script",
+        {
+            "id": "script",
+            "revision": revision,
+            "type": type_,
+            "platform": platform,
+            "language": language,
+            "ratio": ratio,
+            "target_duration_sec": duration,
+            "provider_id": provider_ref.id,
+            "provider_is_mock": provider_ref.is_mock,
+            "scenes": scenes,
+        },
+    )
+    return True
+
+
+def _write_voice_for_run(project: ProjectRef, provider: str, voice_id: str) -> bool:
+    from packages.core.artifacts import artifact_path, read_json, write_artifact
+
+    current_path = artifact_path(project, "voice")
+    if current_path.exists():
+        return False
+    provider_ref = resolve_provider(provider, "tts")
+    audio_path = project.path / "artifacts" / "voice_segments" / "s1.wav"
+    audio_path.parent.mkdir(parents=True, exist_ok=True)
+    duration = 1.0
+    synthesize = getattr(provider_ref, "synthesize", None)
+    if callable(synthesize):
+        script_path = artifact_path(project, "script")
+        script_data = read_json(script_path) if script_path.exists() else {"scenes": []}
+        narration = " ".join(
+            str(scene.get("narration_text", ""))
+            for scene in script_data.get("scenes", [])
+            if isinstance(scene, dict)
+        ).strip()
+        audio_bytes, duration = synthesize({"voice": voice_id, "text": narration})
+        audio_path.write_bytes(audio_bytes)
+    else:
+        audio_path.write_bytes(b"mock audio")
+    write_artifact(
+        project,
+        "voice",
+        {
+            "id": "voice",
+            "provider_id": provider_ref.id,
+            "provider_is_mock": provider_ref.is_mock,
+            "voice_id": voice_id,
+            "segments": [
+                {
+                    "scene_id": "s1",
+                    "audio_path": "artifacts/voice_segments/s1.wav",
+                    "duration_sec": duration,
+                }
+            ],
+            "total_duration_sec": duration,
+        },
+    )
+    return True
+
+
+def _write_visuals_for_run(project: ProjectRef, engine: str, template: str) -> bool:
+    from packages.core.artifacts import artifact_path, write_artifact
+
+    if artifact_path(project, "visuals").exists():
+        return False
+    write_artifact(
+        project,
+        "visuals",
+        {
+            "id": "visuals",
+            "engine": engine,
+            "template": template,
+            "scenes": [{"scene_id": "s1", "layout_template": template}],
+        },
+    )
+    return True
+
+
+@app.command()
+def setup(json_output: bool = typer.Option(False, "--json")) -> None:
+    report = detect_capabilities()
+    payload = report.public_dict()
+    if json_output:
+        typer.echo(json.dumps(payload, ensure_ascii=False, sort_keys=True))
+        return
+
+    typer.echo("灵剪能力检测")
+    typer.echo(report.summary_zh)
+    typer.echo("预览档:零配置可用,使用 mock 只能预览,不能 release。")
+    typer.echo("发布档:需要真实 LLM、真实 TTS、FFmpeg/ffprobe/drawtext 与中文字体全部就绪。")
+    for kind, group in payload["capabilities"].items():
+        best = group["best"]
+        marker = "[OK]" if best["safe_for_release"] else "[缺失]"
+        typer.echo(f"{marker} {kind}: {best['label_zh']} ({best['source_type']})")
+    if report.next_steps:
+        typer.echo("下一步:")
+        for step in report.next_steps:
+            typer.echo(f"- {step}")
+    typer.echo("说明:订阅 CLI 通常只提供 LLM;TTS 与 FFmpeg 仍可能需要本机能力或单独配置。")
+
+
+@credentials_app.command("status")
+def credentials_status(json_output: bool = typer.Option(False, "--json")) -> None:
+    _emit(credential_status(), json_output)
+
+
+@credentials_app.command("forget")
+def credentials_forget(name: str, json_output: bool = typer.Option(False, "--json")) -> None:
+    _emit(forget_credential(name), json_output)
+
+
+@app.command()
+def doctor(json_output: bool = typer.Option(False, "--json")) -> None:
+    result = run_doctor()
+    if json_output:
+        typer.echo(result.model_dump_json(exclude_none=True))
+    else:
+        typer.echo("ready" if result.ready else "not ready")
+    raise typer.Exit(result.exit_code)
+
+
+@app.command()
+def init(
+    project: Path,
+    name: str = typer.Option(...),
+    json_output: bool = typer.Option(False, "--json"),
+):
+    ref = init_project(project, name)
+    _emit({"ok": True, "project": str(ref.path), "name": ref.name}, json_output)
+
+
+@ingest_app.command("text")
+def ingest_text(
+    project: Path,
+    file: Path = typer.Option(...),
+    language: Optional[str] = typer.Option(None),
+    json_output: bool = typer.Option(False, "--json"),
+):
+    ref = ProjectRef(project, project.name)
+    assets = ref.path / "assets"
+    assets.mkdir(parents=True, exist_ok=True)
+    text = file.read_text(encoding="utf-8")
+    (assets / "input_assets.json").write_text(
+        json.dumps(
+            [{"type": "text", "source_uri": str(file), "language_hint": language, "text": text}],
+            ensure_ascii=False,
+            indent=2,
+        ),
+        encoding="utf-8",
+    )
+    _emit({"ok": True, "status": "input_ready"}, json_output)
+
+
+@ingest_app.command("url")
+def ingest_url(
+    project: Path,
+    url: str = typer.Option(...),
+    screenshot: bool = typer.Option(False, "--screenshot"),
+    json_output: bool = typer.Option(False, "--json"),
+):
+    ref = ProjectRef(project, project.name)
+    assets = ref.path / "assets"
+    assets.mkdir(parents=True, exist_ok=True)
+    (assets / "input_assets.json").write_text(
+        json.dumps(
+            [
+                {
+                    "type": "url",
+                    "source_uri": url,
+                    "screenshot_opt_in": screenshot,
+                    "is_untrusted_input": True,
+                }
+            ],
+            ensure_ascii=False,
+            indent=2,
+        ),
+        encoding="utf-8",
+    )
+    _emit(
+        {
+            "ok": True,
+            "status": "input_ready",
+            "is_untrusted_input": True,
+            "screenshot_opt_in": screenshot,
+        },
+        json_output,
+    )
+
+
+@ingest_app.command("image")
+def ingest_image(
+    project: Path,
+    file: Path = typer.Option(...),
+    role: str = typer.Option(...),
+    json_output: bool = typer.Option(False, "--json"),
+):
+    ref = ProjectRef(project, project.name)
+    assets = ref.path / "assets"
+    assets.mkdir(parents=True, exist_ok=True)
+    (assets / "input_assets.json").write_text(
+        json.dumps(
+            [
+                {
+                    "type": "image",
+                    "source_uri": str(file),
+                    "role": role,
+                    "ocr_status": "not_requested",
+                }
+            ],
+            ensure_ascii=False,
+            indent=2,
+        ),
+        encoding="utf-8",
+    )
+    _emit({"ok": True, "status": "input_ready", "role": role}, json_output)
+
+
+@app.command()
+def extract(
+    project: Path,
+    provider: Optional[str] = typer.Option(None, "--provider"),
+    url_extractor: Optional[str] = typer.Option(None, "--url-extractor"),
+    ocr_provider: Optional[str] = typer.Option(None, "--ocr-provider"),
+    json_output: bool = typer.Option(False, "--json"),
+):
+    _emit(
+        {
+            "ok": True,
+            "status": "extracted",
+            "project": str(project),
+            "routing": {
+                "legacy_provider": provider,
+                "url_extractor": url_extractor or "trafilatura",
+                "ocr_provider": ocr_provider or "none",
+            },
+        },
+        json_output,
+    )
+
+
+@app.command()
+def script(
+    project: Path,
+    type: str = typer.Option(...),
+    platform: str = typer.Option(...),
+    language: str = typer.Option(...),
+    ratio: str = typer.Option(...),
+    duration: int = typer.Option(45),
+    provider: str = typer.Option("mock"),
+    json_output: bool = typer.Option(False, "--json"),
+):
+    from packages.core.artifacts import artifact_path, read_json, write_artifact
+
+    ref = ProjectRef(project, project.name)
+    try:
+        provider_ref = resolve_provider(provider, "llm")
+    except LingjianError as exc:
+        _fail(exc, json_output)
+    current_path = artifact_path(ref, "script")
+    revision = read_json(current_path).get("revision", 0) + 1 if current_path.exists() else 1
+    scenes = [{"id": "s1", "narration_text": "这是一段测试脚本。"}]
+    generate_script = getattr(provider_ref, "generate_script", None)
+    if callable(generate_script):
+        try:
+            generated = generate_script(
+                {
+                    "type": type,
+                    "platform": platform,
+                    "language": language,
+                    "ratio": ratio,
+                    "target_duration_sec": duration,
+                }
+            )
+        except LingjianError as exc:
+            _fail(exc, json_output)
+        if isinstance(generated.get("scenes"), list) and generated["scenes"]:
+            scenes = generated["scenes"]
+    write_artifact(
+        ref,
+        "script",
+        {
+            "id": "script",
+            "revision": revision,
+            "type": type,
+            "platform": platform,
+            "language": language,
+            "ratio": ratio,
+            "target_duration_sec": duration,
+            "provider_id": provider_ref.id,
+            "provider_is_mock": provider_ref.is_mock,
+            "scenes": scenes,
+        },
+    )
+    _emit(
+        {"ok": True, "status": "awaiting_review", "artifact": "artifacts/script.json"},
+        json_output,
+    )
+
+
+@approve_app.command("script")
+def approve_script(
+    project: Path,
+    approved_by: str = typer.Option(...),
+    comment: Optional[str] = typer.Option(None),
+    json_output: bool = typer.Option(False, "--json"),
+):
+    approval = approve_target(ProjectRef(project, project.name), "script", approved_by, comment)
+    _emit({"ok": True, "approval": approval}, json_output)
+
+
+@app.command()
+def voice(
+    project: Path,
+    provider: str = typer.Option("mock"),
+    voice: str = typer.Option(...),
+    json_output: bool = typer.Option(False, "--json"),
+):
+    from packages.core.artifacts import artifact_path, read_json, write_artifact
+
+    ref = ProjectRef(project, project.name)
+    try:
+        provider_ref = resolve_provider(provider, "tts")
+    except LingjianError as exc:
+        _fail(exc, json_output)
+    audio_path = ref.path / "artifacts" / "voice_segments" / "s1.wav"
+    audio_path.parent.mkdir(parents=True, exist_ok=True)
+    duration = 1.0
+    synthesize = getattr(provider_ref, "synthesize", None)
+    if callable(synthesize):
+        script_path = artifact_path(ref, "script")
+        script = read_json(script_path) if script_path.exists() else {"scenes": []}
+        narration = " ".join(
+            str(scene.get("narration_text", ""))
+            for scene in script.get("scenes", [])
+            if isinstance(scene, dict)
+        ).strip()
+        try:
+            audio_bytes, duration = synthesize({"voice": voice, "text": narration})
+        except LingjianError as exc:
+            _fail(exc, json_output)
+        audio_path.write_bytes(audio_bytes)
+    else:
+        audio_path.write_bytes(b"mock audio")
+    write_artifact(
+        ref,
+        "voice",
+        {
+            "id": "voice",
+            "provider_id": provider_ref.id,
+            "provider_is_mock": provider_ref.is_mock,
+            "voice_id": voice,
+            "segments": [
+                {
+                    "scene_id": "s1",
+                    "audio_path": "artifacts/voice_segments/s1.wav",
+                    "duration_sec": duration,
+                }
+            ],
+            "total_duration_sec": duration,
+        },
+    )
+    _emit(
+        {"ok": True, "status": "awaiting_review", "artifact": "artifacts/voice_plan.json"},
+        json_output,
+    )
+
+
+@approve_app.command("voice")
+def approve_voice(
+    project: Path,
+    approved_by: str = typer.Option(...),
+    comment: Optional[str] = typer.Option(None),
+    json_output: bool = typer.Option(False, "--json"),
+):
+    approval = approve_target(ProjectRef(project, project.name), "voice", approved_by, comment)
+    _emit({"ok": True, "approval": approval}, json_output)
+
+
+@app.command()
+def visuals(
+    project: Path,
+    engine: str = typer.Option("ffmpeg_card"),
+    template: str = typer.Option("card_default"),
+    json_output: bool = typer.Option(False, "--json"),
+):
+    from packages.core.artifacts import write_artifact
+
+    ref = ProjectRef(project, project.name)
+    write_artifact(
+        ref,
+        "visuals",
+        {
+            "id": "visuals",
+            "engine": engine,
+            "template": template,
+            "scenes": [{"scene_id": "s1", "layout_template": template}],
+        },
+    )
+    _emit(
+        {"ok": True, "status": "awaiting_review", "artifact": "artifacts/visual_plan.json"},
+        json_output,
+    )
+
+
+@approve_app.command("visuals")
+def approve_visuals(
+    project: Path,
+    approved_by: str = typer.Option(...),
+    comment: Optional[str] = typer.Option(None),
+    json_output: bool = typer.Option(False, "--json"),
+):
+    approval = approve_target(ProjectRef(project, project.name), "visuals", approved_by, comment)
+    _emit({"ok": True, "approval": approval}, json_output)
+
+
+@app.command()
+def render(
+    project: Path,
+    platform: str = typer.Option(...),
+    language: str = typer.Option(...),
+    ratio: str = typer.Option(...),
+    release: bool = typer.Option(False, "--release"),
+    real: bool = typer.Option(False, "--real"),
+    json_output: bool = typer.Option(False, "--json"),
+):
+    ref = ProjectRef(project, project.name)
+    error = validate_render_gate(ref)
+    if error:
+        payload = {
+            "ok": False,
+            "error_code": error.error_code,
+            "message_zh": error.message_zh,
+            "hint": error.hint,
+            **error.details,
+        }
+        _emit(payload, json_output)
+        raise typer.Exit(1)
+    try:
+        render_result = render_project(
+            ref,
+            platform,
+            language,
+            ratio,
+            mode="release" if release else "preview",
+            real_preview=real,
+        )
+    except LingjianError as exc:
+        _fail(exc, json_output)
+    _emit(
+        {
+            "ok": True,
+            "status": "rendered",
+            "mode": render_result.mode,
+            "video_path": str(render_result.video_path),
+            "platform": platform,
+            "language": language,
+            "ratio": ratio,
+        },
+        json_output,
+    )
+
+
+@app.command()
+def preview(
+    project: Path,
+    platform: str = typer.Option(...),
+    language: str = typer.Option(...),
+    ratio: str = typer.Option(...),
+    real: bool = typer.Option(False, "--real"),
+    json_output: bool = typer.Option(False, "--json"),
+):
+    try:
+        result = render_project(
+            ProjectRef(project, project.name),
+            platform,
+            language,
+            ratio,
+            mode="preview",
+            real_preview=real,
+        )
+    except LingjianError as exc:
+        _fail(exc, json_output)
+    _emit(
+        {
+            "ok": True,
+            "mode": result.mode,
+            "video_path": str(result.video_path),
+            "manifest_path": str(result.manifest_path),
+        },
+        json_output,
+    )
+
+
+@app.command()
+def qa(
+    project: Path,
+    release: bool = typer.Option(False, "--release"),
+    platform: str = typer.Option("douyin"),
+    json_output: bool = typer.Option(False, "--json"),
+):
+    report = run_qa(ProjectRef(project, project.name), release=release, platform=platform)
+    _emit(
+        {
+            "ok": True,
+            "release_ready": report.release_ready,
+            "hard_failures": [asdict(issue) for issue in report.hard_failures],
+            "warnings": [asdict(issue) for issue in report.warnings],
+            "info": [asdict(issue) for issue in report.info],
+        },
+        json_output,
+    )
+
+
+@app.command()
+def export(
+    project: Path,
+    platform: Optional[str] = typer.Option(None),
+    language: str = typer.Option("zh-CN"),
+    ratio: str = typer.Option("9:16"),
+    all_platforms: bool = typer.Option(False, "--all-platforms"),
+    release: bool = typer.Option(False, "--release"),
+    json_output: bool = typer.Option(False, "--json"),
+):
+    platforms = (
+        ["douyin", "xiaohongshu", "bilibili", "youtube", "youtube_shorts"]
+        if all_platforms
+        else [platform]
+    )
+    if any(item is None for item in platforms):
+        _fail(
+            LingjianError(
+                "INVALID_ARGUMENT",
+                "缺少导出平台。",
+                "请传入 --platform,或使用 --all-platforms。",
+            ),
+            json_output,
+        )
+    packages = []
+    try:
+        for item in platforms:
+            package = export_project(
+                ProjectRef(project, project.name),
+                str(item),
+                language,
+                ratio,
+                release=release,
+            )
+            packages.append(
+                {
+                    "platform": item,
+                    "export_dir": str(package.export_dir),
+                    "export_manifest": package.export_manifest,
+                }
+            )
+    except LingjianError as exc:
+        _fail(exc, json_output)
+    _emit(
+        {
+            "ok": True,
+            "export_dir": packages[0]["export_dir"],
+            "exports": packages,
+            "release": release,
+            "export_manifest": packages[0]["export_manifest"],
+        },
+        json_output,
+    )
+
+
+@app.command("run")
+def run_workflow(
+    project: Path,
+    name: Optional[str] = typer.Option(None, "--name"),
+    input_file: Optional[Path] = typer.Option(None, "--input-file"),
+    type_: str = typer.Option("product", "--type"),
+    platform: str = typer.Option("douyin", "--platform"),
+    language: str = typer.Option("zh-CN", "--language"),
+    ratio: str = typer.Option("9:16", "--ratio"),
+    duration: int = typer.Option(45, "--duration"),
+    script_provider: str = typer.Option("mock", "--script-provider"),
+    voice_provider: str = typer.Option("mock", "--voice-provider"),
+    voice: str = typer.Option("test-voice", "--voice"),
+    engine: str = typer.Option("ffmpeg_card", "--engine"),
+    template: str = typer.Option("product", "--template"),
+    release: bool = typer.Option(False, "--release"),
+    yes: bool = typer.Option(False, "--yes"),
+    approved_by: str = typer.Option("ci", "--approved-by"),
+    json_output: bool = typer.Option(False, "--json"),
+) -> None:
+    ref = ProjectRef(project, name or project.name)
+    steps: list[str] = []
+    try:
+        if release:
+            doctor_result = run_doctor()
+            if not doctor_result.ready:
+                missing = [item.id for item in doctor_result.required]
+                raise LingjianError(
+                    "DOCTOR_NOT_READY",
+                    "发布档需要 doctor ready 后才能运行。",
+                    "请先按 required 缺项补齐能力。",
+                    {"missing": missing},
+                )
+        if not (ref.path / "project.yaml").exists():
+            init_project(ref.path, ref.name)
+            steps.append("init")
+        if _ensure_text_input(ref, input_file):
+            steps.append("ingest")
+        steps.append("extract")
+        if _write_script_for_run(ref, type_, platform, language, ratio, duration, script_provider):
+            steps.append("script")
+        if not _approval_exists(ref, "script"):
+            if not yes:
+                _pause_for_approval(ref, "script", "artifacts/script.json", json_output)
+                return
+            approve_target(ref, "script", approved_by)
+            steps.append("approve_script")
+        if _write_voice_for_run(ref, voice_provider, voice):
+            steps.append("voice")
+        if not _approval_exists(ref, "voice"):
+            if not yes:
+                _pause_for_approval(ref, "voice", "artifacts/voice_plan.json", json_output)
+                return
+            approve_target(ref, "voice", approved_by)
+            steps.append("approve_voice")
+        if _write_visuals_for_run(ref, engine, template):
+            steps.append("visuals")
+        if not _approval_exists(ref, "visuals"):
+            if not yes:
+                _pause_for_approval(ref, "visuals", "artifacts/visual_plan.json", json_output)
+                return
+            approve_target(ref, "visuals", approved_by)
+            steps.append("approve_visuals")
+        render_result = render_project(
+            ref,
+            platform,
+            language,
+            ratio,
+            mode="release" if release else "preview",
+        )
+        steps.append("render")
+        qa_report = run_qa(ref, release=release, platform=platform)
+        steps.append("qa")
+        if qa_report.hard_failures:
+            _emit(
+                {
+                    "ok": False,
+                    "status": "qa_blocking",
+                    "mode": render_result.mode,
+                    "video_path": str(render_result.video_path),
+                    "steps": steps,
+                    "qa": {
+                        "release_ready": qa_report.release_ready,
+                        "hard_failures": [asdict(issue) for issue in qa_report.hard_failures],
+                        "warnings": [asdict(issue) for issue in qa_report.warnings],
+                        "info": [asdict(issue) for issue in qa_report.info],
+                    },
+                },
+                json_output,
+            )
+            raise typer.Exit(1)
+        package = export_project(ref, platform, language, ratio, release=release)
+        steps.append("export")
+    except LingjianError as exc:
+        _fail(exc, json_output)
+    _emit(
+        {
+            "ok": True,
+            "status": "exported",
+            "mode": "release" if release else "preview",
+            "steps": steps,
+            "video_path": str(render_result.video_path),
+            "qa": {
+                "release_ready": qa_report.release_ready,
+                "hard_failures": [asdict(issue) for issue in qa_report.hard_failures],
+                "warnings": [asdict(issue) for issue in qa_report.warnings],
+                "info": [asdict(issue) for issue in qa_report.info],
+            },
+            "export_dir": str(package.export_dir),
+            "export_manifest": package.export_manifest,
+        },
+        json_output,
+    )
+
+
+@app.command()
+def reindex(project: Path, json_output: bool = typer.Option(False, "--json")):
+    reindex_project(project)
+    _emit({"ok": True, "status": status_project(project)}, json_output)
+
+
+@app.command()
+def status(project: Path, json_output: bool = typer.Option(False, "--json")):
+    _emit({"ok": True, **status_project(project)}, json_output)
+
+
+if __name__ == "__main__":
+    sys.exit(app())

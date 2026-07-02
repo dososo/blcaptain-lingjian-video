@@ -1,0 +1,11 @@
+command: uv run lj doctor --json
+exit_code: 1
+
+stdout:
+{"ready":false,"exit_code":1,"required":[{"id":"ffmpeg","ok":false,"message_zh":"缺少必需能力:FFmpeg","hint":"请安装或配置 FFmpeg 后重试。"},{"id":"ffprobe","ok":false,"message_zh":"缺少必需能力:ffprobe","hint":"请安装或配置 ffprobe 后重试。"},{"id":"real_llm_provider","ok":false,"message_zh":"缺少可用于正式发布的真实 LLM provider。","hint":"可配置 CLI provider,或提供 OpenAI-compatible/Anthropic 的 base_url、model 与 key。"},{"id":"real_tts_provider","ok":false,"message_zh":"缺少可用于正式发布的真实 TTS provider。","hint":"可配置 CLI TTS provider,或提供云 TTS key。mock 只能预览,不能 release。"}],"optional":[{"id":"remotion_license_notice","ok":true,"message_zh":"Remotion 是 M3 opt-in,不默认、不捆绑;4+ 人营利或自动化生成工具需自行确认 license。"}],"providers":{"llm":{"ready":false,"usable_real":false,"methods":[{"id":"llm_cli","type":"cli","configured":false,"is_mock":false,"safe_for_release":false,"config_redacted":{"command":""},"hint":"配置 LINGJIAN_LLM_CLI 指向可执行命令,或改用 API provider。"},{"id":"openai_compatible","type":"openai_compatible","configured":false,"is_mock":false,"safe_for_release":false,"config_redacted":{"api_key":"","base_url":"","model":""},"hint":"配置 OPENAI_BASE_URL、OPENAI_API_KEY、OPENAI_MODEL,或提供可用 CLI provider。"}]},"tts":{"ready":false,"usable_real":false,"methods":[{"id":"tts_cli","type":"cli","configured":false,"is_mock":false,"safe_for_release":false,"config_redacted":{"command":""},"hint":"配置 LINGJIAN_TTS_CLI 指向可执行命令,或改用云 TTS provider。"},{"id":"openai_compatible_tts","type":"openai_compatible","configured":false,"is_mock":false,"safe_for_release":false,"config_redacted":{"api_key":"","base_url":"","model":""},"hint":"配置 OPENAI_TTS_API_KEY、OPENAI_TTS_BASE_URL、OPENAI_TTS_MODEL,或提供可用 CLI/云 TTS provider。"}]}}}
+
+
+stderr:
+
+
+---

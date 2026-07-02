@@ -1,0 +1,8 @@
+command: test -f exports/verify_m1_20260702T012910Z/douyin/zh-CN/9x16/captions/subtitles.srt
+exit_code: 0
+
+stdout:
+
+
+stderr:
+

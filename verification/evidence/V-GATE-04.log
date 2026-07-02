@@ -1,0 +1,9 @@
+command: uv run lj render projects/verify_m1_20260702T012910Z --platform douyin --language zh-CN --ratio 9:16 --json
+exit_code: 1
+
+stdout:
+{"error_code": "APPROVAL_REQUIRED", "hint": "请完成缺失审批后重试。", "message_zh": "渲染前必须完成文案、语音和画面三项审批。", "missing": ["script", "voice", "visuals"], "ok": false}
+
+
+stderr:
+

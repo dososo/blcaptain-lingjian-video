@@ -1,0 +1,9 @@
+id: youtube_shorts
+name_zh: YouTube Shorts
+default_ratio: "9:16"
+safe_area:
+  top_pct: 8
+  bottom_pct: 14
+captions:
+  max_lines: 2
+  cjk_chars_per_line: 14

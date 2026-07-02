@@ -1,0 +1,9 @@
+command: uv run lj script projects/中文路径验证_20260702T012910Z --type product --platform douyin --language zh-CN --ratio 9:16 --duration 45 --provider mock --json
+exit_code: 0
+
+stdout:
+{"artifact": "artifacts/script.json", "ok": true, "status": "awaiting_review"}
+
+
+stderr:
+

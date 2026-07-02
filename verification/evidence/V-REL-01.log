@@ -1,0 +1,9 @@
+command: uv run lj export projects/verify_m1_20260702T012910Z --platform douyin --language zh-CN --ratio 9:16 --release --json
+exit_code: 1
+
+stdout:
+{"error_code": "MOCK_PROVIDER_NOT_ALLOWED_FOR_RELEASE", "hint": "请配置真实 LLM/TTS provider 后重试。", "message_zh": "mock provider 不能用于正式发布。", "ok": false}
+
+
+stderr:
+

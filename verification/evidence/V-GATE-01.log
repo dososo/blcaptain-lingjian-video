@@ -1,0 +1,9 @@
+command: uv run lj ingest text projects/verify_m1_20260702T012910Z --file examples/product_intro_zh.txt --json
+exit_code: 0
+
+stdout:
+{"ok": true, "status": "input_ready"}
+
+
+stderr:
+

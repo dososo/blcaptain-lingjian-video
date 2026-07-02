@@ -1,0 +1,9 @@
+command: uv run lj approve visuals projects/verify_m1_20260702T012910Z --approved-by tester --json
+exit_code: 0
+
+stdout:
+{"approval": {"approved_at": "2026-07-02T01:29:30.285387+00:00", "approved_by": "tester", "artifact_path": "artifacts/visual_plan.json", "artifact_sha256": "e118af935fd71969c382784d1fc799e0bc1d8d7a81d0e0d955c56f7cad8384f0", "comment": null, "signature": "a11fde6e6b362068c06e0406e2b3c3289a1f207682deb6e8cf3ee78a50559f51", "target": "visuals"}, "ok": true}
+
+
+stderr:
+

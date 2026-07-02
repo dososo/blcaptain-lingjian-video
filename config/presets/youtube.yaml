@@ -1,0 +1,13 @@
+id: youtube
+name_zh: YouTube
+default_ratio: "16:9"
+requires:
+  - thumbnail.png
+  - description.md
+  - chapters.md
+safe_area:
+  top_pct: 6
+  bottom_pct: 10
+captions:
+  max_lines: 2
+  cjk_chars_per_line: 24

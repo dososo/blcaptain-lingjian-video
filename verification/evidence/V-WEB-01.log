@@ -1,0 +1,9 @@
+command: pnpm --dir apps/web lint
+exit_code: 0
+
+stdout:
+
+
+stderr:
+$ tsc --noEmit
+

@@ -1,0 +1,9 @@
+command: uv run lj visuals projects/verify_m1_20260702T012910Z --engine ffmpeg_card --template product --json
+exit_code: 0
+
+stdout:
+{"artifact": "artifacts/visual_plan.json", "ok": true, "status": "awaiting_review"}
+
+
+stderr:
+

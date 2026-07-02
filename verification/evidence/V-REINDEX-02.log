@@ -1,0 +1,9 @@
+command: uv run lj status projects/verify_m1_20260702T012910Z --json
+exit_code: 0
+
+stdout:
+{"artifacts": {"script": true, "visuals": true, "voice": true}, "ok": true, "state": "visuals_review"}
+
+
+stderr:
+
