@@ -36,6 +36,7 @@ def test_capability_detection_prefers_inherited_llm_cli_and_local_tts(tmp_path, 
     assert payload["capabilities"]["llm"]["best"]["source_type"] == "inherited-cli"
     assert payload["capabilities"]["tts"]["best"]["id"] == "macos_say"
     assert payload["capabilities"]["tts"]["best"]["source_type"] == "local-cli"
+    assert payload["capabilities"]["tts"]["best"]["quality_tier"] == "preview"
     assert "无需 key" in payload["summary_zh"]
 
 
@@ -64,6 +65,34 @@ def test_doctor_uses_inherited_capabilities_without_api_key(tmp_path, monkeypatc
     assert result.providers["tts"].methods[0].source_type == "local-cli"
     dumped = result.model_dump_json()
     assert "OPENAI_API_KEY" not in dumped
+
+
+def test_doctor_marks_volcengine_tts_as_publish_tier(tmp_path, monkeypatch):
+    bin_dir = tmp_path / "bin"
+    bin_dir.mkdir()
+    _fake_executable(bin_dir / "claude", "#!/bin/sh\nprintf '真实脚本文案输出'\n")
+    monkeypatch.setenv("PATH", str(bin_dir))
+    monkeypatch.setenv("VOLCENGINE_TTS_APP_ID", "appid")
+    monkeypatch.setenv("VOLCENGINE_TTS_ACCESS_TOKEN", "secret-token")
+    monkeypatch.setenv("VOLCENGINE_TTS_CLUSTER", "volcano_tts")
+
+    result = run_doctor(
+        tool_overrides={
+            "ffmpeg": True,
+            "ffprobe": True,
+            "ffmpeg_drawtext": True,
+            "cjk_font": True,
+        }
+    )
+
+    volcengine = next(
+        method for method in result.providers["tts"].methods if method.id == "volcengine_tts"
+    )
+    assert result.ready is True
+    assert volcengine.safe_for_release is True
+    assert volcengine.quality_tier == "publish"
+    assert not any(item.id == "preview_tts_release_notice" for item in result.optional)
+    assert "secret-token" not in result.model_dump_json()
 
 
 def test_doctor_requires_ffmpeg_drawtext_for_release_ready(tmp_path, monkeypatch):

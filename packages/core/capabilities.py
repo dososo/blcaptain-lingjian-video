@@ -1,16 +1,19 @@
 from __future__ import annotations
 
+import json
 import os
 import platform
 import shlex
 import shutil
 import subprocess
+import tempfile
 from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Any, Callable, Mapping
 
 PathLookup = Callable[[str], str | None]
 FFMPEG_FILTER_TIMEOUT_SEC = 20
+HOST_VISUAL_PROBE_TIMEOUT_SEC = 10
 
 
 @dataclass(frozen=True, slots=True)
@@ -264,7 +267,7 @@ def _tts_candidates(env: Mapping[str, str], lookup: PathLookup) -> list[Capabili
             ),
             label_zh="火山豆包 TTS",
             provider_type="volcengine_tts",
-            quality_tier="release",
+            quality_tier="publish",
             config={
                 "app_id": env.get("VOLCENGINE_TTS_APP_ID", ""),
                 "access_token": env.get("VOLCENGINE_TTS_ACCESS_TOKEN", ""),
@@ -292,7 +295,7 @@ def _tts_candidates(env: Mapping[str, str], lookup: PathLookup) -> list[Capabili
                 "model": env.get("OPENAI_TTS_MODEL", ""),
             },
             "配置 OPENAI_TTS_API_KEY、OPENAI_TTS_BASE_URL、OPENAI_TTS_MODEL。",
-            quality_tier="release",
+            quality_tier="publish",
         ),
         _cli_candidate(
             "tts_cli",
@@ -303,7 +306,7 @@ def _tts_candidates(env: Mapping[str, str], lookup: PathLookup) -> list[Capabili
             lookup,
             "已检测到 LINGJIAN_TTS_CLI。",
             setup_command='export LINGJIAN_TTS_CLI="/path/to/real-tts"',
-            quality_tier="release",
+            quality_tier="publish",
         ),
         _cli_candidate(
             "macos_say",
@@ -358,6 +361,7 @@ def _visual_candidates(
             "host_hyperframes",
             "HyperFrames 宿主动态图形",
             "hyperframes",
+            "hyperframes",
             env.get("LINGJIAN_HOST_HYPERFRAMES_READY") == "1",
             lookup,
             tool_overrides,
@@ -366,6 +370,7 @@ def _visual_candidates(
         _host_visual_candidate(
             "host_remotion",
             "Remotion 宿主程序化视频",
+            "remotion",
             "remotion",
             env.get("LINGJIAN_HOST_REMOTION_READY") == "1",
             lookup,
@@ -383,6 +388,7 @@ def _visual_candidates(
                 "LINGJIAN_HOST_IMAGEGEN_READY",
                 "LINGJIAN_HOST_IMAGEGEN_CLI",
                 "host_imagegen",
+                "image-gen",
             ),
             safe_for_release=_visual_env_or_cli_ready(
                 env,
@@ -391,6 +397,7 @@ def _visual_candidates(
                 "LINGJIAN_HOST_IMAGEGEN_READY",
                 "LINGJIAN_HOST_IMAGEGEN_CLI",
                 "host_imagegen",
+                "image-gen",
             ),
             label_zh="宿主 imagegen 静态图",
             provider_type="host-plugin",
@@ -512,6 +519,7 @@ def _host_visual_candidate(
     provider_id: str,
     label: str,
     command: str,
+    generator: str,
     env_ready: bool,
     lookup: PathLookup,
     overrides: dict[str, bool] | None,
@@ -519,8 +527,9 @@ def _host_visual_candidate(
 ) -> CapabilityCandidate:
     override_key = provider_id
     configured = env_ready or bool(overrides and overrides.get(override_key))
-    if not configured and lookup(command):
-        configured = _host_visual_cli_probe(command)
+    resolved = lookup(command)
+    if not configured and resolved:
+        configured = _host_visual_cli_probe([resolved], generator)
     return CapabilityCandidate(
         id=provider_id,
         kind="visuals",
@@ -543,6 +552,7 @@ def _visual_env_or_cli_ready(
     ready_env: str,
     cli_env: str,
     override_key: str,
+    generator: str,
 ) -> bool:
     if env.get(ready_env) == "1" or bool(overrides and overrides.get(override_key)):
         return True
@@ -551,8 +561,9 @@ def _visual_env_or_cli_ready(
         return False
     path = Path(command)
     if path.is_absolute() or len(path.parts) > 1:
-        return path.exists()
-    return lookup(command) is not None
+        return path.exists() and _host_visual_cli_probe([command], generator)
+    resolved = lookup(command)
+    return bool(resolved and _host_visual_cli_probe([resolved], generator))
 
 
 def _api_candidate(
@@ -613,18 +624,33 @@ def _tool_available(
     return lookup(name) is not None
 
 
-def _host_visual_cli_probe(command: str) -> bool:
-    try:
-        completed = subprocess.run(
-            [command, "--version"],
-            text=True,
-            capture_output=True,
-            check=False,
-            timeout=5,
-        )
-    except (OSError, subprocess.TimeoutExpired):
-        return False
-    return completed.returncode == 0
+def _host_visual_cli_probe(argv: list[str], generator: str) -> bool:
+    ext = ".png" if generator == "image-gen" else ".mp4"
+    with tempfile.TemporaryDirectory() as temp_dir:
+        expected = Path(temp_dir) / f"probe{ext}"
+        payload = {
+            "task": "probe_visual_asset",
+            "probe": True,
+            "generator": generator,
+            "scene_id": "probe",
+            "visual_prompt": "探测灵剪宿主画面生成器能否写出资产。",
+            "motion_spec": {"main": "probe", "one_main_only": True},
+            "brief": {"aspect": "9:16", "safe_zone": "center", "forbidden": "none"},
+            "duration_sec": 0.2,
+            "expected_asset_path": str(expected),
+        }
+        try:
+            completed = subprocess.run(
+                argv,
+                input=json.dumps(payload, ensure_ascii=False),
+                text=True,
+                capture_output=True,
+                check=False,
+                timeout=HOST_VISUAL_PROBE_TIMEOUT_SEC,
+            )
+        except (OSError, subprocess.TimeoutExpired):
+            return False
+        return completed.returncode == 0 and expected.exists() and expected.stat().st_size > 0
 
 
 def ffmpeg_drawtext_available(

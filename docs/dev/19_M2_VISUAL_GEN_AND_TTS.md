@@ -17,7 +17,7 @@
 - `apps/cli/lingjian_cli/main.py:651`: `visuals` 写入每镜 storyboard;新增 `visual_prompt`、`motion_spec`、`brief`、`expected_asset_path`、`duration_sec`。
 - `packages/core/visual_generation.py:18`:新增 `ensure_scene_asset`,按 `generator` 委托宿主 CLI 生成缺失资产。
 - `packages/core/rendering.py:313`:渲染每镜前调用 `ensure_scene_asset`;生成成功即消费 mp4/png,失败继续走原回落。
-- `packages/core/capabilities.py:248`:TTS 能力增加 `quality_tier`,火山豆包/OpenAI-compatible/真实 TTS CLI 为 `release`,say/Piper/espeak-ng 为 `preview`。
+- `packages/core/capabilities.py:248`:TTS 能力增加 `quality_tier`,火山豆包/OpenAI-compatible/真实 TTS CLI 为 `publish`,say/Piper/espeak-ng 为 `preview`。
 - `packages/core/capabilities.py:351`:视觉能力报告 host HyperFrames/Remotion/imagegen,包含 `LINGJIAN_HOST_IMAGEGEN_CLI` 等 CLI 探测。
 - `providers/volcengine_tts.py:23`:新增火山豆包 TTS provider,只从环境读取 AppID/Access Token/Cluster。
 - `providers/registry.py:23`:注册 `volcengine_tts`,并提供 `volcengine`、`doubao` 别名。
@@ -50,7 +50,7 @@ render 前委托层会把完整 JSON 发给可用命令:
 
 ## TTS 分档
 
-- 发布级:`volcengine_tts`、`openai_compatible_tts`、`tts_cli`。
+- 发布级:`volcengine_tts`、`openai_compatible_tts`、`tts_cli`,doctor 中 `quality_tier=publish`。
 - 预览级:`macos_say`、`piper_cli`、`espeak_ng`。
 
 默认 `lj voice --provider auto` 与 `lj run` 会选择当前可用最高档 TTS。仅有预览级 TTS 时 release 可继续,但 QA warning:
@@ -79,6 +79,8 @@ export VOLCENGINE_TTS_VOICE_TYPE=...   # 可选
 - `tests/test_m2_visual_generation_tts.py::test_volcengine_tts_provider_uses_official_http_contract`
 - `tests/test_m2_visual_generation_tts.py::test_inherited_cli_retries_once_after_transient_failure`
 - `tests/test_m2_visual_generation_tts.py::test_setup_detects_host_imagegen_cli_as_static_visual_tier`
+- `tests/test_m2_visual_generation_tts.py::test_setup_rejects_host_imagegen_cli_that_does_not_write_probe_asset`
+- `tests/test_capability_onboarding.py::test_doctor_marks_volcengine_tts_as_publish_tier`
 - `tests/test_batch2_release_export.py::test_export_license_manifest_records_volcengine_tts_without_secrets`
 
 ## 验收命令
@@ -98,13 +100,13 @@ uv run python scripts/ci/run_verification.py
 
 ## 本轮验证结果
 
-- `uv run pytest -q`:94 passed。
+- `uv run pytest -q`:96 passed。
 - `uv run ruff check .`:All checks passed。
 - 5 个扫描器:全部 exit=0,`check_false_success.py` 13 项均 `ok=true`。
 - `pnpm --dir apps/web lint`:通过,`tsc --noEmit`。
 - `pnpm --dir apps/web build`:通过,Next.js 5 个主流程路由仍可静态构建。
 - `uv run python scripts/ci/run_verification.py`:通过,`verification/results.json` 为 52 PASS / 0 FAIL。
-- `verification/evidence/V-REAL-01.log`:doctor `ready=true`;TTS 方法含 `quality_tier=preview/release`;QA warning 同时包含 `RELEASE_VISUAL_IS_BLANK_CARD` 与 `RELEASE_AUDIO_IS_PREVIEW_VOICE`;ffprobe 输出 `h264` 视频流与 `aac` 音频流。
+- `verification/evidence/V-REAL-01.log`:doctor `ready=true`;TTS 方法含 `quality_tier=preview/publish`;QA warning 同时包含 `RELEASE_VISUAL_IS_BLANK_CARD` 与 `RELEASE_AUDIO_IS_PREVIEW_VOICE`;ffprobe 输出 `h264` 视频流与 `aac` 音频流。
 
 ## 诚实边界
 

@@ -33,7 +33,8 @@
 - Onboarding 能力层:`lj setup` 会先继承订阅/本机 CLI 能力;`resolve_provider("auto", kind)` 可解析到当前最优真实 provider。
 - M2 画面委托:`visual_plan.json` 可按镜记录 host/user/fallback generator、`visual_prompt`、`motion_spec` 与 `expected_asset_path`;release/real-preview 会先委托可用宿主 CLI 生成缺失资产,再消费每镜 mp4/png 产物并组装;缺产物回落 `fallback_solid` 且 QA 给 `RELEASE_VISUAL_IS_BLANK_CARD` warning。
 - M2 宿主能力分档:`lj setup --json` 输出 `capabilities.visuals`;HyperFrames/Remotion/imagegen 为宿主委托能力,不作为 release 硬门。
-- M2 发布级配音分档:`capabilities.tts` 记录 `quality_tier`;火山豆包/OpenAI-compatible/真实 TTS CLI 为 release tier,say/Piper/espeak-ng 为 preview tier。
+- M2 发布级配音分档:`capabilities.tts` 记录 `quality_tier`;火山豆包/OpenAI-compatible/真实 TTS CLI 为 `publish`,say/Piper/espeak-ng 为 `preview`。
+- M2 对标补充:宿主画面 CLI 能力探测必须写出临时 png/mp4 资产才标可用;只 `exit 0` 不再通过。
 - Web: `pnpm --dir apps/web lint` 与 `pnpm --dir apps/web build`;build 输出包含 5 个主流程路由。
 - Web smoke: Playwright 打开 `/` 与 `/export`,截图写入 `output/playwright/web-smoke.png`。
 - 审批门禁: 未审 render 返回 `APPROVAL_REQUIRED`;改稿后 render 返回 `APPROVAL_STALE`;三审后 preview render 成功。

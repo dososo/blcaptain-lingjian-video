@@ -234,7 +234,22 @@
 ### Review: M2 第2步
 
 - 已完成:visuals 每镜写入可执行生成规格;render 前按 `LINGJIAN_HOST_IMAGEGEN_CLI`、`LINGJIAN_HOST_HYPERFRAMES_CLI`、`LINGJIAN_HOST_REMOTION_CLI` 或同名 CLI 做 best-effort 委托,失败不伪造产物。
-- 已完成:新增火山豆包 TTS provider;TTS 能力有 `quality_tier`,发布级优先,本机 say/Piper/espeak-ng 保持真实可用但 release QA warning。
+- 已完成:新增火山豆包 TTS provider;TTS 能力有 `quality_tier`,发布级为 `publish`,本机 say/Piper/espeak-ng 保持真实可用但 release QA warning。
 - 已完成:继承/本机 CLI 失败轻量重试一次;doctor JSON 保持脱敏,不输出 key 值或完整命令。
 - 验证: `uv run pytest -q` 94 passed;`uv run ruff check .` 通过;5 个扫描器 exit=0;`pnpm --dir apps/web lint` 与 `build` 通过;`run_verification.py` 52 PASS / 0 FAIL,V-REAL-01=PASS。
 - 证据: `verification/evidence/V-REAL-01.log` 含 `RELEASE_AUDIO_IS_PREVIEW_VOICE` 与 `RELEASE_VISUAL_IS_BLANK_CARD` warnings,最终 ffprobe 含 h264 视频流与 aac 音频流。
+
+## M2 对标差距补充清单
+
+- [x] 对标 `a7064e46.../pasted-text.txt` 的 M2 最终版,梳理已落地、仍缺和不做边界。
+- [x] 将发布级 TTS `quality_tier` 口径调整为 `publish`,并补 doctor 单测。
+- [x] 将宿主画面 CLI capability 从“命令存在”升级为“探测命令能写出临时资产”。
+- [x] 新增对标说明文档,明确不做自研引擎、不 import/bundle Remotion/HyperFrames、不加新用户命令、不做爆款算法/平台知识包。
+
+### Review: M2 对标差距补充
+
+- 对标依据:用户 M2 最终版附件与 `reference/final-audit/00_EXECUTIVE_SUMMARY.md`、`03_BEST_PRACTICES.md`、`07_GOAL_PATCH_SUGGESTIONS.md`。
+- 补齐项:发布级 TTS 对外字段统一为 `quality_tier=publish`;宿主画面 CLI capability 改为行为探测,必须写出临时资产才标可用。
+- 不做边界:不自研/不 bundle Remotion/HyperFrames,不新增用户命令,不做平台知识包、爆款算法、声音克隆、ASR、本地权重或默认视频下载。
+- 验证: `uv run pytest -q` 96 passed;`uv run ruff check .` 通过;5 个扫描器 exit=0;`pnpm --dir apps/web lint` 与 `build` 通过;`run_verification.py` 52 PASS / 0 FAIL;`git diff --check` 通过。
+- 证据文档:`docs/dev/20_M2_REFERENCE_GAP_AUDIT.md`。

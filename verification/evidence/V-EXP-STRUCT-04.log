@@ -1,4 +1,4 @@
-command: test -f exports/verify_m1_20260702T043332Z/douyin/zh-CN/9x16/captions/subtitles.ass
+command: test -f exports/verify_m1_20260702T060026Z/douyin/zh-CN/9x16/captions/subtitles.ass
 exit_code: 0
 
 stdout:

@@ -1,4 +1,4 @@
-command: uv run lj qa projects/verify_m1_20260702T043332Z --json
+command: uv run lj qa projects/verify_m1_20260702T060026Z --json
 exit_code: 0
 
 stdout:

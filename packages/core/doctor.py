@@ -237,7 +237,7 @@ def run_doctor(
             )
         )
     elif not any(
-        method.quality_tier == "release" and method.safe_for_release
+        method.quality_tier == "publish" and method.safe_for_release
         for method in providers["tts"].methods
     ):
         optional.append(

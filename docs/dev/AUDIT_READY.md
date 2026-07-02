@@ -32,6 +32,7 @@
 - `docs/dev/17_RELEASE_PREP.md`
 - `docs/dev/18_M2_VISUAL_DELEGATION.md`
 - `docs/dev/19_M2_VISUAL_GEN_AND_TTS.md`
+- `docs/dev/20_M2_REFERENCE_GAP_AUDIT.md`
 - `verification/release_prep/*`
 
 ## results 对照表
@@ -152,3 +153,12 @@
 - `packages/core/qa.py` 已新增 `RELEASE_AUDIO_IS_PREVIEW_VOICE` warning;release 音轨来自 say/Piper/espeak-ng 时提示升级发布级 TTS,但不削弱非 mock、音频流、ffprobe 等 hard gate。
 - `providers/inherited_cli.py` 已给继承/本机 CLI 调用增加一次轻量重试;失败错误保持稳定并标明外部 CLI 调用失败。
 - 详细说明: `docs/dev/19_M2_VISUAL_GEN_AND_TTS.md`。
+
+## M2 对标补充项
+
+- 已对标用户 M2 最终版附件与 `lingjian_M1_FINAL_after_claude_final_audit/reference/final-audit/*`。
+- 发布级 TTS 字段已统一为 `quality_tier=publish`,preview 本机 TTS 保持 `quality_tier=preview`。
+- 宿主画面 CLI 能力检测已从“命令存在”升级为“probe 能写出临时资产”;只 `exit 0` 的空 CLI 不再标为可用。
+- 不做边界已明确:不自研/不 bundle Remotion/HyperFrames,不新增用户命令,不做平台知识包/爆款算法/声音克隆/ASR/默认下载视频。
+- 对标补充验证: `uv run pytest -q` 为 96 passed;ruff、5 个扫描器、Web lint/build、`run_verification.py` 与 `git diff --check` 均通过。
+- 详细说明: `docs/dev/20_M2_REFERENCE_GAP_AUDIT.md`。

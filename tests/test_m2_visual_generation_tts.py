@@ -1,6 +1,7 @@
 import base64
 import json
 import subprocess
+import sys
 from pathlib import Path
 
 from typer.testing import CliRunner
@@ -253,7 +254,15 @@ def test_inherited_cli_retries_once_after_transient_failure(tmp_path, monkeypatc
 
 
 def test_setup_detects_host_imagegen_cli_as_static_visual_tier(tmp_path, monkeypatch):
-    imagegen = _fake_executable(tmp_path / "imagegen-cli", "#!/bin/sh\nexit 0\n")
+    imagegen = _fake_executable(
+        tmp_path / "imagegen-cli",
+        f"#!{sys.executable}\n"
+        "import json, pathlib, sys\n"
+        "payload=json.load(sys.stdin)\n"
+        "out=pathlib.Path(payload['expected_asset_path'])\n"
+        "out.write_bytes(b'PNG')\n"
+        "print(json.dumps({'asset_path': str(out)}))\n",
+    )
     monkeypatch.setenv("LINGJIAN_HOST_IMAGEGEN_CLI", str(imagegen))
     monkeypatch.setenv("PATH", "")
 
@@ -263,3 +272,17 @@ def test_setup_detects_host_imagegen_cli_as_static_visual_tier(tmp_path, monkeyp
     payload = json.loads(result.output)
     assert payload["capabilities"]["visuals"]["best"]["id"] == "host_imagegen"
     assert payload["capabilities"]["visuals"]["best"]["safe_for_release"] is True
+
+
+def test_setup_rejects_host_imagegen_cli_that_does_not_write_probe_asset(
+    tmp_path, monkeypatch
+):
+    imagegen = _fake_executable(tmp_path / "imagegen-cli", "#!/bin/sh\nexit 0\n")
+    monkeypatch.setenv("LINGJIAN_HOST_IMAGEGEN_CLI", str(imagegen))
+    monkeypatch.setenv("PATH", "")
+
+    result = runner.invoke(app, ["setup", "--json"])
+
+    assert result.exit_code == 0
+    payload = json.loads(result.output)
+    assert payload["capabilities"]["visuals"]["best"]["id"] == "fallback_solid"
