@@ -1,0 +1,65 @@
+
+│
+●   codex  Agent detected — installing non-interactively
+[?25l│
+◇  Source: https://github.com/remotion-dev/skills.git
+[?25h[?25l│
+◒  Cloning repository[999D[J◐  Cloning repository[999D[J◓  Cloning repository[999D[J◑  Cloning repository[999D[J◒  Cloning repository[999D[J◐  Cloning repository[999D[J◓  Cloning repository[999D[J◑  Cloning repository[999D[J◒  Cloning repository.[999D[J◐  Cloning repository.[999D[J◓  Cloning repository.[999D[J◑  Cloning repository.[999D[J◒  Cloning repository.[999D[J◐  Cloning repository.[999D[J◓  Cloning repository.[999D[J◑  Cloning repository.[999D[J◒  Cloning repository..[999D[J◐  Cloning repository..[999D[J◓  Cloning repository..[999D[J◑  Cloning repository..[999D[J◒  Cloning repository..[999D[J◐  Cloning repository..[999D[J◓  Cloning repository..[999D[J◑  Cloning repository..[999D[J◒  Cloning repository...[999D[J◇  Repository cloned
+[?25h[?25l│
+[999D[J◇  Found 1 skill
+[?25h│
+●  Skill: remotion-best-practices
+│
+│  Best practices for Remotion - Video creation in React
+
+│
+◇  Installation Summary ──────────────────────────────────────────────╮
+│                                                                     │
+│  ./.agents/skills/remotion-best-practices                           │
+│    copy → Codex, Amp, Antigravity, Antigravity CLI, Cline +12 more  │
+│                                                                     │
+├─────────────────────────────────────────────────────────────────────╯
+│
+◇  Security Risk Assessments ─────────────────────────────────────────────╮
+│                                                                         │
+│                           Gen               Socket            Snyk      │
+│  remotion-best-practices  Safe              0 alerts          Med Risk  │
+│                                                                         │
+│  Details: https://skills.sh/remotion-dev/skills                         │
+│                                                                         │
+├─────────────────────────────────────────────────────────────────────────╯
+[?25l│
+[999D[J◒  Installing skills[999D[J◇  Installation complete
+[?25h
+│
+◇  Installed 1 skill ────────────────────────────╮
+│                                                │
+│  ✓ remotion-best-practices (copied)            │
+│    → ./.agents/skills/remotion-best-practices  │
+│    → ./.agents/skills/remotion-best-practices  │
+│    → ./.agents/skills/remotion-best-practices  │
+│    → ./.agents/skills/remotion-best-practices  │
+│    → ./.agents/skills/remotion-best-practices  │
+│    → ./.agents/skills/remotion-best-practices  │
+│    → ./.agents/skills/remotion-best-practices  │
+│    → ./.agents/skills/remotion-best-practices  │
+│    → ./.agents/skills/remotion-best-practices  │
+│    → ./.agents/skills/remotion-best-practices  │
+│    → ./.agents/skills/remotion-best-practices  │
+│    → ./.agents/skills/remotion-best-practices  │
+│    → ./.agents/skills/remotion-best-practices  │
+│    → ./.agents/skills/remotion-best-practices  │
+│    → ./.agents/skills/remotion-best-practices  │
+│    → ./.agents/skills/remotion-best-practices  │
+│    → ./.agents/skills/remotion-best-practices  │
+│                                                │
+├────────────────────────────────────────────────╯
+
+│
+└  Done!  Review skills before use; they run with full agent permissions.
+
+npm notice
+npm notice New minor version of npm available! 11.8.0 -> 11.18.0
+npm notice Changelog: https://github.com/npm/cli/releases/tag/v11.18.0
+npm notice To update run: npm install -g npm@11.18.0
+npm notice

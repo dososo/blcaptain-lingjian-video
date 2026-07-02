@@ -419,11 +419,11 @@ def _visual_candidates(
                 "将消费已有 project/assets/scenes 产物,否则回落纯色卡片并给 QA warning。"
             ),
             setup_command=(
-                "Codex 桌面版安装/启用 HyperFrames、Remotion 或 imagegen;"
-                "推荐先试 npx skills add heygen-com/hyperframes 或 "
+                "当前已验证发布级视觉首选:把每镜 mp4/png 放进 project/assets/scenes/。"
+                "如需宿主自动生成,可在 Codex 桌面版安装/启用 HyperFrames、Remotion 或 imagegen;"
+                "可试 npx skills add heygen-com/hyperframes 或 "
                 "npx skills add remotion-dev/skills。若入口变化,以官方文档和 Codex 插件市场为准。"
                 "安装后新开会话再跑 uv run lj setup。"
-                "也可把每镜 mp4/png 放进 project/assets/scenes/。"
             ),
         ),
     ]

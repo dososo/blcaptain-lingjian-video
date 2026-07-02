@@ -21,7 +21,7 @@ uv run lj doctor --json
 
 - LLM:先找 Claude Code 的 `claude`、Codex 的 `codex` 等官方订阅 CLI;再找 `ollama`、`llm`;最后才看 OpenAI-compatible key。
 - TTS:先找发布级云 TTS 或真实 TTS CLI;没有时使用本机预览级 TTS,如 macOS `say`、Piper、espeak-ng,并在发布 QA 中 warning。
-- 画面:检测宿主 HyperFrames/Remotion/imagegen 是否可用;不可用时先引导 Codex 桌面版用户安装/启用插件或 skill,也可消费用户自带 `assets/scenes/` 素材,最后才回落卡片并在 QA warning。
+- 画面:当前已验证的发布级视觉首选路径是消费用户自带 `assets/scenes/` 素材;宿主 HyperFrames/Remotion/imagegen 自动生成属于可选进阶。两者都没有时才回落卡片并在 QA warning。
 - 渲染:检查本机 `ffmpeg`、`ffprobe`,并确认 `ffmpeg` 支持 `drawtext/libfreetype`。
 - 字体:macOS 用 PingFang;其他系统可放 `~/.cache/lingjian/fonts/NotoSansSC-Regular.otf`。
 
@@ -170,7 +170,7 @@ ffmpeg -filters | findstr drawtext
 - macOS 默认使用 PingFang。
 - 其他系统缺字体时,放置 `~/.cache/lingjian/fonts/NotoSansSC-Regular.otf`。
 
-## 画面能力:宿主委托优先
+## 画面能力:自备素材优先,宿主委托进阶
 
 灵剪核心不内置 Remotion/HyperFrames。它会在 visuals 阶段生成每镜 storyboard,每镜包含:
 
@@ -181,7 +181,14 @@ ffmpeg -filters | findstr drawtext
 - `expected_asset_path`: 约定资产落点。
 - `duration_sec`: 与配音时长对齐。
 
-Codex 桌面版用户应先安装或启用宿主画面插件/skill。可尝试:
+当前已验证的发布级视觉路径是把每镜 mp4/png 放到:
+
+```text
+project/assets/scenes/<scene_id>.mp4
+project/assets/scenes/<scene_id>.png
+```
+
+Codex 桌面版用户也可以安装或启用宿主画面插件/skill,让宿主自动生成这些资产。可尝试:
 
 ```bash
 npx skills add heygen-com/hyperframes
@@ -200,7 +207,7 @@ project/assets/scenes/<scene_id>.mp4
 project/assets/scenes/<scene_id>.png
 ```
 
-如果宿主没有这些能力,你也可以自己把 mp4/png 放进这个目录。仍然没有产物时,lj 会回落纯色卡片并在 release QA 中给 `RELEASE_VISUAL_IS_BLANK_CARD` warning。
+如果宿主没有这些能力,也没有用户自备素材,lj 会回落纯色卡片并在 release QA 中给 `RELEASE_VISUAL_IS_BLANK_CARD` warning。
 
 这不是 release 硬门:没有宿主画面能力仍可出片,但不能声称已经生成动态画面。
 

@@ -15,7 +15,7 @@ uv run lj doctor --json
 
 - LLM 已继承 Claude/Codex:可以用订阅能力写脚本,不需要 key。
 - TTS 只有 macOS say/Piper/espeak-ng:能听预览,但不是发布级配音。
-- visuals 是 fallback_solid:还没有真实画面生成能力,需要安装/启用 Codex 里的 HyperFrames、Remotion、imagegen,或自己提供每镜素材。
+- visuals 是 fallback_solid:还没有真实画面资产。当前已验证的发布级视觉首选路径是自己提供每镜图片/视频;Codex 里的 HyperFrames、Remotion、imagegen 属可选进阶。
 - render OK:本机 FFmpeg/ffprobe/drawtext 已能出片。
 
 ## 你有一段文案
@@ -79,9 +79,16 @@ uv run lj doctor --json
 
 ## 你需要真实画面
 
-灵剪不内置 Remotion/HyperFrames。Codex 桌面版用户应先安装或启用相关插件/skill,让宿主生成每镜资产,再交给 lj 组装。
+灵剪不内置 Remotion/HyperFrames。当前已验证的发布级视觉路径是:先按 `visual_plan.json` 的 `expected_asset_path` 放置每镜 mp4/png,再让 lj 组装。Codex 桌面版的 HyperFrames、Remotion、imagegen 可用于自动生成这些资产,但属于可选进阶。
 
-可尝试:
+自备素材路径:
+
+```text
+projects/<项目>/assets/scenes/s1.mp4
+projects/<项目>/assets/scenes/s2.png
+```
+
+如需让 Codex 宿主自动生成,可尝试:
 
 ```bash
 npx skills add heygen-com/hyperframes
@@ -97,13 +104,6 @@ npx skills add remotion-dev/skills
 
 ```bash
 uv run lj setup
-```
-
-如果 `visuals` 仍是 fallback,也可以手动把素材放到:
-
-```text
-projects/<项目>/assets/scenes/s1.mp4
-projects/<项目>/assets/scenes/s2.png
 ```
 
 然后运行:

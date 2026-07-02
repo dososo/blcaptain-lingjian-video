@@ -194,7 +194,7 @@
 
 - [x] 仓库与版本:确认 git 状态,对齐 `pyproject.toml`、`package.json`、`apps/web/package.json` 的 `0.1.0`,准备 `v0.1.0` tag。
 - [x] 发布文档:新增 `CHANGELOG.md`、`ROADMAP.md`,README 补隐私、安全与跨平台开通说明。
-- [ ] 占位替换:将 README/ONBOARDING/SKILL 中的 `<REPO_URL>` 替换为真实开源仓库地址;本地无 remote 时标为阻塞并等待用户提供。
+- [x] 占位替换:将 README/ONBOARDING/SKILL 中的 `<REPO_URL>` 替换为真实开源仓库地址,配置 remote。
 - [x] 首用自检:在干净 clone 中按 README 顶部流程跑到预览档出片,留存 doctor 与预览证据。
 - [x] 验证与打包:重跑 run_verification、pytest、ruff、5 扫描器、pnpm lint/build,打包 `iter_9` 并记录发布准备说明。
 
@@ -204,7 +204,7 @@
 - 首用自检:本地 clean clone 运行 `uv sync`、`scripts/install_skill_links.sh`、`uv run lj setup`、`uv run lj doctor --json`、`lj run --yes` 预览档、QA、export,证据在 `verification/release_prep/`。
 - 验证结果:`run_verification.py` 为 52 PASS / 0 FAIL;`uv run pytest -q` 为 83 passed;ruff、5 个扫描器、Web lint/build 均通过。
 - 交付包:`lingjian_M1_codex_delivery_iter_9.zip`,已通过 `unzip -t`,并排除 `.git`、`.venv`、`node_modules`、`projects`、`exports` 与旧 zip。
-- 当前阻塞:本地无 `git remote`,无法确认真实开源仓库地址;`README.md` 中 `<REPO_URL>` 未替换,最终 `v0.1.0` tag 暂不创建。
+- 当前状态:remote 已配置为 `https://github.com/dososo/blcaptain-lingjian-video.git`;用户面安装命令已替换真实地址,`v0.1.0` tag 在最终发布提交后更新。
 
 ## M2 画面委托主轨清单
 
@@ -288,3 +288,18 @@
 - P1-1 依据:HyperFrames 官方 quickstart/GitHub 均确认 `npx skills add heygen-com/hyperframes`;Remotion Agent Skills 官方文档确认 `npx skills add remotion-dev/skills`。
 - P2-1 已落地:README 顶部能力说明和 Web 控制台段均标明 Web 当前为静态骨架,完整主线以 CLI 为准。
 - 当前状态:真实开源仓库已创建并配置 remote;全量验收与干净 clone 自检通过,等待提交自检证据、更新 tag、push。
+
+## 真实用户体验审查后补强清单
+
+- [x] README / SKILL 第一条快速开始命令改为 `--script-provider auto --voice-provider auto`。
+- [x] mock 保留为“仅验证流程”的显式选项。
+- [x] 用临时环境验证 `npx skills add heygen-com/hyperframes` 与 `npx skills add remotion-dev/skills` 均可解析安装。
+- [x] 将当前已验证发布级视觉首选路径改为自备每镜 mp4/png;宿主插件自动生成降为可选进阶。
+- [x] 真跑自备图片 release 链路,确认无 `RELEASE_VISUAL_IS_BLANK_CARD`,ffprobe 有 h264+aac。
+- [x] 重跑全量验收并更新发布 tag。
+
+### Review: 真实用户体验审查后补强
+
+- 证据目录:`verification/release_visual_user_assets/`。
+- 当前事实:开箱能出可打开预览片;发布级视觉可通过自备图片/视频避免 blank-card;宿主插件自动生成动态画面仍缺真实端到端成片证据。
+- 验收:`uv run pytest -q` 为 99 passed;ruff、5 扫描器、Web lint/build 均通过;`run_verification.py` 为 52 PASS / 0 FAIL。

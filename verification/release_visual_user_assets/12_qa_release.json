@@ -1,0 +1,1 @@
+{"hard_failures": [], "info": [{"code": "QA_STUB", "message_zh": "Batch 2 最小 QA 已执行。", "severity": "info"}], "ok": true, "release_ready": true, "warnings": [{"code": "RELEASE_AUDIO_IS_PREVIEW_VOICE", "message_zh": "release 音轨来自本机预览级 TTS;建议配置火山豆包等发布级 TTS。", "severity": "warning"}]}

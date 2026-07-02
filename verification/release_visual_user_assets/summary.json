@@ -1,0 +1,19 @@
+{
+  "release_ready": true,
+  "warnings": [
+    "RELEASE_AUDIO_IS_PREVIEW_VOICE"
+  ],
+  "has_blank_card_warning": false,
+  "has_preview_voice_warning": true,
+  "streams": [
+    [
+      "video",
+      "h264"
+    ],
+    [
+      "audio",
+      "aac"
+    ]
+  ],
+  "video_path": "exports/verify_user_visual_20260702T080348Z/douyin/zh-CN/9x16/video.mp4"
+}

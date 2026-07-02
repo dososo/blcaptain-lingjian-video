@@ -6,6 +6,7 @@
 
 - GitHub 仓库: https://github.com/dososo/blcaptain-lingjian-video
 - Git remote: `origin https://github.com/dososo/blcaptain-lingjian-video.git`
+- 可见性:当前按用户要求为 `PRIVATE`;公开发布前需再切回 public 或确认仅授权用户分发。
 - 发布 tag:`v0.1.0`。
 
 ## 整改项

@@ -13,6 +13,8 @@ def test_skill_file_and_readme_install_prompt_are_packaged():
     assert "MCP 尚未实现" in skill
     assert "--voice-audio-file" in skill
     assert "请帮我安装并启用「灵剪 lingjian-video」短视频生产 skill" in readme[:3000]
+    assert "--script-provider auto --voice-provider auto" in readme
+    assert "--script-provider mock --voice-provider mock" in readme
     assert "ln -sfn" in readme[:3000]
     assert "docs/CREATOR_QUICKSTART.md" in readme[:3000]
 

@@ -1,0 +1,1 @@
+{"approval": {"approved_at": "2026-07-02T08:04:11.930309+00:00", "approved_by": "ci", "artifact_path": "artifacts/voice_plan.json", "artifact_sha256": "44157555d7494e6a52ae428bae143797c52840dcdc0b37e158263f9bf24ff08d", "comment": null, "signature": "ed9971dc6f1009717a1cb0db15dd28e5299b481c246f2c1d5f79f71ead254643", "target": "voice"}, "ok": true}

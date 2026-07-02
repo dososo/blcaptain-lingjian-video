@@ -1,4 +1,4 @@
-command: uv run lj script projects/verify_m1_20260702T073330Z --type product --platform douyin --language zh-CN --ratio 9:16 --duration 45 --provider mock --json
+command: uv run lj script projects/verify_m1_20260702T081115Z --type product --platform douyin --language zh-CN --ratio 9:16 --duration 45 --provider mock --json
 exit_code: 0
 
 stdout:

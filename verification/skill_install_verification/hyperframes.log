@@ -1,0 +1,479 @@
+
+│
+●   codex  Agent detected — installing non-interactively
+[?25l│
+◇  Source: https://github.com/heygen-com/hyperframes.git
+[?25h[?25l│
+◒  Fetching skills[999D[J◐  Fetching skills[999D[J◓  Fetching skills[999D[J◑  Fetching skills[999D[J◒  Fetching skills[999D[J◐  Fetching skills[999D[J◓  Fetching skills[999D[J◑  Fetching skills[999D[J◒  Fetching skills.[999D[J◐  Fetching skills.[999D[J◓  Fetching skills.[999D[J◑  Fetching skills.[999D[J◒  Fetching skills.[999D[J◐  Fetching skills.[999D[J◓  Fetching skills.[999D[J◑  Fetching skills.[999D[J◒  Fetching skills..[999D[J◐  Fetching skills..[999D[J◓  Fetching skills..[999D[J◑  Fetching skills..[999D[J◒  Fetching skills..[999D[J◐  Fetching skills..[999D[J◓  Fetching skills..[999D[J◑  Fetching skills..[999D[J◒  Fetching skills...[999D[J◐  Fetching skills...[999D[J◓  Fetching skills...[999D[J◑  Fetching skills...[999D[J◒  Fetching skills...[999D[J◐  Fetching skills...[999D[J◓  Fetching skills...[999D[J◑  Fetching skills...[999D[J◒  Fetching skills...[999D[J◐  Fetching skills[999D[J◓  Fetching skills[999D[J◑  Fetching skills[999D[J◒  Fetching skills[999D[J◐  Fetching skills[999D[J◓  Fetching skills[999D[J◑  Fetching skills[999D[J◒  Fetching skills[999D[J◐  Fetching skills.[999D[J◓  Fetching skills.[999D[J◑  Fetching skills.[999D[J◒  Fetching skills.[999D[J◐  Fetching skills.[999D[J◓  Fetching skills.[999D[J◑  Fetching skills.[999D[J◒  Fetching skills.[999D[J◐  Fetching skills..[999D[J◓  Fetching skills..[999D[J◑  Fetching skills..[999D[J◒  Fetching skills..[999D[J◐  Fetching skills..[999D[J◓  Fetching skills..[999D[J◑  Fetching skills..[999D[J◇  Found 20 skills
+[?25h│
+●  Installing all 20 skills
+
+│
+◇  Installation Summary ──────────────────────────────────────────────╮
+│                                                                     │
+│  ./.agents/skills/embedded-captions                                 │
+│    copy → Codex, Amp, Antigravity, Antigravity CLI, Cline +12 more  │
+│                                                                     │
+│  ./.agents/skills/faceless-explainer                                │
+│    copy → Codex, Amp, Antigravity, Antigravity CLI, Cline +12 more  │
+│                                                                     │
+│  ./.agents/skills/general-video                                     │
+│    copy → Codex, Amp, Antigravity, Antigravity CLI, Cline +12 more  │
+│                                                                     │
+│  ./.agents/skills/hyperframes-animation                             │
+│    copy → Codex, Amp, Antigravity, Antigravity CLI, Cline +12 more  │
+│                                                                     │
+│  ./.agents/skills/hyperframes-cli                                   │
+│    copy → Codex, Amp, Antigravity, Antigravity CLI, Cline +12 more  │
+│                                                                     │
+│  ./.agents/skills/hyperframes-core                                  │
+│    copy → Codex, Amp, Antigravity, Antigravity CLI, Cline +12 more  │
+│                                                                     │
+│  ./.agents/skills/hyperframes-creative                              │
+│    copy → Codex, Amp, Antigravity, Antigravity CLI, Cline +12 more  │
+│                                                                     │
+│  ./.agents/skills/hyperframes-keyframes                             │
+│    copy → Codex, Amp, Antigravity, Antigravity CLI, Cline +12 more  │
+│                                                                     │
+│  ./.agents/skills/hyperframes-media                                 │
+│    copy → Codex, Amp, Antigravity, Antigravity CLI, Cline +12 more  │
+│                                                                     │
+│  ./.agents/skills/hyperframes-registry                              │
+│    copy → Codex, Amp, Antigravity, Antigravity CLI, Cline +12 more  │
+│                                                                     │
+│  ./.agents/skills/hyperframes                                       │
+│    copy → Codex, Amp, Antigravity, Antigravity CLI, Cline +12 more  │
+│                                                                     │
+│  ./.agents/skills/media-use                                         │
+│    copy → Codex, Amp, Antigravity, Antigravity CLI, Cline +12 more  │
+│                                                                     │
+│  ./.agents/skills/motion-graphics                                   │
+│    copy → Codex, Amp, Antigravity, Antigravity CLI, Cline +12 more  │
+│                                                                     │
+│  ./.agents/skills/music-to-video                                    │
+│    copy → Codex, Amp, Antigravity, Antigravity CLI, Cline +12 more  │
+│                                                                     │
+│  ./.agents/skills/pr-to-video                                       │
+│    copy → Codex, Amp, Antigravity, Antigravity CLI, Cline +12 more  │
+│                                                                     │
+│  ./.agents/skills/product-launch-video                              │
+│    copy → Codex, Amp, Antigravity, Antigravity CLI, Cline +12 more  │
+│                                                                     │
+│  ./.agents/skills/remotion-to-hyperframes                           │
+│    copy → Codex, Amp, Antigravity, Antigravity CLI, Cline +12 more  │
+│                                                                     │
+│  ./.agents/skills/slideshow                                         │
+│    copy → Codex, Amp, Antigravity, Antigravity CLI, Cline +12 more  │
+│                                                                     │
+│  ./.agents/skills/talking-head-recut                                │
+│    copy → Codex, Amp, Antigravity, Antigravity CLI, Cline +12 more  │
+│                                                                     │
+│  ./.agents/skills/website-to-video                                  │
+│    copy → Codex, Amp, Antigravity, Antigravity CLI, Cline +12 more  │
+│                                                                     │
+├─────────────────────────────────────────────────────────────────────╯
+│
+◇  Security Risk Assessments ──────────────────────────────────────────────────╮
+│                                                                              │
+│                           Gen               Socket            Snyk           │
+│  embedded-captions        Med Risk          2 alerts          Med Risk       │
+│  faceless-explainer       Safe              0 alerts          Low Risk       │
+│  general-video            Safe              0 alerts          Low Risk       │
+│  hyperframes-animation    Med Risk          0 alerts          Med Risk       │
+│  hyperframes-cli          Safe              0 alerts          Low Risk       │
+│  hyperframes-core         Safe              0 alerts          Med Risk       │
+│  hyperframes-creative     Med Risk          1 alert           Low Risk       │
+│  hyperframes-keyframes    Safe              --                Low Risk       │
+│  hyperframes-media        Med Risk          0 alerts          Low Risk       │
+│  hyperframes-registry     Safe              0 alerts          Med Risk       │
+│  hyperframes              Safe              0 alerts          Med Risk       │
+│  media-use                Safe              0 alerts          Med Risk       │
+│  motion-graphics          Safe              0 alerts          Med Risk       │
+│  music-to-video           Safe              0 alerts          Low Risk       │
+│  pr-to-video              Safe              0 alerts          Critical Risk  │
+│  product-launch-video     Safe              0 alerts          Med Risk       │
+│  remotion-to-hyperframes  Safe              1 alert           Low Risk       │
+│  slideshow                Safe              0 alerts          Med Risk       │
+│  talking-head-recut       Safe              0 alerts          Low Risk       │
+│  website-to-video         Safe              0 alerts          Med Risk       │
+│                                                                              │
+│  Details: https://skills.sh/heygen-com/hyperframes                           │
+│                                                                              │
+├──────────────────────────────────────────────────────────────────────────────╯
+[?25l│
+[999D[J◒  Installing skills[999D[J◐  Installing skills[999D[J◓  Installing skills[999D[J◑  Installing skills[999D[J◒  Installing skills[999D[J◐  Installing skills[999D[J◓  Installing skills[999D[J◑  Installing skills[999D[J◒  Installing skills.[999D[J◐  Installing skills.[999D[J◓  Installing skills.[999D[J◑  Installing skills.[999D[J◒  Installing skills.[999D[J◐  Installing skills.[999D[J◓  Installing skills.[999D[J◑  Installing skills.[999D[J◒  Installing skills..[999D[J◐  Installing skills..[999D[J◓  Installing skills..[999D[J◑  Installing skills..[999D[J◒  Installing skills..[999D[J◐  Installing skills..[999D[J◓  Installing skills..[999D[J◇  Installation complete
+[?25h
+│
+◇  Installed 20 skills ──────────────────────────╮
+│                                                │
+│  ✓ embedded-captions (copied)                  │
+│    → ./.agents/skills/embedded-captions        │
+│    → ./.agents/skills/embedded-captions        │
+│    → ./.agents/skills/embedded-captions        │
+│    → ./.agents/skills/embedded-captions        │
+│    → ./.agents/skills/embedded-captions        │
+│    → ./.agents/skills/embedded-captions        │
+│    → ./.agents/skills/embedded-captions        │
+│    → ./.agents/skills/embedded-captions        │
+│    → ./.agents/skills/embedded-captions        │
+│    → ./.agents/skills/embedded-captions        │
+│    → ./.agents/skills/embedded-captions        │
+│    → ./.agents/skills/embedded-captions        │
+│    → ./.agents/skills/embedded-captions        │
+│    → ./.agents/skills/embedded-captions        │
+│    → ./.agents/skills/embedded-captions        │
+│    → ./.agents/skills/embedded-captions        │
+│    → ./.agents/skills/embedded-captions        │
+│  ✓ faceless-explainer (copied)                 │
+│    → ./.agents/skills/faceless-explainer       │
+│    → ./.agents/skills/faceless-explainer       │
+│    → ./.agents/skills/faceless-explainer       │
+│    → ./.agents/skills/faceless-explainer       │
+│    → ./.agents/skills/faceless-explainer       │
+│    → ./.agents/skills/faceless-explainer       │
+│    → ./.agents/skills/faceless-explainer       │
+│    → ./.agents/skills/faceless-explainer       │
+│    → ./.agents/skills/faceless-explainer       │
+│    → ./.agents/skills/faceless-explainer       │
+│    → ./.agents/skills/faceless-explainer       │
+│    → ./.agents/skills/faceless-explainer       │
+│    → ./.agents/skills/faceless-explainer       │
+│    → ./.agents/skills/faceless-explainer       │
+│    → ./.agents/skills/faceless-explainer       │
+│    → ./.agents/skills/faceless-explainer       │
+│    → ./.agents/skills/faceless-explainer       │
+│  ✓ general-video (copied)                      │
+│    → ./.agents/skills/general-video            │
+│    → ./.agents/skills/general-video            │
+│    → ./.agents/skills/general-video            │
+│    → ./.agents/skills/general-video            │
+│    → ./.agents/skills/general-video            │
+│    → ./.agents/skills/general-video            │
+│    → ./.agents/skills/general-video            │
+│    → ./.agents/skills/general-video            │
+│    → ./.agents/skills/general-video            │
+│    → ./.agents/skills/general-video            │
+│    → ./.agents/skills/general-video            │
+│    → ./.agents/skills/general-video            │
+│    → ./.agents/skills/general-video            │
+│    → ./.agents/skills/general-video            │
+│    → ./.agents/skills/general-video            │
+│    → ./.agents/skills/general-video            │
+│    → ./.agents/skills/general-video            │
+│  ✓ hyperframes-animation (copied)              │
+│    → ./.agents/skills/hyperframes-animation    │
+│    → ./.agents/skills/hyperframes-animation    │
+│    → ./.agents/skills/hyperframes-animation    │
+│    → ./.agents/skills/hyperframes-animation    │
+│    → ./.agents/skills/hyperframes-animation    │
+│    → ./.agents/skills/hyperframes-animation    │
+│    → ./.agents/skills/hyperframes-animation    │
+│    → ./.agents/skills/hyperframes-animation    │
+│    → ./.agents/skills/hyperframes-animation    │
+│    → ./.agents/skills/hyperframes-animation    │
+│    → ./.agents/skills/hyperframes-animation    │
+│    → ./.agents/skills/hyperframes-animation    │
+│    → ./.agents/skills/hyperframes-animation    │
+│    → ./.agents/skills/hyperframes-animation    │
+│    → ./.agents/skills/hyperframes-animation    │
+│    → ./.agents/skills/hyperframes-animation    │
+│    → ./.agents/skills/hyperframes-animation    │
+│  ✓ hyperframes-cli (copied)                    │
+│    → ./.agents/skills/hyperframes-cli          │
+│    → ./.agents/skills/hyperframes-cli          │
+│    → ./.agents/skills/hyperframes-cli          │
+│    → ./.agents/skills/hyperframes-cli          │
+│    → ./.agents/skills/hyperframes-cli          │
+│    → ./.agents/skills/hyperframes-cli          │
+│    → ./.agents/skills/hyperframes-cli          │
+│    → ./.agents/skills/hyperframes-cli          │
+│    → ./.agents/skills/hyperframes-cli          │
+│    → ./.agents/skills/hyperframes-cli          │
+│    → ./.agents/skills/hyperframes-cli          │
+│    → ./.agents/skills/hyperframes-cli          │
+│    → ./.agents/skills/hyperframes-cli          │
+│    → ./.agents/skills/hyperframes-cli          │
+│    → ./.agents/skills/hyperframes-cli          │
+│    → ./.agents/skills/hyperframes-cli          │
+│    → ./.agents/skills/hyperframes-cli          │
+│  ✓ hyperframes-core (copied)                   │
+│    → ./.agents/skills/hyperframes-core         │
+│    → ./.agents/skills/hyperframes-core         │
+│    → ./.agents/skills/hyperframes-core         │
+│    → ./.agents/skills/hyperframes-core         │
+│    → ./.agents/skills/hyperframes-core         │
+│    → ./.agents/skills/hyperframes-core         │
+│    → ./.agents/skills/hyperframes-core         │
+│    → ./.agents/skills/hyperframes-core         │
+│    → ./.agents/skills/hyperframes-core         │
+│    → ./.agents/skills/hyperframes-core         │
+│    → ./.agents/skills/hyperframes-core         │
+│    → ./.agents/skills/hyperframes-core         │
+│    → ./.agents/skills/hyperframes-core         │
+│    → ./.agents/skills/hyperframes-core         │
+│    → ./.agents/skills/hyperframes-core         │
+│    → ./.agents/skills/hyperframes-core         │
+│    → ./.agents/skills/hyperframes-core         │
+│  ✓ hyperframes-creative (copied)               │
+│    → ./.agents/skills/hyperframes-creative     │
+│    → ./.agents/skills/hyperframes-creative     │
+│    → ./.agents/skills/hyperframes-creative     │
+│    → ./.agents/skills/hyperframes-creative     │
+│    → ./.agents/skills/hyperframes-creative     │
+│    → ./.agents/skills/hyperframes-creative     │
+│    → ./.agents/skills/hyperframes-creative     │
+│    → ./.agents/skills/hyperframes-creative     │
+│    → ./.agents/skills/hyperframes-creative     │
+│    → ./.agents/skills/hyperframes-creative     │
+│    → ./.agents/skills/hyperframes-creative     │
+│    → ./.agents/skills/hyperframes-creative     │
+│    → ./.agents/skills/hyperframes-creative     │
+│    → ./.agents/skills/hyperframes-creative     │
+│    → ./.agents/skills/hyperframes-creative     │
+│    → ./.agents/skills/hyperframes-creative     │
+│    → ./.agents/skills/hyperframes-creative     │
+│  ✓ hyperframes-keyframes (copied)              │
+│    → ./.agents/skills/hyperframes-keyframes    │
+│    → ./.agents/skills/hyperframes-keyframes    │
+│    → ./.agents/skills/hyperframes-keyframes    │
+│    → ./.agents/skills/hyperframes-keyframes    │
+│    → ./.agents/skills/hyperframes-keyframes    │
+│    → ./.agents/skills/hyperframes-keyframes    │
+│    → ./.agents/skills/hyperframes-keyframes    │
+│    → ./.agents/skills/hyperframes-keyframes    │
+│    → ./.agents/skills/hyperframes-keyframes    │
+│    → ./.agents/skills/hyperframes-keyframes    │
+│    → ./.agents/skills/hyperframes-keyframes    │
+│    → ./.agents/skills/hyperframes-keyframes    │
+│    → ./.agents/skills/hyperframes-keyframes    │
+│    → ./.agents/skills/hyperframes-keyframes    │
+│    → ./.agents/skills/hyperframes-keyframes    │
+│    → ./.agents/skills/hyperframes-keyframes    │
+│    → ./.agents/skills/hyperframes-keyframes    │
+│  ✓ hyperframes-media (copied)                  │
+│    → ./.agents/skills/hyperframes-media        │
+│    → ./.agents/skills/hyperframes-media        │
+│    → ./.agents/skills/hyperframes-media        │
+│    → ./.agents/skills/hyperframes-media        │
+│    → ./.agents/skills/hyperframes-media        │
+│    → ./.agents/skills/hyperframes-media        │
+│    → ./.agents/skills/hyperframes-media        │
+│    → ./.agents/skills/hyperframes-media        │
+│    → ./.agents/skills/hyperframes-media        │
+│    → ./.agents/skills/hyperframes-media        │
+│    → ./.agents/skills/hyperframes-media        │
+│    → ./.agents/skills/hyperframes-media        │
+│    → ./.agents/skills/hyperframes-media        │
+│    → ./.agents/skills/hyperframes-media        │
+│    → ./.agents/skills/hyperframes-media        │
+│    → ./.agents/skills/hyperframes-media        │
+│    → ./.agents/skills/hyperframes-media        │
+│  ✓ hyperframes-registry (copied)               │
+│    → ./.agents/skills/hyperframes-registry     │
+│    → ./.agents/skills/hyperframes-registry     │
+│    → ./.agents/skills/hyperframes-registry     │
+│    → ./.agents/skills/hyperframes-registry     │
+│    → ./.agents/skills/hyperframes-registry     │
+│    → ./.agents/skills/hyperframes-registry     │
+│    → ./.agents/skills/hyperframes-registry     │
+│    → ./.agents/skills/hyperframes-registry     │
+│    → ./.agents/skills/hyperframes-registry     │
+│    → ./.agents/skills/hyperframes-registry     │
+│    → ./.agents/skills/hyperframes-registry     │
+│    → ./.agents/skills/hyperframes-registry     │
+│    → ./.agents/skills/hyperframes-registry     │
+│    → ./.agents/skills/hyperframes-registry     │
+│    → ./.agents/skills/hyperframes-registry     │
+│    → ./.agents/skills/hyperframes-registry     │
+│    → ./.agents/skills/hyperframes-registry     │
+│  ✓ hyperframes (copied)                        │
+│    → ./.agents/skills/hyperframes              │
+│    → ./.agents/skills/hyperframes              │
+│    → ./.agents/skills/hyperframes              │
+│    → ./.agents/skills/hyperframes              │
+│    → ./.agents/skills/hyperframes              │
+│    → ./.agents/skills/hyperframes              │
+│    → ./.agents/skills/hyperframes              │
+│    → ./.agents/skills/hyperframes              │
+│    → ./.agents/skills/hyperframes              │
+│    → ./.agents/skills/hyperframes              │
+│    → ./.agents/skills/hyperframes              │
+│    → ./.agents/skills/hyperframes              │
+│    → ./.agents/skills/hyperframes              │
+│    → ./.agents/skills/hyperframes              │
+│    → ./.agents/skills/hyperframes              │
+│    → ./.agents/skills/hyperframes              │
+│    → ./.agents/skills/hyperframes              │
+│  ✓ media-use (copied)                          │
+│    → ./.agents/skills/media-use                │
+│    → ./.agents/skills/media-use                │
+│    → ./.agents/skills/media-use                │
+│    → ./.agents/skills/media-use                │
+│    → ./.agents/skills/media-use                │
+│    → ./.agents/skills/media-use                │
+│    → ./.agents/skills/media-use                │
+│    → ./.agents/skills/media-use                │
+│    → ./.agents/skills/media-use                │
+│    → ./.agents/skills/media-use                │
+│    → ./.agents/skills/media-use                │
+│    → ./.agents/skills/media-use                │
+│    → ./.agents/skills/media-use                │
+│    → ./.agents/skills/media-use                │
+│    → ./.agents/skills/media-use                │
+│    → ./.agents/skills/media-use                │
+│    → ./.agents/skills/media-use                │
+│  ✓ motion-graphics (copied)                    │
+│    → ./.agents/skills/motion-graphics          │
+│    → ./.agents/skills/motion-graphics          │
+│    → ./.agents/skills/motion-graphics          │
+│    → ./.agents/skills/motion-graphics          │
+│    → ./.agents/skills/motion-graphics          │
+│    → ./.agents/skills/motion-graphics          │
+│    → ./.agents/skills/motion-graphics          │
+│    → ./.agents/skills/motion-graphics          │
+│    → ./.agents/skills/motion-graphics          │
+│    → ./.agents/skills/motion-graphics          │
+│    → ./.agents/skills/motion-graphics          │
+│    → ./.agents/skills/motion-graphics          │
+│    → ./.agents/skills/motion-graphics          │
+│    → ./.agents/skills/motion-graphics          │
+│    → ./.agents/skills/motion-graphics          │
+│    → ./.agents/skills/motion-graphics          │
+│    → ./.agents/skills/motion-graphics          │
+│  ✓ music-to-video (copied)                     │
+│    → ./.agents/skills/music-to-video           │
+│    → ./.agents/skills/music-to-video           │
+│    → ./.agents/skills/music-to-video           │
+│    → ./.agents/skills/music-to-video           │
+│    → ./.agents/skills/music-to-video           │
+│    → ./.agents/skills/music-to-video           │
+│    → ./.agents/skills/music-to-video           │
+│    → ./.agents/skills/music-to-video           │
+│    → ./.agents/skills/music-to-video           │
+│    → ./.agents/skills/music-to-video           │
+│    → ./.agents/skills/music-to-video           │
+│    → ./.agents/skills/music-to-video           │
+│    → ./.agents/skills/music-to-video           │
+│    → ./.agents/skills/music-to-video           │
+│    → ./.agents/skills/music-to-video           │
+│    → ./.agents/skills/music-to-video           │
+│    → ./.agents/skills/music-to-video           │
+│  ✓ pr-to-video (copied)                        │
+│    → ./.agents/skills/pr-to-video              │
+│    → ./.agents/skills/pr-to-video              │
+│    → ./.agents/skills/pr-to-video              │
+│    → ./.agents/skills/pr-to-video              │
+│    → ./.agents/skills/pr-to-video              │
+│    → ./.agents/skills/pr-to-video              │
+│    → ./.agents/skills/pr-to-video              │
+│    → ./.agents/skills/pr-to-video              │
+│    → ./.agents/skills/pr-to-video              │
+│    → ./.agents/skills/pr-to-video              │
+│    → ./.agents/skills/pr-to-video              │
+│    → ./.agents/skills/pr-to-video              │
+│    → ./.agents/skills/pr-to-video              │
+│    → ./.agents/skills/pr-to-video              │
+│    → ./.agents/skills/pr-to-video              │
+│    → ./.agents/skills/pr-to-video              │
+│    → ./.agents/skills/pr-to-video              │
+│  ✓ product-launch-video (copied)               │
+│    → ./.agents/skills/product-launch-video     │
+│    → ./.agents/skills/product-launch-video     │
+│    → ./.agents/skills/product-launch-video     │
+│    → ./.agents/skills/product-launch-video     │
+│    → ./.agents/skills/product-launch-video     │
+│    → ./.agents/skills/product-launch-video     │
+│    → ./.agents/skills/product-launch-video     │
+│    → ./.agents/skills/product-launch-video     │
+│    → ./.agents/skills/product-launch-video     │
+│    → ./.agents/skills/product-launch-video     │
+│    → ./.agents/skills/product-launch-video     │
+│    → ./.agents/skills/product-launch-video     │
+│    → ./.agents/skills/product-launch-video     │
+│    → ./.agents/skills/product-launch-video     │
+│    → ./.agents/skills/product-launch-video     │
+│    → ./.agents/skills/product-launch-video     │
+│    → ./.agents/skills/product-launch-video     │
+│  ✓ remotion-to-hyperframes (copied)            │
+│    → ./.agents/skills/remotion-to-hyperframes  │
+│    → ./.agents/skills/remotion-to-hyperframes  │
+│    → ./.agents/skills/remotion-to-hyperframes  │
+│    → ./.agents/skills/remotion-to-hyperframes  │
+│    → ./.agents/skills/remotion-to-hyperframes  │
+│    → ./.agents/skills/remotion-to-hyperframes  │
+│    → ./.agents/skills/remotion-to-hyperframes  │
+│    → ./.agents/skills/remotion-to-hyperframes  │
+│    → ./.agents/skills/remotion-to-hyperframes  │
+│    → ./.agents/skills/remotion-to-hyperframes  │
+│    → ./.agents/skills/remotion-to-hyperframes  │
+│    → ./.agents/skills/remotion-to-hyperframes  │
+│    → ./.agents/skills/remotion-to-hyperframes  │
+│    → ./.agents/skills/remotion-to-hyperframes  │
+│    → ./.agents/skills/remotion-to-hyperframes  │
+│    → ./.agents/skills/remotion-to-hyperframes  │
+│    → ./.agents/skills/remotion-to-hyperframes  │
+│  ✓ slideshow (copied)                          │
+│    → ./.agents/skills/slideshow                │
+│    → ./.agents/skills/slideshow                │
+│    → ./.agents/skills/slideshow                │
+│    → ./.agents/skills/slideshow                │
+│    → ./.agents/skills/slideshow                │
+│    → ./.agents/skills/slideshow                │
+│    → ./.agents/skills/slideshow                │
+│    → ./.agents/skills/slideshow                │
+│    → ./.agents/skills/slideshow                │
+│    → ./.agents/skills/slideshow                │
+│    → ./.agents/skills/slideshow                │
+│    → ./.agents/skills/slideshow                │
+│    → ./.agents/skills/slideshow                │
+│    → ./.agents/skills/slideshow                │
+│    → ./.agents/skills/slideshow                │
+│    → ./.agents/skills/slideshow                │
+│    → ./.agents/skills/slideshow                │
+│  ✓ talking-head-recut (copied)                 │
+│    → ./.agents/skills/talking-head-recut       │
+│    → ./.agents/skills/talking-head-recut       │
+│    → ./.agents/skills/talking-head-recut       │
+│    → ./.agents/skills/talking-head-recut       │
+│    → ./.agents/skills/talking-head-recut       │
+│    → ./.agents/skills/talking-head-recut       │
+│    → ./.agents/skills/talking-head-recut       │
+│    → ./.agents/skills/talking-head-recut       │
+│    → ./.agents/skills/talking-head-recut       │
+│    → ./.agents/skills/talking-head-recut       │
+│    → ./.agents/skills/talking-head-recut       │
+│    → ./.agents/skills/talking-head-recut       │
+│    → ./.agents/skills/talking-head-recut       │
+│    → ./.agents/skills/talking-head-recut       │
+│    → ./.agents/skills/talking-head-recut       │
+│    → ./.agents/skills/talking-head-recut       │
+│    → ./.agents/skills/talking-head-recut       │
+│  ✓ website-to-video (copied)                   │
+│    → ./.agents/skills/website-to-video         │
+│    → ./.agents/skills/website-to-video         │
+│    → ./.agents/skills/website-to-video         │
+│    → ./.agents/skills/website-to-video         │
+│    → ./.agents/skills/website-to-video         │
+│    → ./.agents/skills/website-to-video         │
+│    → ./.agents/skills/website-to-video         │
+│    → ./.agents/skills/website-to-video         │
+│    → ./.agents/skills/website-to-video         │
+│    → ./.agents/skills/website-to-video         │
+│    → ./.agents/skills/website-to-video         │
+│    → ./.agents/skills/website-to-video         │
+│    → ./.agents/skills/website-to-video         │
+│    → ./.agents/skills/website-to-video         │
+│    → ./.agents/skills/website-to-video         │
+│    → ./.agents/skills/website-to-video         │
+│    → ./.agents/skills/website-to-video         │
+│                                                │
+├────────────────────────────────────────────────╯
+
+│
+└  Done!  Review skills before use; they run with full agent permissions.
+
+npm notice
+npm notice New minor version of npm available! 11.8.0 -> 11.18.0
+npm notice Changelog: https://github.com/npm/cli/releases/tag/v11.18.0
+npm notice To update run: npm install -g npm@11.18.0
+npm notice

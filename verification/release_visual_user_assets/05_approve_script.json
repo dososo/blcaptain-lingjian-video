@@ -1,0 +1,1 @@
+{"approval": {"approved_at": "2026-07-02T08:04:10.877308+00:00", "approved_by": "ci", "artifact_path": "artifacts/script.json", "artifact_sha256": "ee4261429dc52b5074aeb1fb37611e633a56b1c3d1daf24a5ddadc55286722d1", "comment": null, "signature": "9dd297d21891719e022326bebb1ffb903f9071fd7c64dd6857556812195e5db4", "target": "script"}, "ok": true}

@@ -27,8 +27,8 @@ uv run lj doctor --json  # 逐项体检;required 缺失时 exit code 非 0
 画面能力:
 - visuals 会按场景生成 storyboard,字段包含 generator、visual_prompt、motion_spec、brief、expected_asset_path、duration_sec、asset_path、subtitle_burn。
 - generator 优先级:hyperframes -> remotion -> image-gen -> user-asset -> fallback_solid。
-- Codex 桌面版用户若已安装/启用 HyperFrames/Remotion/imagegen 插件或 skill,宿主 agent 应按 storyboard 的 `visual_prompt` 与 `motion_spec` 渲染每镜产物到 `expected_asset_path`;lj 不 import、不 bundle 这些引擎,只通过官方/宿主 CLI 委托,再消费产物并用 FFmpeg 组装。
-- 宿主插件缺失时要先引导用户安装/启用,例如 `npx skills add heygen-com/hyperframes` 或 `npx skills add remotion-dev/skills`;这两个标识符来自 HyperFrames/Remotion 官方 skill 入口,若入口变化以官方文档或 Codex 插件市场为准。安装后新开会话再跑 `uv run lj setup`;用户也可放置自有 mp4/png。仍缺失才回落 fallback_solid,QA 会提示画面全部为回落卡片。
+- 当前已验证的发布级视觉路径是用户或宿主把每镜 mp4/png 放到 `expected_asset_path`;lj 不 import、不 bundle Remotion/HyperFrames,只消费落盘资产并用 FFmpeg 组装。
+- Codex 桌面版用户若已安装/启用 HyperFrames/Remotion/imagegen 插件或 skill,宿主 agent 可按 storyboard 的 `visual_prompt` 与 `motion_spec` 渲染每镜产物到 `expected_asset_path`;这条自动生成路径属于可选进阶,安装后新开会话再跑 `uv run lj setup`。缺插件时要先引导用户自备每镜 mp4/png 或安装/启用插件;仍缺失才回落 fallback_solid,QA 会提示画面全部为回落卡片。
 
 两档模式:
 - 预览档(零配置):--provider mock 出脚本/配音,render 默认 preview。mock 产物仅预览,禁止当发布质量。
@@ -47,7 +47,7 @@ export VOLCENGINE_TTS_APP_ID=... VOLCENGINE_TTS_ACCESS_TOKEN=... VOLCENGINE_TTS_
 > 当前 CLI 支持 `lj run` 聚合命令。默认会在 script / voice / visuals 三审点停下;显式 `--yes` 仅用于 CI 或用户明确授权的自动审批。所有命令加 --json;前缀统一 uv run lj;⏸ 为三审暂停点,必须停下等用户确认再 approve。
 
 ```bash
-uv run lj run ./projects/demo --name "演示项目" --input-file examples/product_intro_zh.txt --json
+uv run lj run ./projects/demo --name "演示项目" --input-file examples/product_intro_zh.txt --script-provider auto --voice-provider auto --json
 # ⏸ 审阅 artifacts/script.json 后:
 uv run lj approve script ./projects/demo --approved-by <用户> --json
 uv run lj run ./projects/demo --json

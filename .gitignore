@@ -3,6 +3,8 @@
 .env.*
 *.local
 .lingjian/
+.agents/
+skills-lock.json
 
 .venv/
 node_modules/

@@ -11,8 +11,8 @@
 | 用户录音 | 替代 TTS 的正式口播来源 | 可用于 release | `lj voice --audio-file <音频>` 后看 `voice_plan.json` 的 `provider_id=user_audio` | 准备 wav/mp3/m4a/aiff 文件 |
 | FFmpeg/ffprobe | 渲染、合音轨、QA 验证 | 是 | `uv run lj doctor --json` | 安装支持 `drawtext/libfreetype` 和 AAC 的 FFmpeg |
 | 字体 | 中文字幕烧录 | 是 | `uv run lj doctor --json` | macOS 用 PingFang;其他系统放 NotoSansSC |
-| HyperFrames/Remotion/imagegen | 生成真实画面资产 | 不是硬门,但缺失会 fallback warning | `uv run lj setup` 看 visuals 是否为 host_hyperframes/host_remotion/host_imagegen | 在 Codex 桌面版安装/启用插件或 skill;安装后新开会话 |
-| 用户画面素材 | 替代生成器的真实画面来源 | 不是硬门,但能避免 blank card | 放入 `project/assets/scenes/<scene_id>.mp4|png` 后跑 visuals/render | 按 visual_plan 的 `expected_asset_path` 放置 |
+| 用户画面素材 | 当前已验证的发布级视觉首选路径 | 不是硬门,但能避免 blank card | 放入 `project/assets/scenes/<scene_id>.mp4|png` 后跑 visuals/render | 按 visual_plan 的 `expected_asset_path` 放置 |
+| HyperFrames/Remotion/imagegen | 可选进阶:由 Codex 宿主生成真实画面资产 | 不是硬门,缺失会 fallback warning | `uv run lj setup` 看 visuals 是否为 host_hyperframes/host_remotion/host_imagegen | 在 Codex 桌面版安装/启用插件或 skill;安装后新开会话。安装标识符可解析,但端到端动态成片仍需宿主实测 |
 | MCP | 未来给外部工具调用主线 | 当前不是主路径 | `packages/mcp_server/README.md` | 本版本不宣称 MCP 可用,先用 CLI |
 | Web | 静态控制台骨架 | 不是主路径 | `pnpm --dir apps/web build` | 当前不能替代 CLI 审批流 |
 

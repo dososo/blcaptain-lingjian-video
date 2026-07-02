@@ -135,7 +135,7 @@
 - README 已补隐私、安全、可选依赖审计、macOS/Linux/Windows FFmpeg 与 TTS 路径。
 - `.gitignore` 已排除 `.env*`、`.lingjian/`、`projects/`、`exports/`、`.venv/`、`node_modules/` 与构建缓存。
 - 干净 clone 首用自检已完成:见 `verification/release_prep/setup.txt`、`doctor.json`、`preview_run.json`、`preview_qa.json`、`preview_export.json`。
-- 当前阻塞:本地没有 `git remote`,无法确认真实开源仓库地址;`README.md` 中 `<REPO_URL>` 待用户提供地址后替换,最终 `v0.1.0` tag 也需在该替换提交后创建。
+- 发布地址已确认:`https://github.com/dososo/blcaptain-lingjian-video.git`;用户面安装命令已替换真实地址,`v0.1.0` tag 在最终发布提交后更新。
 
 ## M2 画面委托项
 
@@ -177,6 +177,7 @@
 ## 开源发布收尾
 
 - GitHub 仓库已创建:`https://github.com/dososo/blcaptain-lingjian-video`。
+- 仓库可见性已按用户要求改为 `PRIVATE`;公开发布前需再切回 public 或确认仅授权用户分发。
 - README 用户面安装命令已替换真实仓库地址;fork 用户说明已保留。
 - README Web 段已就地标明“静态骨架,不能替代 CLI 审批流”。
 - HyperFrames/Remotion skill 安装标识符已补官方入口链接;若入口变化,以官方文档或 Codex 插件市场为准。
@@ -184,3 +185,11 @@
 - 发布收尾验收:`pytest` 99 passed;ruff、5 扫描器、Web lint/build、`run_verification.py` 均通过;`results.json` 为 52 PASS / 0 FAIL。
 - 干净 clone 首用自检已通过,证据见 `verification/release_closing/`。
 - 详细说明:`docs/dev/23_RELEASE_CLOSING.md`。
+
+## 真实用户体验审查后补强
+
+- README / SKILL 第一条主线命令已改为 `--script-provider auto --voice-provider auto`;mock 仅作为显式流程验证选项。
+- HyperFrames/Remotion `npx skills add` 标识符已用临时环境验证可解析安装;但它们是 agent skill 能力,不等于 `lj setup` 可探测的 CLI。
+- 当前已验证的发布级视觉首选路径调整为自备每镜 mp4/png 到 `project/assets/scenes/`;HyperFrames/Remotion/imagegen 为可选进阶。
+- 自备图片 release 链路已真跑,未出现 `RELEASE_VISUAL_IS_BLANK_CARD`,ffprobe 确认 h264+aac;证据见 `verification/release_visual_user_assets/`。
+- 详细说明:`docs/dev/24_REAL_USER_EXPERIENCE_NOTES.md`。

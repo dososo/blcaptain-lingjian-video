@@ -1,0 +1,4 @@
+projects/verify_user_visual_20260702T080348Z/assets/scenes/1.png
+projects/verify_user_visual_20260702T080348Z/assets/scenes/2.png
+projects/verify_user_visual_20260702T080348Z/assets/scenes/3.png
+projects/verify_user_visual_20260702T080348Z/assets/scenes/4.png

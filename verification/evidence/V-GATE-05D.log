@@ -1,8 +1,8 @@
-command: uv run lj approve visuals projects/verify_m1_20260702T073330Z --approved-by tester --json
+command: uv run lj approve visuals projects/verify_m1_20260702T081115Z --approved-by tester --json
 exit_code: 0
 
 stdout:
-{"approval": {"approved_at": "2026-07-02T07:33:50.984362+00:00", "approved_by": "tester", "artifact_path": "artifacts/visual_plan.json", "artifact_sha256": "183d341b991edc3c58b22d73cda0e8371ec31fd847615cc7adcd3b6fb9e8f574", "comment": null, "signature": "b6f5ca5522c168f1111d362a57da8dff6a7f5831b5a75cb8ee948481fd6b0e58", "target": "visuals"}, "ok": true}
+{"approval": {"approved_at": "2026-07-02T08:11:37.224002+00:00", "approved_by": "tester", "artifact_path": "artifacts/visual_plan.json", "artifact_sha256": "183d341b991edc3c58b22d73cda0e8371ec31fd847615cc7adcd3b6fb9e8f574", "comment": null, "signature": "6ff745e7071881dc34ebbd250ad8a19d4a8b95053080c8862219b83c5b989543", "target": "visuals"}, "ok": true}
 
 
 stderr:
