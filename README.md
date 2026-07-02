@@ -43,6 +43,50 @@ npx skills add <REPO_URL> --skill lingjian-video
 - 新用户先跑 `lj setup`,系统会优先继承已登录的官方 CLI 或本机能力,缺失时才引导提供 key。
 - M1 渲染只包含 `ffmpeg_card` 最小卡片引擎;HyperFrames、Remotion、复杂 timeline、插件市场均不在 M1 范围内。
 
+## 隐私与安全
+
+- 数据默认留在本机:项目文件、artifact、渲染产物和导出包都写入你指定的本地目录。
+- key 默认不落盘:真实 provider 的 key 只从当前 shell 环境读取,不会写入仓库、日志、manifest、`results.json` 或 release 包。
+- 能继承就不问 key:已登录的 Claude Code/Codex CLI 只通过官方命令行调用,不会读取 OAuth token、cookie、Keychain 内部文件或私密凭据文件。
+- 导出包不夹带本地凭据:`projects/`、`exports/`、`.env*`、`.venv/`、`node_modules/` 已在 `.gitignore` 中排除。
+- 发布前可选做依赖审计:Python 侧可接 `pip-audit` 或 `uv export` 后审计;Node 侧可用 `pnpm audit`、Socket 或 Snyk。M1 不把这些云审计服务作为必需依赖。
+
+## 跨平台能力说明
+
+FFmpeg 是 release 硬门,且必须支持 `drawtext/libfreetype` 与 AAC 音频编码。
+
+macOS:
+
+```bash
+brew install ffmpeg
+ffmpeg -hide_banner -h filter=drawtext
+```
+
+如果 Homebrew 默认包缺 `drawtext`,可切到 `ffmpeg-full`:
+
+```bash
+brew install ffmpeg-full
+brew unlink ffmpeg && brew link ffmpeg-full
+ffmpeg -filters | grep drawtext
+```
+
+Ubuntu/Debian:
+
+```bash
+sudo apt-get update
+sudo apt-get install -y ffmpeg espeak-ng
+ffmpeg -filters | grep drawtext
+```
+
+Windows:
+
+```powershell
+winget install Gyan.FFmpeg
+ffmpeg -filters | findstr drawtext
+```
+
+TTS 继承优先级:macOS 优先 `say`;Linux/Windows 可用 Piper 或 espeak-ng;都不可用时再配置 OpenAI-compatible TTS key。ChatGPT/Claude 订阅通常只覆盖 LLM,不等于包含 TTS。
+
 ## 快速开始
 
 推荐先用 `lj run` 走引导主线。默认会在 script / voice / visuals 三审点暂停;只有显式传 `--yes` 才会自动写入审批记录。

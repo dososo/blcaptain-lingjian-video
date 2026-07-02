@@ -1,4 +1,8 @@
 .DS_Store
+.env
+.env.*
+*.local
+.lingjian/
 
 .venv/
 node_modules/

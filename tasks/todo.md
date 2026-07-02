@@ -189,3 +189,11 @@
 - 新增测试: `test_lj_run_pauses_at_script_review_without_yes`, `test_lj_run_yes_completes_preview_flow_with_real_approvals`, `test_skill_file_and_readme_install_prompt_are_packaged`, `test_install_skill_script_and_mcp_boundary_are_honest`, `test_setup_text_names_preview_and_release_modes`;`test_real_release_verification_runs_release_chain_when_ready` 增加 provenance 断言。
 - 证据: `verification/results.json` 为默认真实环境 52 PASS / 0 FAIL;`verification/results.real_pass_20260702.json` 为真实 PASS 快照;`verification/results.offline_fallback_20260702.json` 为 51 PASS / 1 BLOCKED_ENV / 0 FAIL。
 - 文档: `docs/dev/AUDIT_READY.md`、`docs/dev/14_ONBOARDING_CAPABILITY.md`、`docs/dev/15_REAL_VERIFY_FIX.md`、`docs/dev/16_CLOSING.md`、`verification/VERIFICATION_REPORT.md`、README 与 `docs/ONBOARDING.md` 已同步。
+
+## M1 封版与开源发布准备清单
+
+- [ ] 仓库与版本:确认 git 状态,对齐 `pyproject.toml`、`package.json`、`apps/web/package.json` 的 `0.1.0`,准备 `v0.1.0` tag。
+- [ ] 发布文档:新增 `CHANGELOG.md`、`ROADMAP.md`,README 补隐私、安全与跨平台开通说明。
+- [ ] 占位替换:将 README/ONBOARDING/SKILL 中的 `<REPO_URL>` 替换为真实开源仓库地址;本地无 remote 时标为阻塞并等待用户提供。
+- [ ] 首用自检:在干净 clone 中按 README 顶部流程跑到预览档出片,留存 doctor 与预览证据。
+- [ ] 验证与打包:重跑 run_verification、pytest、ruff、5 扫描器、pnpm lint/build,打包 `iter_9` 并记录发布准备说明。

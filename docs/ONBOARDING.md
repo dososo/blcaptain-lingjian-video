@@ -66,6 +66,29 @@ uv run lj setup
 
 macOS 的 `say` 不需要 key。其他系统可安装 Piper 或 espeak-ng。确实需要云 TTS 时再配置:
 
+Ubuntu/Debian:
+
+```bash
+sudo apt-get update && sudo apt-get install -y espeak-ng
+uv run lj setup
+```
+
+Piper 可作为更自然的本机 TTS,请按发行版安装官方包或二进制后确保 `piper` 在 `PATH` 中:
+
+```bash
+piper --version
+uv run lj setup
+```
+
+Windows:
+
+```powershell
+winget install Gyan.FFmpeg
+ffmpeg -filters | findstr drawtext
+```
+
+Windows 本机 TTS 当前建议通过 Piper、espeak-ng 或 OpenAI-compatible TTS 接入;macOS `say` 仅在 macOS 可用。
+
 ```bash
 export OPENAI_TTS_BASE_URL=https://api.example.com/v1
 export OPENAI_TTS_API_KEY=...
