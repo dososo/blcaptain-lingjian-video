@@ -32,7 +32,7 @@ uv run lj doctor --json
 npx skills add <REPO_URL> --skill lingjian-video
 ```
 
-灵剪 M1/M2 是一个可审核、可复跑、可归档的短视频生产主干。当前实现覆盖 CLI、核心状态机、mock 预览链路、宿主画面生成委托与产物消费、审批门禁、QA、导出包、Next.js Web 控制台与离线验证脚本。
+灵剪 M1/M2 是一个可审核、可复跑、可归档的短视频生产主干。当前实现覆盖 CLI、核心状态机、mock 预览链路、宿主画面生成委托与产物消费、审批门禁、QA、导出包、Next.js Web 控制台与离线验证脚本。Web 控制台当前为静态骨架,不能替代 CLI 审批流,详见 [`docs/CAPABILITY_MATRIX.md`](docs/CAPABILITY_MATRIX.md)。
 
 普通创作者先看:
 
@@ -143,6 +143,8 @@ uv run lj export ./projects/demo --platform douyin --language zh-CN --ratio 9:16
 完整 onboarding 向导见 [`docs/ONBOARDING.md`](docs/ONBOARDING.md)。
 
 Web 控制台:
+
+当前 Web 控制台为静态骨架,不能替代 CLI 审批流;完整主线仍以 `uv run lj ...` 为准。能力状态见 [`docs/CAPABILITY_MATRIX.md`](docs/CAPABILITY_MATRIX.md)。
 
 ```bash
 pnpm install

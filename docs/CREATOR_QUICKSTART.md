@@ -88,6 +88,11 @@ npx skills add heygen-com/hyperframes
 npx skills add remotion-dev/skills
 ```
 
+上面两个标识符分别来自 HyperFrames 与 Remotion 的官方 skill 安装入口。若 skills CLI 或 Codex 插件市场发生变化,以官方文档为准:
+
+- HyperFrames: https://hyperframes.heygen.com/quickstart
+- Remotion Agent Skills: https://www.remotion.dev/docs/ai/skills
+
 安装或启用后,新开 Codex 会话,再跑:
 
 ```bash

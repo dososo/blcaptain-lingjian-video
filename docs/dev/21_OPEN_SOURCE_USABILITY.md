@@ -25,6 +25,8 @@
 - `docs/CREATOR_QUICKSTART.md`:新增普通创作者路径,覆盖“有文案 / 有录音 / 缺 TTS / 缺画面插件 / 发布前检查”。
 - `docs/CAPABILITY_MATRIX.md`:新增 Skill、CLI、MCP、插件、TTS、FFmpeg 能力矩阵。
 - `README.md`、`SKILL.md`、`docs/ONBOARDING.md`、`docs/providers.md`、`docs/troubleshooting.md`、`docs/skill-and-mcp.md`:同步主线说明。
+- README Web 段已就地标明“静态骨架,不能替代 CLI 审批流”。
+- HyperFrames/Remotion skill 安装标识符已补官方入口链接;若入口变化,以官方文档和 Codex 插件市场为准。
 - `tests/test_cli_contract.py`:覆盖用户录音入口。
 - `tests/test_skill_packaging.py`、`tests/test_capability_onboarding.py`:覆盖创作者文档、插件安装提示与 setup next step。
 

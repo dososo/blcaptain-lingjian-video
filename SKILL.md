@@ -28,7 +28,7 @@ uv run lj doctor --json  # 逐项体检;required 缺失时 exit code 非 0
 - visuals 会按场景生成 storyboard,字段包含 generator、visual_prompt、motion_spec、brief、expected_asset_path、duration_sec、asset_path、subtitle_burn。
 - generator 优先级:hyperframes -> remotion -> image-gen -> user-asset -> fallback_solid。
 - Codex 桌面版用户若已安装/启用 HyperFrames/Remotion/imagegen 插件或 skill,宿主 agent 应按 storyboard 的 `visual_prompt` 与 `motion_spec` 渲染每镜产物到 `expected_asset_path`;lj 不 import、不 bundle 这些引擎,只通过官方/宿主 CLI 委托,再消费产物并用 FFmpeg 组装。
-- 宿主插件缺失时要先引导用户安装/启用,例如 `npx skills add heygen-com/hyperframes` 或 `npx skills add remotion-dev/skills`,安装后新开会话再跑 `uv run lj setup`;用户也可放置自有 mp4/png。仍缺失才回落 fallback_solid,QA 会提示画面全部为回落卡片。
+- 宿主插件缺失时要先引导用户安装/启用,例如 `npx skills add heygen-com/hyperframes` 或 `npx skills add remotion-dev/skills`;这两个标识符来自 HyperFrames/Remotion 官方 skill 入口,若入口变化以官方文档或 Codex 插件市场为准。安装后新开会话再跑 `uv run lj setup`;用户也可放置自有 mp4/png。仍缺失才回落 fallback_solid,QA 会提示画面全部为回落卡片。
 
 两档模式:
 - 预览档(零配置):--provider mock 出脚本/配音,render 默认 preview。mock 产物仅预览,禁止当发布质量。

@@ -421,7 +421,8 @@ def _visual_candidates(
             setup_command=(
                 "Codex 桌面版安装/启用 HyperFrames、Remotion 或 imagegen;"
                 "推荐先试 npx skills add heygen-com/hyperframes 或 "
-                "npx skills add remotion-dev/skills。安装后新开会话再跑 uv run lj setup。"
+                "npx skills add remotion-dev/skills。若入口变化,以官方文档和 Codex 插件市场为准。"
+                "安装后新开会话再跑 uv run lj setup。"
                 "也可把每镜 mp4/png 放进 project/assets/scenes/。"
             ),
         ),

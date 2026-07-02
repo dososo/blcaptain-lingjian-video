@@ -42,4 +42,6 @@
 
 - HyperFrames skill: `npx skills add heygen-com/hyperframes`
 - Remotion skill: `npx skills add remotion-dev/skills`
+- HyperFrames 官方文档: https://hyperframes.heygen.com/quickstart
+- Remotion Agent Skills 官方文档: https://www.remotion.dev/docs/ai/skills
 - 若使用 Codex 插件市场,按桌面版插件入口安装对应插件;安装后新开会话让 agent 重新加载能力。
