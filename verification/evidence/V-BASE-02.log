@@ -8,22 +8,22 @@ rootdir: /Users/manxiaochu/Documents/Codex/lingjian-video
 configfile: pyproject.toml
 testpaths: tests
 plugins: anyio-4.14.1
-collected 106 items
+collected 111 items
 
-tests/test_batch2_release_export.py ........................             [ 22%]
-tests/test_batch2_text_provider.py ...                                   [ 25%]
-tests/test_capability_onboarding.py .............                        [ 37%]
-tests/test_cli_contract.py ..................                            [ 54%]
-tests/test_core_gate.py .........                                        [ 63%]
-tests/test_doctor.py ......                                              [ 68%]
-tests/test_ecosystem_integration.py .....                                [ 73%]
-tests/test_m2_visual_generation_tts.py .......                           [ 80%]
-tests/test_provider_contract.py .......                                  [ 86%]
-tests/test_run_verification.py ...                                       [ 89%]
+tests/test_batch2_release_export.py ........................             [ 21%]
+tests/test_batch2_text_provider.py ...                                   [ 24%]
+tests/test_capability_onboarding.py .............                        [ 36%]
+tests/test_cli_contract.py ..................                            [ 52%]
+tests/test_core_gate.py .........                                        [ 60%]
+tests/test_doctor.py ......                                              [ 65%]
+tests/test_ecosystem_integration.py .........                            [ 73%]
+tests/test_m2_visual_generation_tts.py ........                          [ 81%]
+tests/test_provider_contract.py .......                                  [ 87%]
+tests/test_run_verification.py ...                                       [ 90%]
 tests/test_skill_packaging.py ....                                       [ 93%]
 tests/test_static_guards.py .......                                      [100%]
 
-============================= 106 passed in 23.35s =============================
+============================= 111 passed in 21.84s =============================
 
 
 stderr:

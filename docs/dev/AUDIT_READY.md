@@ -17,6 +17,8 @@
 - M2 配音分档项:用户录音、火山豆包/OpenAI-compatible/真实 TTS CLI 为商用发布优选;Kokoro/Piper 为零 key 本地 TTS;macOS say/espeak-ng 为预览级,`--strict --release` 阻断预览音。
 - Codex Plugin 项:新增 `.codex-plugin/plugin.json`、`.agents/plugins/marketplace.json` 与 `skills/lingjian-video/SKILL.md`;安装脚本改用 Codex 官方 `~/.agents/skills`。
 - 发布级视觉项:`fallback_solid` 普通 release 默认 warning,`--strict --release` 阻断;HyperFrames 零 key 自动生成已真机通过,自备每镜 mp4/png 仍是稳定回落路径。
+- 画面打磨项:HyperFrames 场景适配器已按 role/index 确定性选择 `hook/pain/solution/proof/cta` 多版式;最终真机 strict 成片 `visual_real_count=6/6`,相邻版式不重复,画面只放短关键词,口播全文由底部字幕承载。
+- Plugin 真机项:`codex plugin marketplace add dososo/blcaptain-lingjian-video` 与 `codex plugin add lingjian-video@blcaptain-lingjian-video` 已成功;只读 Codex 新会话识别到 `lingjian-video:lingjian-video`。
 
 ## 证据入口
 
@@ -38,6 +40,8 @@
 - `docs/dev/20_M2_REFERENCE_GAP_AUDIT.md`
 - `docs/dev/26_CODEX_PLUGIN_REPOSITIONING.md`
 - `docs/dev/28_ECOSYSTEM_INTEGRATION.md`
+- `docs/dev/29_POLISH_AND_PLUGIN_VERIFY.md`
+- `verification/polish_frames_v4/*.png`
 - `verification/release_prep/*`
 
 ## results 对照表

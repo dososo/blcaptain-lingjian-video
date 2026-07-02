@@ -14,6 +14,7 @@ from packages.core.paths import resolve_inside
 from packages.core.project import ProjectRef
 
 VISUAL_GENERATOR_TIMEOUT_SEC = 90
+HOST_VISUAL_ASSET_MAX_DURATION_SEC = 1.5
 
 
 def ensure_scene_asset(project: ProjectRef, scene: dict[str, Any]) -> dict[str, Any]:
@@ -37,10 +38,13 @@ def ensure_scene_asset(project: ProjectRef, scene: dict[str, Any]) -> dict[str, 
         "task": "generate_visual_asset",
         "generator": scene.get("generator"),
         "scene_id": scene.get("scene_id") or scene.get("id"),
+        "role": scene.get("role"),
+        "on_screen_text": scene.get("on_screen_text"),
+        "narration_text": scene.get("narration_text"),
         "visual_prompt": scene.get("visual_prompt") or scene.get("narration_text") or "",
         "motion_spec": scene.get("motion_spec") or scene.get("motion") or {},
         "brief": scene.get("brief") or {},
-        "duration_sec": scene.get("duration_sec") or 1.0,
+        "duration_sec": _host_visual_asset_duration(scene.get("duration_sec") or 1.0),
         "expected_asset_path": str(expected),
     }
     try:
@@ -127,6 +131,14 @@ def _npx_hyperframes_available() -> bool:
     except (OSError, TimeoutExpired):
         return False
     return completed.returncode == 0
+
+
+def _host_visual_asset_duration(duration: Any) -> float:
+    try:
+        value = float(duration)
+    except (TypeError, ValueError):
+        value = 1.0
+    return max(min(value, HOST_VISUAL_ASSET_MAX_DURATION_SEC), 0.8)
 
 
 def _repo_root() -> Path:

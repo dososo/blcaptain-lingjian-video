@@ -101,6 +101,62 @@ def test_visuals_writes_executable_generation_spec(tmp_path, monkeypatch):
     assert scene["duration_sec"] == 2.25
 
 
+def test_visuals_uses_script_scene_duration_when_voice_is_single_full_audio(
+    tmp_path, monkeypatch
+):
+    project_path = tmp_path / "visual-duration"
+    project = init_project(project_path, "项目")
+    write_artifact(
+        project,
+        "script",
+        {
+            "id": "script",
+            "provider_id": "real_llm",
+            "provider_is_mock": False,
+            "scenes": [
+                {
+                    "scene_id": "s1",
+                    "role": "hook",
+                    "duration_sec": 6,
+                    "narration_text": "第一镜完整口播。",
+                    "on_screen_text": "第一重点",
+                    "visual_prompt": "开场强钩子",
+                },
+                {
+                    "scene_id": "s2",
+                    "role": "pain",
+                    "duration_sec": 7,
+                    "narration_text": "第二镜完整口播。",
+                    "on_screen_text": "第二重点",
+                    "visual_prompt": "痛点放大",
+                },
+            ],
+        },
+    )
+    write_artifact(
+        project,
+        "voice",
+        {
+            "id": "voice",
+            "provider_id": "kokoro_zh_tts",
+            "provider_is_mock": False,
+            "segments": [{"scene_id": "s1", "duration_sec": 13.0}],
+            "total_duration_sec": 13.0,
+        },
+    )
+    monkeypatch.setenv("PATH", "")
+
+    result = runner.invoke(app, ["visuals", str(project_path), "--ratio", "9:16", "--json"])
+
+    assert result.exit_code == 0
+    visual_plan = read_json(project.path / "artifacts" / "visual_plan.json")
+    scenes = visual_plan["scenes"]
+    assert [scene["duration_sec"] for scene in scenes] == [6.0, 7.0]
+    assert scenes[0]["role"] == "hook"
+    assert scenes[0]["on_screen_text"] == "第一重点"
+    assert "视觉关键词:第一重点" in scenes[0]["visual_prompt"]
+
+
 def test_render_delegates_missing_image_asset_to_host_cli_before_assembly(
     tmp_path, monkeypatch
 ):

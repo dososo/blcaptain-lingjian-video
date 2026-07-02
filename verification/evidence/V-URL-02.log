@@ -1,4 +1,4 @@
-command: uv run lj ingest url projects/url_verify_20260702T132326Z --url https://example.com/article --json
+command: uv run lj ingest url projects/url_verify_20260702T160117Z --url https://example.com/article --json
 exit_code: 0
 
 stdout:

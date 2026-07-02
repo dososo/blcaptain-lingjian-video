@@ -376,3 +376,22 @@
 - 严格发布:先验证发布级 TTS env 全缺失时 `macOS say` 会被 strict 正确阻断;随后安装免费本地 Kokoro 依赖,生成中文口播 wav,作为 `--voice-audio-file` 接入新项目 `publish_real_kokoro`;`lj qa --release --strict` 为 `hard_failures=[]`,`warnings=[]`,strict export 成功。
 - 免费成片:`exports/publish_real_kokoro/douyin/zh-CN/9x16/video.mp4`,ffprobe 为 h264 1080x1920 + aac 24kHz mono;抽帧见 `verification/phase23_kokoro_frames/`。
 - 证据文档:`docs/dev/27_PHASE23_REAL_VERIFY.md`。
+
+## 画面质量打磨 + Codex Plugin 真机补验清单
+
+- [x] Track A1: HyperFrames 场景适配器按 scene role/index 确定性选择 4-5 种不同版式蓝图,相邻镜头主结构与运动不同。
+- [x] Track A2: HyperFrames 画面只显示短视觉关键词/eyebrow,口播全文只由灵剪底部字幕承载,避免画面中重复整句。
+- [x] Track A3: Kokoro 口径复核,保持“零 key 中文基线,商用质量首选云 TTS/用户录音”一致。
+- [x] Track A 测试:离线单测覆盖版式多样化、同 index 稳定复现、去全文冗余。
+- [x] Track A 真机验收:跑 `lj run --release --strict`,抽帧证明真实动态画面、底部字幕、相邻镜头版式不同、QA 0 warning、h264+aac。
+- [x] Track B:按 Codex 官方 plugin/skill 路径真机安装或记录卡点,并验证一句话触发灵剪主线。
+- [x] 收尾:新增 `docs/dev/29_POLISH_AND_PLUGIN_VERIFY.md`,重跑 pytest/ruff/5 扫描器/Web build/run_verification,提交成果。
+
+### Review: 画面质量打磨 + Codex Plugin 真机补验
+
+- Track A 实现:`scripts/providers/hyperframes_scene_cli.py` 新增 `hook/pain/solution/proof/cta` 多版式 HTML 蓝图;`packages/core/visual_generation.py` 将宿主生成素材限制为短循环,并传递 `role/on_screen_text/narration_text`;`apps/cli/lingjian_cli/main.py` 在整段单音频场景下使用脚本分镜时长。
+- Track A 测试:新增 `test_host_visual_asset_duration_is_short_loop_for_generation`、`test_hyperframes_scene_role_layouts_keep_adjacent_feature_and_proof_distinct`、`test_hyperframes_scene_visual_text_does_not_repeat_full_narration`、`test_visuals_uses_script_scene_duration_when_voice_is_single_full_audio`。
+- Track A 真机证据:项目 `projects/polish_verify_20260702_v4`,导出 `exports/polish_verify_20260702_v4/douyin/zh-CN/9x16/video.mp4`;render manifest 为 `visual_real_count=6/6`;QA `hard_failures=[]`,`warnings=[]`;ffprobe 为 h264+aac;抽帧见 `verification/polish_frames_v4/`。
+- Track B 证据:`codex plugin marketplace add dososo/blcaptain-lingjian-video` 与 `codex plugin add lingjian-video@blcaptain-lingjian-video` 成功;只读 Codex 新会话识别 `lingjian-video:lingjian-video` 并返回灵剪主线第一步。
+- 文档:`docs/dev/29_POLISH_AND_PLUGIN_VERIFY.md` 已新增,`docs/dev/AUDIT_READY.md` 已同步。
+- 全量回归:`uv run pytest -q` 为 111 passed;ruff 通过;5 个扫描器通过;`pnpm --dir apps/web lint` 与 `build` 通过;`run_verification.py` 为 52 PASS / 0 FAIL,`V-REAL-01=PASS`;`git diff --check` 通过。

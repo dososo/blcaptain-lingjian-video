@@ -5,8 +5,9 @@ import subprocess
 from packages.core.capabilities import detect_capabilities
 from packages.core.project import ProjectRef
 from packages.core.qa import run_qa
-from packages.core.visual_generation import ensure_scene_asset
+from packages.core.visual_generation import _host_visual_asset_duration, ensure_scene_asset
 from providers.registry import resolve_provider
+from scripts.providers.hyperframes_scene_cli import _html, _layout_for, _visual_keyword
 
 
 def test_kokoro_zero_key_tts_is_auto_release_candidate(monkeypatch):
@@ -99,6 +100,52 @@ def test_hyperframes_default_adapter_generates_scene_asset(tmp_path, monkeypatch
     assert expected.exists()
     assert scene["generation_status"] == "generated"
     assert scene["asset_path"] == "assets/scenes/s1.mp4"
+
+
+def test_host_visual_asset_duration_is_short_loop_for_generation():
+    assert _host_visual_asset_duration(12.0) == 1.5
+    assert _host_visual_asset_duration(0.2) == 0.8
+    assert _host_visual_asset_duration("bad") == 1.0
+
+
+def test_hyperframes_scene_layouts_are_deterministic_and_varied():
+    payloads = [
+        {"scene_id": str(index), "visual_prompt": f"第{index}镜视觉提示", "duration_sec": 1.0}
+        for index in range(1, 6)
+    ]
+
+    layouts = [_layout_for(payload) for payload in payloads]
+
+    assert layouts == ["hook", "pain", "solution", "proof", "cta"]
+    assert _layout_for(payloads[2]) == _layout_for(payloads[2])
+    assert 'class="scene layout-hook"' in _html(payloads[0], 1.0)
+    assert 'class="scene layout-solution"' in _html(payloads[2], 1.0)
+
+
+def test_hyperframes_scene_role_layouts_keep_adjacent_feature_and_proof_distinct():
+    assert _layout_for({"scene_id": "4", "role": "feature"}) == "hook"
+    assert _layout_for({"scene_id": "5", "role": "proof"}) == "proof"
+    assert _layout_for({"scene_id": "6", "role": "cta"}) == "cta"
+
+
+def test_hyperframes_scene_visual_text_does_not_repeat_full_narration():
+    narration = "找素材、配音、对字幕、导竖屏,一条抖音视频要来回折腾好几个小时。"
+    payload = {
+        "scene_id": "2",
+        "visual_prompt": (
+            "为竖屏短视频生成一镜画面。画幅 9:16,风格为干净的中文产品说明动态图形,"
+            f"主体清晰,背景简洁。旁白/画面信息:{narration}"
+        ),
+        "narration_text": narration,
+        "duration_sec": 1.0,
+    }
+
+    keyword = _visual_keyword(payload)
+    rendered = _html(payload, 1.0)
+
+    assert 0 < len(keyword) <= 8
+    assert narration not in rendered
+    assert "旁白/画面信息" not in rendered
 
 
 def test_release_qa_allows_kokoro_zero_key_tts(tmp_path, monkeypatch):

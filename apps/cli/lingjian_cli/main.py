@@ -363,10 +363,18 @@ def _visual_generator_for_scene(project: ProjectRef, scene_id: str) -> dict:
     }
 
 
-def _visual_prompt(narration: str, ratio: str) -> str:
+def _visual_prompt(
+    narration: str,
+    ratio: str,
+    visual_hint: str = "",
+    on_screen_text: str = "",
+) -> str:
+    hint = f"场景提示:{visual_hint}。" if visual_hint else ""
+    keyword = f"视觉关键词:{on_screen_text}。" if on_screen_text else ""
     return (
         "为竖屏短视频生成一镜画面。"
         f"画幅 {ratio},风格为干净的中文产品说明动态图形,主体清晰,背景简洁。"
+        f"{hint}{keyword}"
         f"旁白/画面信息:{narration}"
     )
 
@@ -378,24 +386,41 @@ def _visual_scenes_for_project(project: ProjectRef, ratio: str) -> list[dict]:
     voice_path = artifact_path(project, "voice")
     script = read_json(script_path) if script_path.exists() else {"scenes": []}
     voice = read_json(voice_path) if voice_path.exists() else {"segments": []}
-    durations = {
-        str(segment.get("scene_id")): float(segment.get("duration_sec") or 1.0)
+    script_scenes = [
+        scene for scene in script.get("scenes", []) if isinstance(scene, dict)
+    ]
+    voice_segments = [
+        segment
         for segment in voice.get("segments", [])
         if isinstance(segment, dict) and segment.get("scene_id")
+    ]
+    voice_durations = {
+        str(segment.get("scene_id")): float(segment.get("duration_sec") or 1.0)
+        for segment in voice_segments
+        if isinstance(segment, dict) and segment.get("scene_id")
     }
+    use_voice_durations = len(voice_segments) == len(script_scenes)
     scenes = []
-    for index, script_scene in enumerate(script.get("scenes", []), start=1):
-        if not isinstance(script_scene, dict):
-            continue
+    for index, script_scene in enumerate(script_scenes, start=1):
         scene_id = str(script_scene.get("id") or script_scene.get("scene_id") or f"s{index}")
         route = _visual_generator_for_scene(project, scene_id)
         narration = str(script_scene.get("narration_text") or "")
+        script_duration = float(script_scene.get("duration_sec") or 1.0)
+        duration = (
+            voice_durations.get(scene_id, script_duration)
+            if use_voice_durations
+            else script_duration
+        )
+        visual_hint = str(script_scene.get("visual_prompt") or "")
+        on_screen_text = str(script_scene.get("on_screen_text") or "")
         scenes.append(
             {
                 "scene_id": scene_id,
+                "role": script_scene.get("role"),
+                "on_screen_text": on_screen_text,
                 "narration_text": narration,
-                "duration_sec": durations.get(scene_id, 1.0),
-                "visual_prompt": _visual_prompt(narration, ratio),
+                "duration_sec": max(duration, 0.5),
+                "visual_prompt": _visual_prompt(narration, ratio, visual_hint, on_screen_text),
                 "brief": {
                     "aspect": ratio,
                     "safe_zone": "下三分之一留字幕",
