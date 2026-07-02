@@ -1,0 +1,12 @@
+灵剪能力检测
+已继承/检测到 Claude Code CLI、macOS say、FFmpeg/ffprobe、中文字体，无需 key。
+预览档:零配置可用,使用 mock 只能预览,不能 release。
+发布档:需要真实 LLM、真实 TTS、FFmpeg/ffprobe/drawtext 与中文字体全部就绪。
+[OK] llm: Claude Code CLI (inherited-cli)
+[OK] tts: macOS say (local-cli)
+[缺失] visuals: 回落卡片画面 (fallback)
+[OK] render: FFmpeg/ffprobe (local-cli)
+[OK] font: 中文字体 (local-cli)
+下一步:
+- 回落卡片画面: 未检测到可自动继承的宿主画面生成能力;将消费已有 project/assets/scenes 产物,否则回落纯色卡片并给 QA warning。 命令: Codex 桌面版安装/启用 HyperFrames、Remotion 或 imagegen;推荐先试 npx skills add heygen-com/hyperframes 或 npx skills add remotion-dev/skills。若入口变化,以官方文档和 Codex 插件市场为准。安装后新开会话再跑 uv run lj setup。也可把每镜 mp4/png 放进 project/assets/scenes/。
+说明:订阅 CLI 通常只提供 LLM;TTS 与 FFmpeg 仍可能需要本机能力或单独配置。

@@ -280,10 +280,11 @@
 - [ ] P2-2: `--strict` 为可选增强,本轮未动;如需改变 QA/export 行为需用户确认。
 - [x] 产出发布收尾说明 `docs/dev/23_RELEASE_CLOSING.md`。
 - [x] P0 完成后重跑全量验收命令。
-- [ ] 提交、打 `v0.1.0` tag 并 push。
+- [x] 干净 clone 首用自检通过,证据归档到 `verification/release_closing/`。
+- [ ] 提交自检证据,更新 `v0.1.0` tag 并 push。
 
 ### Review: 开源发布收尾整改
 
 - P1-1 依据:HyperFrames 官方 quickstart/GitHub 均确认 `npx skills add heygen-com/hyperframes`;Remotion Agent Skills 官方文档确认 `npx skills add remotion-dev/skills`。
 - P2-1 已落地:README 顶部能力说明和 Web 控制台段均标明 Web 当前为静态骨架,完整主线以 CLI 为准。
-- 当前状态:真实开源仓库已创建并配置 remote;全量验收通过,等待提交、tag、push。
+- 当前状态:真实开源仓库已创建并配置 remote;全量验收与干净 clone 自检通过,等待提交自检证据、更新 tag、push。

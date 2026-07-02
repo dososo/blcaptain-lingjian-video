@@ -182,4 +182,5 @@
 - HyperFrames/Remotion skill 安装标识符已补官方入口链接;若入口变化,以官方文档或 Codex 插件市场为准。
 - `--strict` 为可选增强,本轮不改已通过 QA/export 行为。
 - 发布收尾验收:`pytest` 99 passed;ruff、5 扫描器、Web lint/build、`run_verification.py` 均通过;`results.json` 为 52 PASS / 0 FAIL。
+- 干净 clone 首用自检已通过,证据见 `verification/release_closing/`。
 - 详细说明:`docs/dev/23_RELEASE_CLOSING.md`。

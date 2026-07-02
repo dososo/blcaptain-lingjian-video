@@ -71,7 +71,7 @@
 
 ## 发布后干净机自检
 
-待 push/tag 后执行:
+已在临时 `HOME` 中执行,避免改写当前用户真实 skill 软链:
 
 ```bash
 git clone https://github.com/dososo/blcaptain-lingjian-video.git /tmp/lingjian-video-clean
@@ -82,4 +82,13 @@ uv run lj setup
 uv run lj run ./projects/demo --name "演示项目" --input-file examples/product_intro_zh.txt --yes --json
 ```
 
-自检结论与证据待补。
+自检结论:通过。干净 clone 可按 README 主线完成 `uv sync`、安装 skill 软链、`lj setup`、mock 预览档 `lj run --yes`、QA 与 export。
+
+证据:
+
+- `verification/release_closing/clean_clone_path.txt`
+- `verification/release_closing/install_skill_links.txt`
+- `verification/release_closing/setup.txt`
+- `verification/release_closing/preview_run.json`
+- `verification/release_closing/preview_qa.json`
+- `verification/release_closing/preview_export.json`

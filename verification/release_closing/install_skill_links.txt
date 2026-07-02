@@ -1,0 +1,3 @@
+已安装 skill 软链:
+- /tmp/lingjian-release-clean-ruKTM0/home/.codex/skills/lingjian-video -> /tmp/lingjian-release-clean-ruKTM0/blcaptain-lingjian-video
+- /tmp/lingjian-release-clean-ruKTM0/home/.claude/skills/lingjian-video -> /tmp/lingjian-release-clean-ruKTM0/blcaptain-lingjian-video
