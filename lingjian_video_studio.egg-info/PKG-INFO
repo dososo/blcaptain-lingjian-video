@@ -5,7 +5,270 @@ Summary: LingJian Video Studio M1
 License: Apache-2.0
 Requires-Python: <3.13,>=3.11
 Description-Content-Type: text/markdown
+License-File: LICENSE
 Requires-Dist: fastapi>=0.115.0
+Requires-Dist: kokoro-onnx>=0.5.0
 Requires-Dist: pydantic>=2.8.0
 Requires-Dist: pyyaml>=6.0.2
+Requires-Dist: soundfile>=0.14.0
 Requires-Dist: typer>=0.12.5
+Dynamic: license-file
+
+# 灵剪 Video Studio M1
+
+## 30 秒上手:Codex app 对话式安装提示词
+
+把下面这段直接发给 Codex app。如你使用自建或 fork 仓库,请把仓库地址替换为你自己的仓库。
+
+```text
+请帮我安装并启用 https://github.com/dososo/blcaptain-lingjian-video.git 这个「灵剪 lingjian-video」Codex 发布级短视频插件/skill。请全部在 Codex app 里帮我完成,不要让我自己读 JSON 或手敲一串命令。
+
+1. 优先按 Codex 官方 plugin 方式安装:在 Codex app 的 Plugins / Add to Codex 中添加这个仓库;如果当前环境只能用命令,再用 `codex plugin marketplace add dososo/blcaptain-lingjian-video` 作为备用。跨 agent 备用才用 `npx skills add dososo/blcaptain-lingjian-video`。
+2. 安装项目依赖并验证 `lj` 可运行;如果需要系统级依赖,先说明原因再引导我安装。
+3. 运行灵剪能力门诊,只用人话告诉我四栏:已继承、已具备、必须补齐、可选增强。不要把 `doctor --json` 原样丢给我。
+4. 发布级最小集合必须检查:LLM 能力、Kokoro/云 TTS/用户口播音频、真实画面插件/素材、FFmpeg/ffprobe/drawtext/AAC、中文字体、底部字幕。macOS say、espeak、mock、fallback_solid 只能预览,不要说成发布级。
+5. 缺 TTS 时,优先引导我安装 Kokoro 中文本地 TTS;商用质量可提供火山豆包/OpenAI-compatible/其他发布级 TTS key,也可以让我拖入已录好的口播音频。缺画面时,优先使用已装 HyperFrames 零 key 画面能力,或引导我在 Codex app 插件市场安装/启用 HyperFrames、Remotion、imagegen,也可让我提供每镜图片/视频。
+6. 能力齐后,按脚本审核→配音审核→画面审核→底部字幕合成→严格 QA→导出发布包的流程陪我完成。任何 key 只从当前环境读取,绝不写仓库、日志、manifest 或导出包。
+
+请注意:所有 key 只从我的当前环境读取,绝不要写进仓库、日志或任何导出文件;也不要在回复里回显我的完整 key。
+```
+
+本仓库开发/备用本地安装:
+
+```bash
+uv sync
+scripts/install_skill_links.sh
+uv run lj setup
+```
+
+Codex 官方 plugin 备用命令:
+
+```bash
+codex plugin marketplace add dososo/blcaptain-lingjian-video
+```
+
+skills.sh 跨 agent 备用:
+
+```bash
+npx skills add dososo/blcaptain-lingjian-video
+```
+
+灵剪 M1/M2 是一个可审核、可复跑、可归档的 Codex app 发布级短视频 Skill/Plugin。当前实现覆盖底层 CLI、核心状态机、mock 预览链路、宿主画面生成委托与产物消费、审批门禁、QA、导出包、静态 Next.js Web 控制台与离线验证脚本。Web 控制台当前为静态骨架,不能替代 Codex 对话式主流程,详见 [`docs/CAPABILITY_MATRIX.md`](docs/CAPABILITY_MATRIX.md)。
+
+普通创作者先看:
+
+- [`docs/CREATOR_QUICKSTART.md`](docs/CREATOR_QUICKSTART.md):按“有文案 / 有录音 / 有画面素材 / 要发布”选择路径。
+- [`docs/CAPABILITY_MATRIX.md`](docs/CAPABILITY_MATRIX.md):Skill、CLI、MCP、插件、TTS、FFmpeg 分别是什么状态。
+
+## 当前边界
+
+- mock provider 只允许预览和离线测试,不能用于正式 release。
+- 正式 release 必须配置真实 LLM 与非 mock 音轨来源。零 key 默认优先 Kokoro 中文本地 TTS;商用质量首选用户录音或火山豆包/OpenAI-compatible 云 TTS。`doctor` 未 ready 时,验收项 `V-REAL-01` 标记为 `BLOCKED_ENV`。
+- `render --release` 必须具备 FFmpeg/ffprobe,且 FFmpeg 支持 `drawtext/libfreetype`;缺失时硬失败,不会写离线 stub。
+- 能提供本机 CLI provider 时,不强制提供 API key。必须使用 key 时,doctor 只输出脱敏状态,不会把 key 写入日志、artifact 或导出包。
+- 新用户先跑 `lj setup`,系统会优先继承已登录的官方 CLI 或本机能力,缺失时才引导提供 key。
+- 灵剪不 bundle HyperFrames/Remotion,但已接入薄子进程委托:检测到 `npx hyperframes` 时,可按 `visual_plan.json` 自动生成每镜 mp4 并由 lj 用 FFmpeg 统一组装。生成器不可用时优先消费用户自带素材,否则回落 `fallback_solid` 卡片;严格发布用 `--strict` 会阻断。
+- 配音缺失时不要硬闯:优先安装 Kokoro 中文本地 TTS;商用发布建议配置云 TTS 或使用用户录音。如果用户已有录好的口播,可用 `--voice-audio-file` 或 `lj voice --audio-file` 接入。
+
+## 能力分层
+
+- 🟢 零 key 免费:继承 Claude/Codex CLI 写脚本;HyperFrames 本地生成动态图形;Kokoro 中文 TTS;用户自备图片/视频/录音;本机 FFmpeg;HyperFrames 内置媒体能力。Kokoro 权重 Apache-2.0,适合作为默认零 key 中文配音。
+- 🟡 付费或需连接账号:火山豆包/OpenAI-compatible TTS、Fal/Picsart/HeyGen 数字人、Shutterstock/Canva/Cloudinary 等素材或生成服务。能装插件不等于免费可用,以对应服务账号和价格为准。
+- 🔴 发布需自建/人工:抖音、小红书、YouTube、TikTok 官方发布自动化不在本仓库内;导出后由用户人工上传或自建发布链路。
+
+## 隐私与安全
+
+- 数据默认留在本机:项目文件、artifact、渲染产物和导出包都写入你指定的本地目录。
+- key 默认不落盘:真实 provider 的 key 只从当前 shell 环境读取,不会写入仓库、日志、manifest、`results.json` 或 release 包。
+- 能继承就不问 key:已登录的 Claude Code/Codex CLI 只通过官方命令行调用,不会读取 OAuth token、cookie、Keychain 内部文件或私密凭据文件。
+- 导出包不夹带本地凭据:`projects/`、`exports/`、`.env*`、`.venv/`、`node_modules/` 已在 `.gitignore` 中排除。
+- 发布前可选做依赖审计:Python 侧可接 `pip-audit` 或 `uv export` 后审计;Node 侧可用 `pnpm audit`、Socket 或 Snyk。M1 不把这些云审计服务作为必需依赖。
+
+## 跨平台能力说明
+
+FFmpeg 是 release 硬门,且必须支持 `drawtext/libfreetype` 与 AAC 音频编码。
+
+macOS:
+
+```bash
+brew install ffmpeg
+ffmpeg -hide_banner -h filter=drawtext
+```
+
+如果 Homebrew 默认包缺 `drawtext`,可切到 `ffmpeg-full`:
+
+```bash
+brew install ffmpeg-full
+brew unlink ffmpeg && brew link ffmpeg-full
+ffmpeg -filters | grep drawtext
+```
+
+Ubuntu/Debian:
+
+```bash
+sudo apt-get update
+sudo apt-get install -y ffmpeg espeak-ng
+ffmpeg -filters | grep drawtext
+```
+
+Windows:
+
+```powershell
+winget install Gyan.FFmpeg
+ffmpeg -filters | findstr drawtext
+```
+
+TTS 分三档:用户录音与火山豆包/OpenAI-compatible TTS 属商用发布优选;Kokoro 中文本地 TTS 是零 key 默认配音,可通过 `--strict` 质量门;macOS `say`、espeak-ng 属预览级零 key 语音。Piper 可作为用户自装的零 key 本地 TTS,但 GPL-3.0 组件只由用户本机安装、灵剪子进程调用,不进入核心依赖树。ChatGPT/Claude 订阅通常只覆盖 LLM,不等于包含 TTS。
+
+## 快速开始
+
+推荐先用 `lj run` 走引导主线。默认会在 script / voice / visuals 三审点暂停;只有显式传 `--yes` 才会自动写入审批记录。
+
+```bash
+uv sync
+uv run lj setup
+uv run lj run ./projects/demo --name "演示项目" --input-file examples/product_intro_zh.txt --script-provider auto --voice-provider auto --json
+```
+
+这条命令用于首片可看和能力确认。已具备 HyperFrames + Kokoro/云 TTS/用户录音时,可以直接做严格发布验收:
+
+```bash
+uv run lj run ./projects/demo --name "演示项目" --input-file examples/product_intro_zh.txt --script-provider auto --voice-provider auto --release --strict --yes --json
+```
+
+如果只想验证流程,可以显式使用 mock;mock 产物只证明门禁和流程,不是发布级视频:
+
+```bash
+uv run lj run ./projects/demo --name "演示项目" --input-file examples/product_intro_zh.txt --script-provider mock --voice-provider mock --json
+```
+
+已有录好的口播音频时:
+
+```bash
+uv run lj run ./projects/demo --name "演示项目" --input-file examples/product_intro_zh.txt --script-provider auto --voice-audio-file narration.m4a --json
+```
+
+逐条命令备选:
+
+```bash
+uv sync
+uv run lj setup
+uv run lj doctor --json
+uv run lj init ./projects/demo --name "演示项目" --json
+uv run lj ingest text ./projects/demo --file examples/product_intro_zh.txt --json
+uv run lj extract ./projects/demo --json
+# 真内容推荐 auto,继承当前 Claude/Codex CLI:
+uv run lj script ./projects/demo --type product --platform douyin --language zh-CN --ratio 9:16 --duration 45 --provider auto --json
+# 仅验证流程时才显式使用 mock:
+uv run lj script ./projects/demo --type product --platform douyin --language zh-CN --ratio 9:16 --duration 45 --provider mock --json
+uv run lj approve script ./projects/demo --approved-by tester --json
+uv run lj voice ./projects/demo --provider mock --voice test-voice --json
+# 或者使用已经录好的口播音频:
+uv run lj voice ./projects/demo --provider auto --voice user --audio-file narration.m4a --json
+uv run lj approve voice ./projects/demo --approved-by tester --json
+uv run lj visuals ./projects/demo --engine ffmpeg_card --template product --json
+# visuals 会生成每镜 storyboard:包含 generator、visual_prompt、motion_spec、brief、expected_asset_path 与 duration_sec。
+# render 前会按 generator 委托宿主 HyperFrames/Remotion/imagegen 写入 assets/scenes/<scene_id>.mp4|png;缺宿主能力时先引导安装/启用 Codex app 插件或让用户放自有素材,最后才 fallback_solid。
+uv run lj approve visuals ./projects/demo --approved-by tester --json
+uv run lj render ./projects/demo --platform douyin --language zh-CN --ratio 9:16 --json
+uv run lj qa ./projects/demo --json
+uv run lj export ./projects/demo --platform douyin --language zh-CN --ratio 9:16 --json
+# 发布级验收:
+uv run lj qa ./projects/demo --release --strict --json
+uv run lj export ./projects/demo --platform douyin --language zh-CN --ratio 9:16 --release --strict --json
+```
+
+完整 onboarding 向导见 [`docs/ONBOARDING.md`](docs/ONBOARDING.md)。
+
+Web 控制台:
+
+当前 Web 控制台为静态骨架,不能替代 Codex app 对话式审批流;CLI 只是底层执行引擎。能力状态见 [`docs/CAPABILITY_MATRIX.md`](docs/CAPABILITY_MATRIX.md)。
+
+```bash
+pnpm install
+pnpm --dir apps/web build
+pnpm --dir apps/web dev
+```
+
+## 真实 provider 配置
+
+能力继承优先:
+
+```bash
+uv run lj setup
+```
+
+若已登录 Claude Code `claude` 或 Codex `codex` CLI,灵剪会优先继承 LLM 能力,无需 key。TTS 通常不包含在订阅内;默认自动选择当前最高档 TTS:用户录音/云 TTS 优先,其次 Kokoro 中文本地 TTS,最后才是 say/espeak 预览音。
+
+Kokoro 中文本地 TTS:
+
+```bash
+uv sync
+npx hyperframes tts --list
+uv run lj setup
+```
+
+`uv sync` 会安装灵剪的 Kokoro ONNX 运行包;`npx hyperframes tts --list` 用于确认 HyperFrames 的本地 Kokoro 资源可用。
+
+Piper 中文本地 TTS(GPL-3.0,用户自装,不进灵剪依赖树):
+
+```bash
+pip install piper-tts
+python3 -m piper.download_voices zh_CN-huayan-medium
+uv run lj setup
+```
+
+自定义 CLI provider:
+
+```bash
+export LINGJIAN_LLM_CLI=your-llm-command
+export LINGJIAN_TTS_CLI=your-tts-command
+```
+
+CLI provider 从 stdin 读取 JSON,向 stdout 输出 JSON。LLM CLI 返回 `scenes`;TTS CLI 返回 `audio_base64` 与 `duration_sec`。CLI 命令、key 和环境变量值不会写入 release 包。
+
+OpenAI-compatible API:
+
+```bash
+export OPENAI_BASE_URL=https://api.example.com/v1
+export OPENAI_API_KEY=...
+export OPENAI_MODEL=...
+export OPENAI_TTS_BASE_URL=https://api.example.com/v1
+export OPENAI_TTS_API_KEY=...
+export OPENAI_TTS_MODEL=...
+```
+
+LLM provider ID 为 `openai_compatible`;TTS provider ID 为 `openai_compatible_tts`。API key、base URL、model 值只从环境读取,不会写入 artifact、日志或 release 包。
+
+火山豆包 TTS:
+
+```bash
+export VOLCENGINE_TTS_APP_ID=...
+export VOLCENGINE_TTS_ACCESS_TOKEN=...
+export VOLCENGINE_TTS_CLUSTER=...
+export VOLCENGINE_TTS_VOICE_TYPE=...   # 可选
+```
+
+TTS provider ID 为 `volcengine_tts`,也可用别名 `volcengine` 或 `doubao`。Access Token 只从环境读取,不会写入 artifact、日志或 release 包。
+
+已有录音可不用 TTS:
+
+```bash
+uv run lj voice ./projects/demo --provider auto --voice user --audio-file narration.m4a --json
+```
+
+该路径会写 `provider_id=user_audio`,不会标 mock,也不会把原始文件路径写入导出包。
+
+配置后先跑 `uv run lj doctor --json`。required 缺失时 exit code 非 0,不得继续 release。
+
+## 验证
+
+```bash
+uv run pytest
+uv run ruff check .
+uv run python scripts/ci/check_false_success.py
+pnpm --dir apps/web lint
+pnpm --dir apps/web build
+```
+
+完整证据见 `verification/` 与 `docs/dev/AUDIT_READY.md`。

@@ -4,6 +4,7 @@ import json
 import os
 import shlex
 import shutil
+import sys
 from pathlib import Path
 from subprocess import TimeoutExpired
 from subprocess import run as run_subprocess
@@ -31,6 +32,7 @@ def ensure_scene_asset(project: ProjectRef, scene: dict[str, Any]) -> dict[str, 
     if not argv:
         scene["generation_status"] = "unavailable"
         return scene
+    expected.parent.mkdir(parents=True, exist_ok=True)
     payload = {
         "task": "generate_visual_asset",
         "generator": scene.get("generator"),
@@ -94,6 +96,9 @@ def _generator_argv(generator: str) -> list[str]:
         except ValueError:
             return []
         return argv if argv and _command_exists(argv[0]) else []
+    if generator == "hyperframes" and _npx_hyperframes_available():
+        adapter = _repo_root() / "scripts" / "providers" / "hyperframes_scene_cli.py"
+        return [sys.executable, str(adapter)]
     command = command_map.get(generator)
     if command and shutil.which(command):
         return [command]
@@ -105,6 +110,27 @@ def _command_exists(command: str) -> bool:
     if path.parts and (path.is_absolute() or len(path.parts) > 1):
         return path.exists()
     return shutil.which(command) is not None
+
+
+def _npx_hyperframes_available() -> bool:
+    npx = shutil.which("npx")
+    if not npx:
+        return False
+    try:
+        completed = run_subprocess(
+            [npx, "hyperframes", "--version"],
+            text=True,
+            capture_output=True,
+            check=False,
+            timeout=10,
+        )
+    except (OSError, TimeoutExpired):
+        return False
+    return completed.returncode == 0
+
+
+def _repo_root() -> Path:
+    return Path(__file__).resolve().parents[2]
 
 
 def _apply_generated_asset_path(

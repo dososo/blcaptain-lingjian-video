@@ -9,13 +9,13 @@ if [ ! -f "$ROOT_DIR/SKILL.md" ]; then
   exit 1
 fi
 
-mkdir -p "$HOME/.codex/skills" "$HOME/.claude/skills"
-ln -sfn "$ROOT_DIR" "$HOME/.codex/skills/$SKILL_NAME"
+mkdir -p "$HOME/.agents/skills" "$HOME/.claude/skills"
+ln -sfn "$ROOT_DIR" "$HOME/.agents/skills/$SKILL_NAME"
 ln -sfn "$ROOT_DIR" "$HOME/.claude/skills/$SKILL_NAME"
 
-test -f "$HOME/.codex/skills/$SKILL_NAME/SKILL.md"
+test -f "$HOME/.agents/skills/$SKILL_NAME/SKILL.md"
 test -f "$HOME/.claude/skills/$SKILL_NAME/SKILL.md"
 
 echo "已安装 skill 软链:"
-echo "- $HOME/.codex/skills/$SKILL_NAME -> $ROOT_DIR"
+echo "- $HOME/.agents/skills/$SKILL_NAME -> $ROOT_DIR"
 echo "- $HOME/.claude/skills/$SKILL_NAME -> $ROOT_DIR"

@@ -6,6 +6,7 @@ import platform
 import shlex
 import shutil
 import subprocess
+import sys
 import tempfile
 from dataclasses import dataclass, field
 from pathlib import Path
@@ -14,6 +15,7 @@ from typing import Any, Callable, Mapping
 PathLookup = Callable[[str], str | None]
 FFMPEG_FILTER_TIMEOUT_SEC = 20
 HOST_VISUAL_PROBE_TIMEOUT_SEC = 10
+LOCAL_TTS_PROBE_TIMEOUT_SEC = 10
 
 
 @dataclass(frozen=True, slots=True)
@@ -96,7 +98,8 @@ def detect_capabilities(
     inherited = [
         group.best.label_zh
         for group in groups.values()
-        if group.best.source_type in {"inherited-cli", "local-cli"} and group.best.configured
+        if group.best.source_type in {"inherited-cli", "local-cli", "host-plugin"}
+        and group.best.configured
     ]
     if inherited:
         summary = "已继承/检测到 " + "、".join(inherited) + "，无需 key。"
@@ -138,6 +141,7 @@ def provider_overrides_from_capabilities(
                     "id": candidate.id,
                     "type": candidate.provider_type or "cli",
                     "configured": candidate.configured,
+                    "safe_for_release": candidate.safe_for_release,
                     "is_mock": False,
                     "probe_ok": candidate.configured,
                     "command": candidate.command_name or "",
@@ -308,6 +312,26 @@ def _tts_candidates(env: Mapping[str, str], lookup: PathLookup) -> list[Capabili
             setup_command='export LINGJIAN_TTS_CLI="/path/to/real-tts"',
             quality_tier="publish",
         ),
+        _local_tts_candidate(
+            "kokoro_zh_tts",
+            "Kokoro 中文本地 TTS",
+            "kokoro",
+            env.get("LINGJIAN_KOKORO_TTS_READY") == "1",
+            lookup,
+            "已检测到 Kokoro 中文本地 TTS,零 key 可用。",
+            "uv sync && npx hyperframes tts --list",
+            quality_tier="zero_key",
+        ),
+        _local_tts_candidate(
+            "piper_cli",
+            "Piper 中文本地 TTS",
+            "piper",
+            env.get("LINGJIAN_PIPER_TTS_READY") == "1",
+            lookup,
+            "已检测到 Piper 中文本地 TTS;GPL 组件仅用户自装,灵剪只子进程调用。",
+            "pip install piper-tts && python3 -m piper.download_voices zh_CN-huayan-medium",
+            quality_tier="zero_key",
+        ),
         _cli_candidate(
             "macos_say",
             "tts",
@@ -317,17 +341,7 @@ def _tts_candidates(env: Mapping[str, str], lookup: PathLookup) -> list[Capabili
             lookup,
             "已检测到 macOS say，本机零 key TTS 可用。",
             quality_tier="preview",
-        ),
-        _cli_candidate(
-            "piper_cli",
-            "tts",
-            "local-cli",
-            "Piper CLI",
-            "piper",
-            lookup,
-            "已检测到 Piper 本机 TTS。",
-            setup_command="brew install piper",
-            quality_tier="preview",
+            release_capable=False,
         ),
         _cli_candidate(
             "espeak_ng",
@@ -339,13 +353,15 @@ def _tts_candidates(env: Mapping[str, str], lookup: PathLookup) -> list[Capabili
             "已检测到 espeak-ng 本机 TTS。",
             setup_command="brew install espeak-ng",
             quality_tier="preview",
+            release_capable=False,
         ),
         _missing(
             "tts",
             "缺少真实 TTS",
             "订阅 CLI 通常只覆盖 LLM，不含 TTS；"
-            "请先使用 macOS say/Piper/espeak-ng，再考虑 TTS key。",
-            'export OPENAI_TTS_BASE_URL=... OPENAI_TTS_API_KEY=... OPENAI_TTS_MODEL=...',
+            "请优先安装 Kokoro 中文本地 TTS,或配置火山/OpenAI-compatible TTS key,"
+            "也可以提供已录好的口播音频。",
+            "uv sync && npx hyperframes tts --list",
         ),
     ]
     return candidates
@@ -359,13 +375,13 @@ def _visual_candidates(
     return [
         _host_visual_candidate(
             "host_hyperframes",
-            "HyperFrames 宿主动态图形",
-            "hyperframes",
+            "HyperFrames 零 key 动态画面",
+            "npx",
             "hyperframes",
             env.get("LINGJIAN_HOST_HYPERFRAMES_READY") == "1",
             lookup,
             tool_overrides,
-            "已检测到宿主 HyperFrames 能力,可按镜渲染动态图形产物。",
+            "已检测到 HyperFrames,可按镜渲染零 key 动态画面产物。",
         ),
         _host_visual_candidate(
             "host_remotion",
@@ -403,7 +419,7 @@ def _visual_candidates(
             provider_type="host-plugin",
             hint="已检测到宿主 imagegen 时,可生成静态图并由 lj 加 Ken Burns 运镜。",
             setup_command=(
-                "在 Codex 桌面版启用 imagegen 能力;安装/启用后新开会话再跑 "
+                "在 Codex app 启用 imagegen 能力;安装/启用后新开会话再跑 "
                 "uv run lj setup。也可提供 project/assets/scenes/<scene_id>.png。"
             ),
         ),
@@ -419,11 +435,13 @@ def _visual_candidates(
                 "将消费已有 project/assets/scenes 产物,否则回落纯色卡片并给 QA warning。"
             ),
             setup_command=(
-                "当前已验证发布级视觉首选:把每镜 mp4/png 放进 project/assets/scenes/。"
-                "如需宿主自动生成,可在 Codex 桌面版安装/启用 HyperFrames、Remotion 或 imagegen;"
-                "可试 npx skills add heygen-com/hyperframes 或 "
-                "npx skills add remotion-dev/skills。若入口变化,以官方文档和 Codex 插件市场为准。"
-                "安装后新开会话再跑 uv run lj setup。"
+                "优先安装 HyperFrames 零 key 画面能力:"
+                "npx skills add heygen-com/hyperframes。"
+                "也可在 Codex app 插件市场安装/启用 HyperFrames、Remotion 或 imagegen;"
+                "备用 Remotion 命令为 "
+                "npx skills add remotion-dev/skills。HyperFrames 需 Node.js 22+ 与 FFmpeg;"
+                "Remotion 商用场景需核对 license。若入口变化,以官方文档和 Codex app 插件市场为准。"
+                "安装后新开会话再跑 uv run lj setup。仍缺失时可提供每镜 mp4/png。"
             ),
         ),
     ]
@@ -503,6 +521,7 @@ def _cli_candidate(
     configured_hint: str,
     setup_command: str | None = None,
     quality_tier: str | None = None,
+    release_capable: bool = True,
 ) -> CapabilityCandidate:
     configured = bool(command and lookup(command))
     return CapabilityCandidate(
@@ -510,13 +529,40 @@ def _cli_candidate(
         kind=kind,
         source_type=source_type,
         configured=configured,
-        safe_for_release=configured,
+        safe_for_release=configured and release_capable,
         label_zh=label,
         provider_type="cli",
         command_name=command if command else None,
         quality_tier=quality_tier,
         config={"command": command or ""},
         hint=configured_hint if configured else f"未检测到 {label}。",
+        setup_command=setup_command,
+    )
+
+
+def _local_tts_candidate(
+    provider_id: str,
+    label: str,
+    command_name: str,
+    env_ready: bool,
+    lookup: PathLookup,
+    ready_hint: str,
+    setup_command: str,
+    quality_tier: str,
+) -> CapabilityCandidate:
+    configured = env_ready or _local_tts_probe(provider_id)
+    return CapabilityCandidate(
+        id=provider_id,
+        kind="tts",
+        source_type="local-cli",
+        configured=configured,
+        safe_for_release=configured,
+        label_zh=label,
+        provider_type=provider_id,
+        command_name=command_name if lookup(command_name) else None,
+        quality_tier=quality_tier,
+        config={"command": command_name if configured else ""},
+        hint=ready_hint if configured else f"未检测到 {label}。",
         setup_command=setup_command,
     )
 
@@ -534,7 +580,9 @@ def _host_visual_candidate(
     override_key = provider_id
     configured = env_ready or bool(overrides and overrides.get(override_key))
     resolved = lookup(command)
-    if not configured and resolved:
+    if not configured and provider_id == "host_hyperframes":
+        configured = _npx_hyperframes_available(lookup)
+    if not configured and resolved and provider_id != "host_hyperframes":
         configured = _host_visual_cli_probe([resolved], generator)
     return CapabilityCandidate(
         id=provider_id,
@@ -548,7 +596,7 @@ def _host_visual_candidate(
         config={"command": command},
         hint=ready_hint if configured else f"未检测到 {label}。",
         setup_command=(
-            f"在 Codex 桌面版安装/启用 {label} 对应插件或 skill;"
+            f"在 Codex app 安装/启用 {label} 对应插件或 skill;"
             "安装后新开会话再跑 uv run lj setup。"
         ),
     )
@@ -660,6 +708,44 @@ def _host_visual_cli_probe(argv: list[str], generator: str) -> bool:
         except (OSError, subprocess.TimeoutExpired):
             return False
         return completed.returncode == 0 and expected.exists() and expected.stat().st_size > 0
+
+
+def _npx_hyperframes_available(lookup: PathLookup) -> bool:
+    npx = lookup("npx")
+    if not npx:
+        return False
+    try:
+        completed = subprocess.run(
+            [npx, "hyperframes", "--version"],
+            text=True,
+            capture_output=True,
+            check=False,
+            timeout=HOST_VISUAL_PROBE_TIMEOUT_SEC,
+        )
+    except (OSError, subprocess.TimeoutExpired):
+        return False
+    return completed.returncode == 0 and bool((completed.stdout or completed.stderr).strip())
+
+
+def _local_tts_probe(provider_id: str) -> bool:
+    script = _repo_root() / "scripts" / "providers" / f"{provider_id}.py"
+    if not script.exists():
+        return False
+    try:
+        completed = subprocess.run(
+            [sys.executable, str(script), "--probe"],
+            text=True,
+            capture_output=True,
+            check=False,
+            timeout=LOCAL_TTS_PROBE_TIMEOUT_SEC,
+        )
+    except (OSError, subprocess.TimeoutExpired):
+        return False
+    return completed.returncode == 0
+
+
+def _repo_root() -> Path:
+    return Path(__file__).resolve().parents[2]
 
 
 def ffmpeg_drawtext_available(

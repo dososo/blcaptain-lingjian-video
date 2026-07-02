@@ -76,7 +76,25 @@ def _media_streams_are_verifiable(path: Path) -> tuple[bool, bool]:
     return "video" in stream_types, "audio" in stream_types
 
 
-def _check_release_video_body(project: ProjectRef, manifest: dict, report: QAReport) -> None:
+def _add_release_quality_issue(
+    report: QAReport,
+    code: str,
+    message_zh: str,
+    strict: bool,
+) -> None:
+    issue = QAIssue(code, "hard" if strict else "warning", message_zh)
+    if strict:
+        report.hard_failures.append(issue)
+    else:
+        report.warnings.append(issue)
+
+
+def _check_release_video_body(
+    project: ProjectRef,
+    manifest: dict,
+    report: QAReport,
+    strict: bool,
+) -> None:
     video_path = resolve_inside(project.path, project.path / manifest.get("video_path", ""))
     if not video_path.exists():
         report.hard_failures.append(
@@ -99,28 +117,31 @@ def _check_release_video_body(project: ProjectRef, manifest: dict, report: QARep
     visual_total = int(manifest.get("visual_total") or 0)
     visual_real_count = int(manifest.get("visual_real_count") or 0)
     if visual_total > 0 and visual_real_count == 0:
-        report.warnings.append(
-            QAIssue(
-                "RELEASE_VISUAL_IS_BLANK_CARD",
-                "warning",
-                "release 画面全部为回落卡片,未消费宿主动态图形/图片产物。",
-            )
+        _add_release_quality_issue(
+            report,
+            "RELEASE_VISUAL_IS_BLANK_CARD",
+            "release 画面全部为回落卡片,未消费宿主动态图形/图片产物。",
+            strict,
         )
-    preview_tts_ids = {"macos_say", "piper_cli", "espeak_ng"}
+    preview_tts_ids = {"macos_say", "espeak_ng"}
     if any(
         provider.get("kind") == "tts" and provider.get("id") in preview_tts_ids
         for provider in manifest.get("providers", [])
     ):
-        report.warnings.append(
-            QAIssue(
-                "RELEASE_AUDIO_IS_PREVIEW_VOICE",
-                "warning",
-                "release 音轨来自本机预览级 TTS;建议配置火山豆包等发布级 TTS。",
-            )
+        _add_release_quality_issue(
+            report,
+            "RELEASE_AUDIO_IS_PREVIEW_VOICE",
+            "release 音轨来自本机预览级 TTS;建议配置火山豆包等发布级 TTS。",
+            strict,
         )
 
 
-def run_qa(project: ProjectRef, release: bool = False, platform: str = "douyin") -> QAReport:
+def run_qa(
+    project: ProjectRef,
+    release: bool = False,
+    platform: str = "douyin",
+    strict: bool = False,
+) -> QAReport:
     report = QAReport()
     release_manifest = latest_render_manifest(
         project, platform, "release"
@@ -138,7 +159,7 @@ def run_qa(project: ProjectRef, release: bool = False, platform: str = "douyin")
             QAIssue("RELEASE_CONTAINS_MOCK", "hard", "release 包不能包含 mock provider。")
         )
     elif release:
-        _check_release_video_body(project, manifest, report)
+        _check_release_video_body(project, manifest, report, strict)
     report.info.append(QAIssue("QA_STUB", "info", "Batch 2 最小 QA 已执行。"))
 
     artifacts = project.path / "artifacts"

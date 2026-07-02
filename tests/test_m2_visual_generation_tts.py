@@ -86,6 +86,7 @@ def test_visuals_writes_executable_generation_spec(tmp_path, monkeypatch):
         },
     )
     monkeypatch.setenv("LINGJIAN_HOST_IMAGEGEN_READY", "1")
+    monkeypatch.setenv("PATH", "")
 
     result = runner.invoke(app, ["visuals", str(project_path), "--ratio", "9:16", "--json"])
 
@@ -195,6 +196,14 @@ def test_release_qa_warns_when_audio_uses_preview_tts(tmp_path, monkeypatch):
 
     assert report.release_ready is True
     assert any(issue.code == "RELEASE_AUDIO_IS_PREVIEW_VOICE" for issue in report.warnings)
+
+    strict_report = run_qa(project, release=True, strict=True)
+
+    assert strict_report.release_ready is False
+    assert any(
+        issue.code == "RELEASE_AUDIO_IS_PREVIEW_VOICE"
+        for issue in strict_report.hard_failures
+    )
 
 
 def test_volcengine_tts_provider_uses_official_http_contract(monkeypatch):

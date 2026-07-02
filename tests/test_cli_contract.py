@@ -14,6 +14,12 @@ def test_render_help_has_no_force_option():
     assert "--force" not in result.output
 
 
+def test_release_commands_expose_strict_option():
+    assert "--strict" in runner.invoke(app, ["qa", "--help"]).output
+    assert "--strict" in runner.invoke(app, ["export", "--help"]).output
+    assert "--strict" in runner.invoke(app, ["run", "--help"]).output
+
+
 def test_doctor_json_is_parseable():
     result = runner.invoke(app, ["doctor", "--json"])
 

@@ -1,27 +1,29 @@
 # 灵剪 Onboarding:能力检测与继承优先
 
-灵剪面向公开开源用户,默认认为你可能正在 Codex 桌面版、Claude Code、本机模型或普通 shell 中使用。第一步不是让你填 key,而是先检测这台机器已经具备什么能力,能继承就直接继承。
+灵剪面向 Codex app 用户。第一步不是让你填 key,而是在 Codex app 里安装插件/skill 后,由 Codex 自动检测这台机器和当前会话已经具备什么能力,能继承就直接继承。
 
 ## 心智模型
 
-- 预览档:零配置使用 mock provider,用于离线体验、门禁验证和流程演示。
-- 发布档:必须同时具备真实 LLM、真实非 mock TTS、FFmpeg/ffprobe、中文字体。缺一项都不能 release;只有本机预览级 TTS 时可出 release,但 QA 会提示建议升级发布级 TTS。
+- 预览档:可使用 mock、macOS say/espeak-ng 或 fallback_solid,用于离线体验、门禁验证和流程演示。
+- 发布档:必须同时具备真实 LLM、Kokoro/云 TTS/用户录音、真实画面插件/每镜素材、FFmpeg/ffprobe/drawtext/AAC、中文字体和底部字幕安全区。`--strict --release` 下 say、espeak 与 fallback_solid 会阻断。
 
 mock 永远不能用于正式 release。doctor 未 ready 时,真实终验必须停下,不得伪造 PASS。
 
+能力分三层:
+
+- 🟢 零 key 免费:继承 Claude/Codex CLI、HyperFrames 本地画面、Kokoro 中文 TTS、用户自备素材/录音、FFmpeg。
+- 🟡 付费或需连接账号:火山豆包/OpenAI-compatible TTS、Fal/Picsart/HeyGen 数字人、商业素材库等。
+- 🔴 发布需自建或人工:抖音/小红书/YouTube/TikTok 自动发布不在本仓库内,导出后人工上传或自建。
+
 ## 第一步:自动检测
 
-```bash
-uv run lj setup
-uv run lj setup --json
-uv run lj doctor --json
-```
+Codex 对话里只需要说“先做灵剪能力门诊”。底层可用命令是 `uv run lj setup`;`uv run lj setup --json` 和 `uv run lj doctor --json` 只给 Codex/审计脚本使用,不要把原始 JSON 当作普通用户界面。
 
 `lj setup` 会按优先级检测:
 
 - LLM:先找 Claude Code 的 `claude`、Codex 的 `codex` 等官方订阅 CLI;再找 `ollama`、`llm`;最后才看 OpenAI-compatible key。
-- TTS:先找发布级云 TTS 或真实 TTS CLI;没有时使用本机预览级 TTS,如 macOS `say`、Piper、espeak-ng,并在发布 QA 中 warning。
-- 画面:当前已验证的发布级视觉首选路径是消费用户自带 `assets/scenes/` 素材;宿主 HyperFrames/Remotion/imagegen 自动生成属于可选进阶。两者都没有时才回落卡片并在 QA warning。
+- TTS:先找用户录音、发布级云 TTS 或真实 TTS CLI;然后找 Kokoro 中文本地 TTS;再找用户自装 Piper;最后才使用 macOS `say`、espeak-ng 预览音,并在严格发布 QA 中阻断。
+- 画面:优先检测 HyperFrames 零 key 动态画面;也可消费用户自带 `assets/scenes/` 素材或宿主 Remotion/imagegen 资产。都没有时才回落卡片,严格发布 QA 会阻断。
 - 渲染:检查本机 `ffmpeg`、`ffprobe`,并确认 `ffmpeg` 支持 `drawtext/libfreetype`。
 - 字体:macOS 用 PingFang;其他系统可放 `~/.cache/lingjian/fonts/NotoSansSC-Regular.otf`。
 
@@ -60,17 +62,29 @@ uv run lj doctor --json
 
 ChatGPT/Claude 订阅通常只提供 LLM,不代表 TTS 也可用。TTS 分两档:
 
-- 发布级:火山豆包、OpenAI-compatible TTS、自定义真实 TTS CLI。默认自动择优,有发布级就优先发布级。
-- 预览级:macOS `say`、Piper、espeak-ng。零 key、可验证流程,但 release QA 会给 `RELEASE_AUDIO_IS_PREVIEW_VOICE` warning。
+- 商用发布优选:用户录音、火山豆包、OpenAI-compatible TTS、自定义真实 TTS CLI。默认自动择优,有云 TTS 或录音就优先使用。
+- 零 key 默认:Kokoro 中文本地 TTS。Apache-2.0 权重,可通过 `--strict` 发布门,但商用品质仍建议人工试听。
+- 用户自装零 key:Piper 中文本地 TTS。Piper/模型涉及 GPL-3.0,只能由用户自装,灵剪只子进程调用,不进入核心依赖树。
+- 预览级:macOS `say`、espeak-ng。零 key、可验证流程,但不是发布级;`--strict --release` 会因 `RELEASE_AUDIO_IS_PREVIEW_VOICE` 阻断。
 
-先确认本机预览级是否可用:
+先安装零 key 中文 Kokoro:
+
+```bash
+uv sync
+npx hyperframes tts --list
+uv run lj setup
+```
+
+`uv sync` 会安装灵剪的 Kokoro ONNX 运行包;`npx hyperframes tts --list` 用于确认 HyperFrames 的本地 Kokoro 资源可用。
+
+只确认本机预览级是否可用:
 
 ```bash
 say "灵剪语音检测"
 uv run lj setup
 ```
 
-macOS 的 `say` 不需要 key。其他系统可安装 Piper 或 espeak-ng。
+macOS 的 `say` 不需要 key,但只用于预览。其他系统可安装 espeak-ng 预览音,或安装 Kokoro/Piper 作为本地 TTS。
 
 如果你已经录好了口播音频,可以不用 TTS provider:
 
@@ -82,19 +96,18 @@ uv run lj run ./projects/demo --input-file input.txt --script-provider auto --vo
 
 这会写入 `provider_id=user_audio`,不标 mock,也不会把原始文件路径写进导出包。
 
-确实需要云 TTS 时再配置:
-
-Ubuntu/Debian:
+Piper(GPL-3.0,用户自装):
 
 ```bash
-sudo apt-get update && sudo apt-get install -y espeak-ng
+pip install piper-tts
+python3 -m piper.download_voices zh_CN-huayan-medium
 uv run lj setup
 ```
 
-Piper 可作为更自然的本机 TTS,请按发行版安装官方包或二进制后确保 `piper` 在 `PATH` 中:
+Ubuntu/Debian 预览音:
 
 ```bash
-piper --version
+sudo apt-get update && sudo apt-get install -y espeak-ng
 uv run lj setup
 ```
 
@@ -106,6 +119,8 @@ ffmpeg -filters | findstr drawtext
 ```
 
 Windows 本机 TTS 当前建议通过 Piper、espeak-ng 或 OpenAI-compatible TTS 接入;macOS `say` 仅在 macOS 可用。
+
+确实需要云 TTS 时再配置:
 
 中文发布级 TTS 首选火山豆包:
 
@@ -170,9 +185,9 @@ ffmpeg -filters | findstr drawtext
 - macOS 默认使用 PingFang。
 - 其他系统缺字体时,放置 `~/.cache/lingjian/fonts/NotoSansSC-Regular.otf`。
 
-## 画面能力:自备素材优先,宿主委托进阶
+## 画面能力:HyperFrames 零 key 优先,自备素材稳态回落
 
-灵剪核心不内置 Remotion/HyperFrames。它会在 visuals 阶段生成每镜 storyboard,每镜包含:
+灵剪核心不内置 Remotion/HyperFrames SDK。它会在 visuals 阶段生成每镜 storyboard,每镜包含:
 
 - `generator`: `hyperframes`、`remotion`、`image-gen`、`user-asset` 或 `fallback_solid`。
 - `visual_prompt`: 给 imagegen 的画面提示词。
@@ -181,35 +196,45 @@ ffmpeg -filters | findstr drawtext
 - `expected_asset_path`: 约定资产落点。
 - `duration_sec`: 与配音时长对齐。
 
-当前已验证的发布级视觉路径是把每镜 mp4/png 放到:
+当前已验证的零 key 画面路径是检测到 `npx hyperframes` 后,用薄子进程适配器按镜头生成:
+
+```text
+project/assets/scenes/<scene_id>.mp4
+```
+
+你也可以直接提供每镜素材,这是稳定回落路径:
 
 ```text
 project/assets/scenes/<scene_id>.mp4
 project/assets/scenes/<scene_id>.png
 ```
 
-Codex 桌面版用户也可以安装或启用宿主画面插件/skill,让宿主自动生成这些资产。可尝试:
+Codex app 用户也可以在 Plugins / Add to Codex 中安装或启用更完整的宿主画面插件/skill。命令只是备用:
 
 ```bash
 npx skills add heygen-com/hyperframes
 npx skills add remotion-dev/skills
 ```
 
-上面两个标识符分别来自 HyperFrames 与 Remotion 官方 skill 安装入口。若 skills CLI 或 Codex 插件市场发生变化,以官方文档为准:
+上面两个标识符分别来自 HyperFrames 与 Remotion 官方 skill 安装入口。注意:
+
+- HyperFrames 需要 Node.js 22+ 与 FFmpeg,本地渲染零 key,已通过灵剪端到端 strict 验证。
+- Remotion 需要 Node.js 与自动下载的 Chrome Headless;营利组织若超过 3 人使用,需核对 Remotion 商用 license。
+- 若 skills CLI 或 Codex 插件市场发生变化,以官方文档和 Codex app 插件市场为准:
 
 - HyperFrames: https://hyperframes.heygen.com/quickstart
 - Remotion Agent Skills: https://www.remotion.dev/docs/ai/skills
 
-安装后新开 Codex 会话,再跑 `uv run lj setup`。宿主 agent 使用已启用的 HyperFrames/Remotion/imagegen 产出:
+安装后新开 Codex 会话,再跑 `uv run lj setup`。宿主 agent 或灵剪薄适配器使用已启用的 HyperFrames/Remotion/imagegen 产出:
 
 ```text
 project/assets/scenes/<scene_id>.mp4
 project/assets/scenes/<scene_id>.png
 ```
 
-如果宿主没有这些能力,也没有用户自备素材,lj 会回落纯色卡片并在 release QA 中给 `RELEASE_VISUAL_IS_BLANK_CARD` warning。
+如果宿主没有这些能力,也没有用户自备素材,lj 会回落纯色卡片。普通 release 默认给 `RELEASE_VISUAL_IS_BLANK_CARD` warning;发布级验收请使用 `--strict`,此时会阻断。
 
-这不是 release 硬门:没有宿主画面能力仍可出片,但不能声称已经生成动态画面。
+这不是默认 release 硬门,是发布级质量门:没有真实画面仍可做低保真预览,但不能声称已经生成可发布动态画面。
 
 CLI 委托入口可选:
 
@@ -235,7 +260,7 @@ export LINGJIAN_HOST_REMOTION_CLI=/path/to/remotion
 
 ## 真实终验
 
-当 `uv run lj doctor --json` 返回 `ready=true` 后,再执行:
+当 Codex 确认能力门诊 ready 后,再执行真实终验:
 
 ```bash
 uv run python scripts/ci/run_verification.py

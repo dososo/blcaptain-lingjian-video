@@ -331,7 +331,7 @@ def _visual_generator_for_scene(project: ProjectRef, scene_id: str) -> dict:
             "generator": "hyperframes",
             "asset_path": f"assets/scenes/{scene_id}.mp4",
             "expected_asset_path": f"assets/scenes/{scene_id}.mp4",
-            "subtitle_burn": False,
+            "subtitle_burn": True,
             "motion": {"main": "kinetic_reveal", "one_main_only": True},
             "motion_spec": {"main": "kinetic_reveal", "one_main_only": True},
         }
@@ -340,7 +340,7 @@ def _visual_generator_for_scene(project: ProjectRef, scene_id: str) -> dict:
             "generator": "remotion",
             "asset_path": f"assets/scenes/{scene_id}.mp4",
             "expected_asset_path": f"assets/scenes/{scene_id}.mp4",
-            "subtitle_burn": False,
+            "subtitle_burn": True,
             "motion": {"main": "programmatic_scene", "one_main_only": True},
             "motion_spec": {"main": "programmatic_scene", "one_main_only": True},
         }
@@ -459,11 +459,43 @@ def setup(json_output: bool = typer.Option(False, "--json")) -> None:
     typer.echo("灵剪能力检测")
     typer.echo(report.summary_zh)
     typer.echo("预览档:零配置可用,使用 mock 只能预览,不能 release。")
-    typer.echo("发布档:需要真实 LLM、真实 TTS、FFmpeg/ffprobe/drawtext 与中文字体全部就绪。")
+    typer.echo(
+        "发布档:需要真实 LLM、Kokoro/云 TTS 或用户录音、真实画面、"
+        "FFmpeg/ffprobe/drawtext/AAC 与中文字体全部就绪。"
+    )
+    inherited = []
+    equipped = []
+    missing = []
+    optional = []
     for kind, group in payload["capabilities"].items():
         best = group["best"]
-        marker = "[OK]" if best["safe_for_release"] else "[缺失]"
-        typer.echo(f"{marker} {kind}: {best['label_zh']} ({best['source_type']})")
+        item = f"{kind}: {best['label_zh']} ({best['source_type']})"
+        if best["source_type"] == "inherited-cli" and best["configured"]:
+            inherited.append(item)
+            continue
+        if kind == "tts" and best.get("quality_tier") == "preview":
+            missing.append(f"tts: Kokoro/云 TTS 或用户录音(当前 {best['label_zh']} 仅预览)")
+            continue
+        if kind == "visuals" and not best["safe_for_release"]:
+            missing.append("visuals: 真实画面插件或每镜 mp4/png 素材")
+            continue
+        if best["safe_for_release"]:
+            equipped.append(item)
+        else:
+            missing.append(item)
+    optional.append("可选增强:平台模板、封面、多平台文案、更多画面/语音 provider")
+    typer.echo("已继承:")
+    for item in inherited or ["无"]:
+        typer.echo(f"- {item}")
+    typer.echo("已具备:")
+    for item in equipped or ["无"]:
+        typer.echo(f"- {item}")
+    typer.echo("必须补齐:")
+    for item in missing or ["无"]:
+        typer.echo(f"- {item}")
+    typer.echo("可选增强:")
+    for item in optional:
+        typer.echo(f"- {item}")
     if report.next_steps:
         typer.echo("下一步:")
         for step in report.next_steps:
@@ -884,10 +916,16 @@ def preview(
 def qa(
     project: Path,
     release: bool = typer.Option(False, "--release"),
+    strict: bool = typer.Option(False, "--strict"),
     platform: str = typer.Option("douyin"),
     json_output: bool = typer.Option(False, "--json"),
 ):
-    report = run_qa(ProjectRef(project, project.name), release=release, platform=platform)
+    report = run_qa(
+        ProjectRef(project, project.name),
+        release=release,
+        platform=platform,
+        strict=strict,
+    )
     _emit(
         {
             "ok": True,
@@ -908,6 +946,7 @@ def export(
     ratio: str = typer.Option("9:16"),
     all_platforms: bool = typer.Option(False, "--all-platforms"),
     release: bool = typer.Option(False, "--release"),
+    strict: bool = typer.Option(False, "--strict"),
     json_output: bool = typer.Option(False, "--json"),
 ):
     platforms = (
@@ -933,6 +972,7 @@ def export(
                 language,
                 ratio,
                 release=release,
+                strict=strict,
             )
             packages.append(
                 {
@@ -949,6 +989,7 @@ def export(
             "export_dir": packages[0]["export_dir"],
             "exports": packages,
             "release": release,
+            "strict": strict,
             "export_manifest": packages[0]["export_manifest"],
         },
         json_output,
@@ -972,6 +1013,7 @@ def run_workflow(
     engine: str = typer.Option("ffmpeg_card", "--engine"),
     template: str = typer.Option("product", "--template"),
     release: bool = typer.Option(False, "--release"),
+    strict: bool = typer.Option(False, "--strict"),
     yes: bool = typer.Option(False, "--yes"),
     approved_by: str = typer.Option("ci", "--approved-by"),
     json_output: bool = typer.Option(False, "--json"),
@@ -981,8 +1023,13 @@ def run_workflow(
     try:
         if release:
             doctor_result = run_doctor()
-            if not doctor_result.ready:
-                missing = [item.id for item in doctor_result.required]
+            required_items = list(doctor_result.required)
+            if voice_audio_file is not None:
+                required_items = [
+                    item for item in required_items if item.id != "real_tts_provider"
+                ]
+            if required_items:
+                missing = [item.id for item in required_items]
                 raise LingjianError(
                     "DOCTOR_NOT_READY",
                     "发布档需要 doctor ready 后才能运行。",
@@ -1027,7 +1074,7 @@ def run_workflow(
             mode="release" if release else "preview",
         )
         steps.append("render")
-        qa_report = run_qa(ref, release=release, platform=platform)
+        qa_report = run_qa(ref, release=release, platform=platform, strict=strict)
         steps.append("qa")
         if qa_report.hard_failures:
             _emit(
@@ -1047,7 +1094,7 @@ def run_workflow(
                 json_output,
             )
             raise typer.Exit(1)
-        package = export_project(ref, platform, language, ratio, release=release)
+        package = export_project(ref, platform, language, ratio, release=release, strict=strict)
         steps.append("export")
     except LingjianError as exc:
         _fail(exc, json_output)
@@ -1056,6 +1103,7 @@ def run_workflow(
             "ok": True,
             "status": "exported",
             "mode": "release" if release else "preview",
+            "strict": strict,
             "steps": steps,
             "video_path": str(render_result.video_path),
             "qa": {

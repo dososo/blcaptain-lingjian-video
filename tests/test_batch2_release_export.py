@@ -315,6 +315,8 @@ def test_release_render_uses_ffmpeg_and_writes_non_stub_video(tmp_path, monkeypa
     assert commands
     assert commands[0][0] == "ffmpeg"
     assert "真实发布字幕" in " ".join(commands[0])
+    assert "h*0.82-text_h" in " ".join(commands[0])
+    assert "(h/2)" not in " ".join(commands[0])
     assert "-c:a" in commands[0]
     assert "aac" in commands[0]
 
@@ -507,6 +509,20 @@ def test_release_render_falls_back_to_solid_when_delegated_asset_missing_and_qa_
     assert manifest["scenes"][0]["render_source"] == "fallback_solid"
     assert report.release_ready is True
     assert any(issue.code == "RELEASE_VISUAL_IS_BLANK_CARD" for issue in report.warnings)
+
+    strict_report = run_qa(project, release=True, strict=True)
+
+    assert strict_report.release_ready is False
+    assert any(
+        issue.code == "RELEASE_VISUAL_IS_BLANK_CARD"
+        for issue in strict_report.hard_failures
+    )
+    try:
+        export_project(project, "douyin", "zh-CN", "9:16", release=True, strict=True)
+    except LingjianError as exc:
+        assert exc.error_code == "QA_BLOCKING"
+    else:
+        raise AssertionError("expected QA_BLOCKING")
 
 
 def test_release_render_reports_ffmpeg_filter_error_with_stderr(tmp_path, monkeypatch):

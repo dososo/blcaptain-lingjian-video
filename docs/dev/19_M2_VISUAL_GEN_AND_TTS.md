@@ -6,6 +6,8 @@
 
 本轮承接 M2 第 1 步的「画面消费」能力,补齐生成侧与配音分档:
 
+> 最新口径更新:生态零 key 接入已在 `docs/dev/28_ECOSYSTEM_INTEGRATION.md` 落地。Kokoro 已成为默认零 key 中文 TTS;Piper 为用户自装 GPL 委托路径;say/espeak-ng 仍为预览级。HyperFrames 已通过 `npx hyperframes` 薄委托真机 strict 验证。
+
 - visuals 产出每镜可执行生成规格,供宿主 imagegen/HyperFrames/Remotion 生成资产。
 - render 前对缺失资产做 best-effort 宿主委托;不可用或失败时诚实回落,不伪造产物。
 - TTS 分为发布级与预览级;火山豆包作为中文发布级 provider,本机 say/Piper/espeak-ng 降为预览音。

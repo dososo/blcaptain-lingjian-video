@@ -16,7 +16,7 @@ def _fake_executable(path: Path, body: str) -> Path:
     return path
 
 
-def test_capability_detection_prefers_inherited_llm_cli_and_local_tts(tmp_path, monkeypatch):
+def test_capability_detection_prefers_inherited_llm_cli_and_kokoro_tts(tmp_path, monkeypatch):
     bin_dir = tmp_path / "bin"
     bin_dir.mkdir()
     _fake_executable(bin_dir / "claude", "#!/bin/sh\nprintf '继承订阅脚本输出'\n")
@@ -27,6 +27,7 @@ def test_capability_detection_prefers_inherited_llm_cli_and_local_tts(tmp_path, 
         "printf 'LOCAL AUDIO' > \"$out\"\n",
     )
     monkeypatch.setenv("PATH", str(bin_dir))
+    monkeypatch.setenv("LINGJIAN_KOKORO_TTS_READY", "1")
 
     result = runner.invoke(app, ["setup", "--json"])
 
@@ -34,9 +35,9 @@ def test_capability_detection_prefers_inherited_llm_cli_and_local_tts(tmp_path, 
     payload = json.loads(result.output)
     assert payload["capabilities"]["llm"]["best"]["id"] == "claude_cli"
     assert payload["capabilities"]["llm"]["best"]["source_type"] == "inherited-cli"
-    assert payload["capabilities"]["tts"]["best"]["id"] == "macos_say"
+    assert payload["capabilities"]["tts"]["best"]["id"] == "kokoro_zh_tts"
     assert payload["capabilities"]["tts"]["best"]["source_type"] == "local-cli"
-    assert payload["capabilities"]["tts"]["best"]["quality_tier"] == "preview"
+    assert payload["capabilities"]["tts"]["best"]["quality_tier"] == "zero_key"
     assert "无需 key" in payload["summary_zh"]
 
 
@@ -46,6 +47,7 @@ def test_doctor_uses_inherited_capabilities_without_api_key(tmp_path, monkeypatc
     _fake_executable(bin_dir / "claude", "#!/bin/sh\nprintf '继承订阅脚本输出'\n")
     _fake_executable(bin_dir / "say", "#!/bin/sh\nprintf 'audio' > \"$3\"\n")
     monkeypatch.setenv("PATH", str(bin_dir))
+    monkeypatch.setenv("LINGJIAN_KOKORO_TTS_READY", "1")
     monkeypatch.delenv("OPENAI_API_KEY", raising=False)
     monkeypatch.delenv("OPENAI_TTS_API_KEY", raising=False)
 
@@ -61,7 +63,7 @@ def test_doctor_uses_inherited_capabilities_without_api_key(tmp_path, monkeypatc
     assert result.ready is True
     assert result.providers["llm"].methods[0].id == "claude_cli"
     assert result.providers["llm"].methods[0].source_type == "inherited-cli"
-    assert result.providers["tts"].methods[0].id == "macos_say"
+    assert result.providers["tts"].methods[0].id == "kokoro_zh_tts"
     assert result.providers["tts"].methods[0].source_type == "local-cli"
     dumped = result.model_dump_json()
     assert "OPENAI_API_KEY" not in dumped
@@ -91,7 +93,7 @@ def test_doctor_marks_volcengine_tts_as_publish_tier(tmp_path, monkeypatch):
     assert result.ready is True
     assert volcengine.safe_for_release is True
     assert volcengine.quality_tier == "publish"
-    assert not any(item.id == "preview_tts_release_notice" for item in result.optional)
+    assert not any(item.id == "local_tts_release_notice" for item in result.optional)
     assert "secret-token" not in result.model_dump_json()
 
 
@@ -107,6 +109,7 @@ def test_doctor_requires_ffmpeg_drawtext_for_release_ready(tmp_path, monkeypatch
         "printf '%s\\n' ' T. drawbox V->V Draw a box'\nexit 0\nfi\nexit 0\n",
     )
     monkeypatch.setenv("PATH", str(bin_dir))
+    monkeypatch.setenv("LINGJIAN_KOKORO_TTS_READY", "1")
 
     result = run_doctor(tool_overrides={"cjk_font": True})
 
@@ -128,6 +131,7 @@ def test_doctor_accepts_ffmpeg_with_drawtext_filter(tmp_path, monkeypatch):
         "exit 0\n",
     )
     monkeypatch.setenv("PATH", str(bin_dir))
+    monkeypatch.setenv("LINGJIAN_KOKORO_TTS_READY", "1")
 
     result = run_doctor(tool_overrides={"cjk_font": True})
 
@@ -149,6 +153,7 @@ def test_doctor_accepts_ffmpeg_drawtext_filter_help(tmp_path, monkeypatch):
         "exit 1\n",
     )
     monkeypatch.setenv("PATH", str(bin_dir))
+    monkeypatch.setenv("LINGJIAN_KOKORO_TTS_READY", "1")
 
     result = run_doctor(tool_overrides={"cjk_font": True})
 
@@ -156,7 +161,7 @@ def test_doctor_accepts_ffmpeg_drawtext_filter_help(tmp_path, monkeypatch):
     assert result.capabilities["render"]["safe_for_release"] is True
 
 
-def test_resolve_auto_provider_runs_inherited_cli_adapters(tmp_path, monkeypatch):
+def test_resolve_provider_runs_inherited_llm_and_explicit_say_adapter(tmp_path, monkeypatch):
     bin_dir = tmp_path / "bin"
     bin_dir.mkdir()
     _fake_executable(bin_dir / "claude", "#!/bin/sh\nprintf '继承订阅生成的真实脚本文案'\n")
@@ -169,7 +174,7 @@ def test_resolve_auto_provider_runs_inherited_cli_adapters(tmp_path, monkeypatch
     monkeypatch.setenv("PATH", str(bin_dir))
 
     llm = resolve_provider("auto", "llm")
-    tts = resolve_provider("auto", "tts")
+    tts = resolve_provider("say", "tts")
 
     script = llm.generate_script({"type": "product"})
     audio, duration = tts.synthesize({"voice": "v1", "text": "真实口播文本"})
@@ -220,6 +225,10 @@ def test_setup_text_names_preview_and_release_modes(monkeypatch):
     assert result.exit_code == 0
     assert "预览档" in result.output
     assert "发布档" in result.output
+    assert "已继承" in result.output
+    assert "已具备" in result.output
+    assert "必须补齐" in result.output
+    assert "可选增强" in result.output
     assert "下一步" in result.output
     assert "npx skills add heygen-com/hyperframes" in result.output
 

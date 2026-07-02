@@ -180,9 +180,9 @@ def _drawtext_filter(text: str) -> str:
     font = _font_path()
     font_part = f"fontfile='{_escape_drawtext(font)}':" if font else ""
     filters = []
-    start_y = "(h/2)-80" if len(lines) > 1 else "(h-text_h)/2"
+    start_y = "h*0.76-text_h" if len(lines) > 1 else "h*0.82-text_h"
     for index, line in enumerate(lines or ["灵剪"]):
-        y_expr = start_y if index == 0 else "(h/2)+10"
+        y_expr = start_y if index == 0 else "h*0.80-text_h"
         filters.append(
             "drawtext="
             f"{font_part}"

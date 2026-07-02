@@ -218,10 +218,26 @@
 
 - 已完成:visuals 生成每镜 storyboard;release/real-preview 可消费宿主或用户 mp4/png,图片走 zoompan,缺资产走 `fallback_solid`;render_manifest 写 `visual_real_count/visual_total/scenes`。
 - QA:新增 `RELEASE_VISUAL_IS_BLANK_CARD` warning,当前不作为 hard failure;release 原有 mock/stub/ffprobe/audio hard gate 未削弱。
+
+## 生态零 key 引擎接入清单
+
+- [x] E1: 能力检测把已装 HyperFrames 识别为首选零 key 画面引擎;Remotion 继续作为备选并保留商用 license 提醒。
+- [x] E2: 为 HyperFrames 增加薄子进程委托适配器,按 visual_plan 写出每镜 mp4;核心不 import/bundle HyperFrames SDK。
+- [x] E3: 为 Kokoro 中文本地 TTS 增加薄子进程 provider,auto TTS 顺序调整为用户录音/云 TTS/Kokoro/Piper/say-espeak;Kokoro 可通过 `--strict`。
+- [x] E4: 文档与 SKILL 同步为“零 key 免费 / 付费需连接账号 / 发布需自建”三层,标清 Kokoro Apache、Piper GPL、Remotion license 与付费能力边界。
+- [x] E5: 真机跑零 key strict 发布链路,抽帧/ffprobe/QA/无泄漏证据落 `docs/dev/28_ECOSYSTEM_INTEGRATION.md`。
+- [x] E6: 回归 `pytest`、`ruff`、5 个扫描器、`pnpm build`、`run_verification.py`,确保门禁不回退。
 - 能力检测:`lj setup --json` 新增 `capabilities.visuals`;宿主 HyperFrames/Remotion/imagegen 可通过环境显式声明或 CLI probe 识别,缺失时报告回落卡片。
 - 扫描纪律:未在 core/providers import Remotion/HyperFrames/Playwright;FORBIDDEN_SCAN 记录“宿主产物消费允许,SDK bundle 禁止”。
-- 验证结果:`uv run pytest -q` 为 87 passed;`uv run python scripts/ci/run_verification.py` 为 52 PASS / 0 FAIL;ruff、5 扫描器、Web lint/build 均通过。
-- 交付包:`lingjian_M2_visual_delegation_iter_1.zip`,已通过 `unzip -t`,并排除 `.git`、`.venv`、`node_modules`、`projects`、`exports` 与旧 zip。
+- 验证结果:`uv run pytest -q` 为 106 passed;`uv run python scripts/ci/run_verification.py` 为 52 PASS / 0 FAIL 且 `V-REAL-01=PASS`;`uv run ruff check .`、5 扫描器、`pnpm --dir apps/web lint`、`pnpm --dir apps/web build`、`git diff --check` 均通过。
+- 证据: `docs/dev/28_ECOSYSTEM_INTEGRATION.md`;`verification/results.json`;`verification/evidence/V-REAL-01.log`;`verification/eco_publish_frames/eco_*.png`。
+
+### Review: 生态零 key 引擎接入
+
+- 已完成:HyperFrames 被能力检测识别为 `host_hyperframes`,render 前通过薄子进程适配器逐镜生成 `assets/scenes/<scene_id>.mp4`,核心不 import/bundle HyperFrames/Remotion SDK。
+- 已完成:Kokoro 中文 TTS 接入为默认零 key provider,`uv sync` 可复现安装 `kokoro-onnx/soundfile`;Piper 保持 GPL 用户自装路径;say/espeak-ng 保持预览级且 strict release 阻断。
+- 已完成:README、SKILL、ONBOARDING、CREATOR_QUICKSTART、CAPABILITY_MATRIX 改为“零 key 免费 / 付费需连接账号 / 发布需自建”三层口径,并保留 Remotion 商用 license、Piper GPL、付费能力边界。
+- 已完成:真机 strict 发布链路 `eco_publish` 通过,抽帧可见 HyperFrames 动态画面与底部字幕;全量 `run_verification.py` 通过并使 `V-REAL-01=PASS`。
 
 ## M2 第2步 真实画面生成与发布级配音清单
 
@@ -321,3 +337,42 @@
 - 证据:`verification/user_experience_live_user_experience_live_20260702T081937Z/`。
 - 结果:render manifest 为 `visual_real_count=6/6`,6 个 scene 的 `render_source=image`;QA `hard_failures=[]`,未出现 `RELEASE_VISUAL_IS_BLANK_CARD`;ffprobe 为 h264 1080x1920 + aac。
 - 诚实边界:本轮音轨仍是 macOS say 预览级,所以保留 `RELEASE_AUDIO_IS_PREVIEW_VOICE` warning。
+
+## Codex Plugin 发布级主线重定位清单
+
+- [x] P0-1: 新增 `.codex-plugin/plugin.json`、`.agents/plugins/marketplace.json` 与 `skills/lingjian-video/SKILL.md`,让灵剪具备 Codex Plugin 分发形态。
+- [x] P0-1: 修正 `scripts/install_skill_links.sh`,Codex 官方 skill 软链到 `~/.agents/skills/lingjian-video`,Claude Code 软链到 `~/.claude/skills/lingjian-video`。
+- [x] P1-1: `packages/core/rendering.py` 的 drawtext 字幕从画面中部改到底部安全区,并补测试断言。
+- [x] P1-2: `packages/core/qa.py`、`packages/core/exporting.py` 与 CLI 增加 `--strict`,严格发布时将预览级音轨/纯色回落画面升为 hard failure。
+- [x] P1-3/P1-4/P2-1: README/SKILL/ONBOARDING/CREATOR_QUICKSTART/CAPABILITY_MATRIX 改为 Codex app prompt-first,明确发布级最小能力、Node.js 22+、Remotion license 与 `say/fallback_solid` 非发布级。
+- [x] 验证:pytest、ruff、5 扫描器、pnpm lint/build、run_verification、安装脚本与 plugin manifest JSON 校验。
+
+### Review: Codex Plugin 发布级主线重定位
+
+- 分发:新增 Codex plugin manifest、repo marketplace 与 plugin skill 目录;`.gitignore` 只放行 `.agents/plugins/marketplace.json`,避免误提交本地宿主 skills。
+- 安装:本地备用脚本已实测软链到 `~/.agents/skills/lingjian-video` 与 `~/.claude/skills/lingjian-video`。
+- 体验:README/SKILL/ONBOARDING/CREATOR_QUICKSTART/CAPABILITY_MATRIX 均改为 Codex app prompt-first;`lj setup` 文本模式输出“已继承/已具备/必须补齐/可选增强”。
+- 发布级:新增 `--strict`,严格模式下 `RELEASE_AUDIO_IS_PREVIEW_VOICE` 与 `RELEASE_VISUAL_IS_BLANK_CARD` 进入 hard failure 并阻断 release export;默认非 strict 行为不变。
+- 字幕:`packages/core/rendering.py` 的 drawtext y 坐标改到底部安全区,测试断言不再出现 `(h/2)`。
+- 验证:`uv run pytest -q` 101 passed;`uv run ruff check .` 通过;5 个扫描器、`pnpm --dir apps/web lint`、`pnpm --dir apps/web build` 通过;`run_verification.py` 为 52 PASS / 0 FAIL,`V-REAL-01=PASS`。
+- 说明文档:`docs/dev/26_CODEX_PLUGIN_REPOSITIONING.md`。
+
+## Phase 2+3 真机验证清单
+
+- [x] Phase 2:按 OpenAI Codex 官方插件文档核对 `.codex-plugin/plugin.json` 与 `.agents/plugins/marketplace.json`,确认安装路径不是散装旧目录。
+- [x] Phase 2:实际执行 Codex plugin marketplace 安装/列表命令或记录当前 CLI 不支持的错误,并验证 `~/.agents/skills/lingjian-video` 可被当前 Codex app 识别。
+- [x] Phase 2:记录一句话触发证据或当前可验证边界。
+- [x] Phase 3:验证 Node.js 22+、FFmpeg/ffprobe/drawtext、HyperFrames skill/CLI、发布级 TTS 或用户口播音频是否齐备。
+- [x] Phase 3:优先尝试 HyperFrames 真机生成真实画面;若不可用,如实记录失败并走自备每镜图片/mp4 路径。
+- [x] Phase 3:跑 `--release --strict` 发布级链路,抽帧、ffprobe、QA 证明真实画面、底部字幕、发布音与零质量 warning;若缺发布音则标阻塞,不使用 say 冒充。
+- [x] 收尾:更新 `docs/dev/27_PHASE23_REAL_VERIFY.md`,重跑 pytest、ruff、5 扫描器、pnpm build、run_verification。
+
+### Review: Phase 2+3 真机验证
+
+- Phase 2:本地 Codex marketplace 与 plugin add 成功,`lingjian-video@blcaptain-lingjian-video` installed/enabled;新 Codex 线程一句话触发到 `lingjian-video:lingjian-video`。
+- GitHub shorthand 当前失败:`marketplace root does not contain a supported manifest`,原因是 plugin/marketplace 文件尚未提交推送到远端;本地 schema 已通过。
+- Phase 3:HyperFrames CLI `0.7.26` 真机 init/check/render 成功,输出 `/tmp/lingjian-hyperframes-verify/scene.mp4`,ffprobe 为 h264 1080x1920。
+- 灵剪消费侧:项目 `projects/publish_real_phase23` 将 6 个场景指向 HyperFrames mp4,render manifest `visual_real_count=6/6`;QA 不再出现 `RELEASE_VISUAL_IS_BLANK_CARD`;抽帧见 `verification/phase23_frames/`。
+- 严格发布:先验证发布级 TTS env 全缺失时 `macOS say` 会被 strict 正确阻断;随后安装免费本地 Kokoro 依赖,生成中文口播 wav,作为 `--voice-audio-file` 接入新项目 `publish_real_kokoro`;`lj qa --release --strict` 为 `hard_failures=[]`,`warnings=[]`,strict export 成功。
+- 免费成片:`exports/publish_real_kokoro/douyin/zh-CN/9x16/video.mp4`,ffprobe 为 h264 1080x1920 + aac 24kHz mono;抽帧见 `verification/phase23_kokoro_frames/`。
+- 证据文档:`docs/dev/27_PHASE23_REAL_VERIFY.md`。

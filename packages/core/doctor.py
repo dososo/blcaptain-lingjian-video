@@ -13,7 +13,14 @@ from packages.core.capabilities import (
 )
 
 ProviderMethodType = Literal[
-    "cli", "openai_compatible", "volcengine_tts", "anthropic", "codex_host", "mock"
+    "cli",
+    "openai_compatible",
+    "volcengine_tts",
+    "kokoro_zh_tts",
+    "piper_cli",
+    "anthropic",
+    "codex_host",
+    "mock",
 ]
 
 
@@ -100,6 +107,7 @@ def _method_status(raw: dict[str, Any]) -> ProviderMethodStatus:
     configured = bool(raw.get("configured"))
     is_mock = bool(raw.get("is_mock", method_type == "mock"))
     config = raw.get("config", {})
+    declared_safe = raw.get("safe_for_release")
     if method_type == "cli":
         command = raw.get("command")
         probe_ok = bool(raw.get("probe_ok")) or bool(command and shutil.which(command))
@@ -122,6 +130,8 @@ def _method_status(raw: dict[str, Any]) -> ProviderMethodStatus:
         )
     else:
         safe_for_release = configured and not is_mock and method_type not in {"codex_host", "mock"}
+    if declared_safe is False:
+        safe_for_release = False
     return ProviderMethodStatus(
         id=raw["id"],
         type=method_type,
@@ -242,9 +252,12 @@ def run_doctor(
     ):
         optional.append(
             DoctorItem(
-                id="preview_tts_release_notice",
+                id="local_tts_release_notice",
                 ok=True,
-                message_zh="当前 TTS 可用但属于预览级;正式发布建议配置火山豆包等发布级 TTS。",
+                message_zh=(
+                    "当前 TTS 可用但不是云端发布级;正式商用发布建议配置火山豆包等"
+                    "发布级 TTS,或使用用户录音。"
+                ),
             )
         )
 

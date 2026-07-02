@@ -61,7 +61,7 @@ def _latest_any_render_manifest(project: ProjectRef, mode: str) -> dict | None:
 def _license_manifest_text(source_manifest: dict) -> str:
     lines = ["# License Manifest", "", "- renderer: ffmpeg_card"]
     inherited_llm_ids = {"claude_cli", "codex_cli", "ollama_cli", "llm_local_cli"}
-    local_tts_ids = {"macos_say", "piper_cli", "espeak_ng"}
+    local_tts_ids = {"kokoro_zh_tts", "macos_say", "piper_cli", "espeak_ng"}
     for provider in source_manifest.get("providers", []):
         provider_id = provider.get("id")
         if provider_id in {"llm_cli", "tts_cli"}:
@@ -86,6 +86,7 @@ def export_project(
     ratio: str,
     release: bool = False,
     allow_preview_source: bool = False,
+    strict: bool = False,
 ) -> ExportPackageResult:
     platform = safe_segment(platform, "platform")
     language = safe_segment(language, "language")
@@ -132,7 +133,7 @@ def export_project(
             "请配置真实 LLM/TTS provider 后重试。",
         )
 
-    qa_report = run_qa(project, release=release, platform=platform)
+    qa_report = run_qa(project, release=release, platform=platform, strict=strict)
     if release and not qa_report.release_ready:
         raise LingjianError("QA_BLOCKING", "QA hard fail 阻止 release。", "请修复 QA 问题后重试。")
 

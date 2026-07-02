@@ -1,6 +1,6 @@
 # 创作者快速开始
 
-这份文档面向普通自媒体用户。你不需要先理解全部 CLI,只要按素材类型选择一条路径。
+这份文档面向普通自媒体用户。主入口是在 Codex app 里对话,不是自己手敲完整 CLI。CLI 命令写在这里,是 Codex 代你执行和排错时的底层依据。
 
 ## 先做一次能力检测
 
@@ -8,14 +8,13 @@
 uv sync
 scripts/install_skill_links.sh
 uv run lj setup
-uv run lj doctor --json
 ```
 
 看 `lj setup` 的结论:
 
 - LLM 已继承 Claude/Codex:可以用订阅能力写脚本,不需要 key。
-- TTS 只有 macOS say/Piper/espeak-ng:能听预览,但不是发布级配音。
-- visuals 是 fallback_solid:还没有真实画面资产。当前已验证的发布级视觉首选路径是自己提供每镜图片/视频;Codex 里的 HyperFrames、Remotion、imagegen 属可选进阶。
+- TTS 选中 Kokoro/火山/OpenAI-compatible/用户录音:可以进入发布链路;只有 macOS say/espeak-ng 时只能预览,严格发布会阻断。Piper 是用户自装的 GPL 零 key 本地 TTS,不进入灵剪依赖树。
+- visuals 选中 host_hyperframes:可以走 HyperFrames 零 key 动态画面;如果仍是 fallback_solid,请安装/启用 HyperFrames 或提供每镜图片/视频。
 - render OK:本机 FFmpeg/ffprobe/drawtext 已能出片。
 
 ## 你有一段文案
@@ -23,7 +22,7 @@ uv run lj doctor --json
 把文案保存成 `input.txt`,然后对 Codex 说:
 
 ```text
-请使用 lingjian-video。先运行 uv run lj setup,告诉我已继承和缺失的能力。然后把 input.txt 做成 45 秒抖音竖屏视频,脚本用 auto 继承当前 Codex/Claude 能力,配音优先用发布级 TTS;如果没有发布级 TTS,请引导我配置 TTS API 或让我提供已录好的口播音频。画面阶段如果没有 HyperFrames/Remotion/imagegen,请引导我安装插件/skill,不要直接把 fallback 卡片说成真实画面。
+请使用 lingjian-video。先做灵剪能力门诊,用人话告诉我已继承、已具备、必须补齐、可选增强。然后把 input.txt 做成 45 秒抖音竖屏视频,脚本用 auto 继承当前 Codex/Claude 能力。配音优先用 Kokoro 中文本地 TTS,商用质量可用云 TTS 或我的录音;如果没有,请引导我安装 Kokoro、配置 TTS API 或提供口播音频。画面优先用 HyperFrames 零 key 动态画面;如果没有 HyperFrames/Remotion/imagegen,请引导我在 Codex app 插件市场安装/启用,或让我提供每镜素材;不要直接把 fallback 卡片说成真实画面。
 ```
 
 对应命令:
@@ -63,9 +62,25 @@ uv run lj run ./projects/my-video \
 按优先级选择:
 
 1. 有录好的口播:用 `--voice-audio-file`。
-2. 中文发布级 TTS:配置火山豆包。
-3. OpenAI-compatible TTS:配置 `OPENAI_TTS_*`。
-4. 只想预览:用 macOS say/Piper/espeak-ng,但 release QA 会提示 `RELEASE_AUDIO_IS_PREVIEW_VOICE`。
+2. 零 key 中文 TTS:安装 Kokoro。
+3. 商用质量云 TTS:配置火山豆包或 OpenAI-compatible TTS。
+4. 只想预览:用 macOS say/espeak-ng,但它们不是发布级;`--strict --release` 会因 `RELEASE_AUDIO_IS_PREVIEW_VOICE` 阻断。
+
+Kokoro:
+
+```bash
+uv sync
+npx hyperframes tts --list
+uv run lj setup
+```
+
+Piper(GPL-3.0,用户自装,灵剪只子进程调用):
+
+```bash
+pip install piper-tts
+python3 -m piper.download_voices zh_CN-huayan-medium
+uv run lj setup
+```
 
 火山豆包:
 
@@ -79,7 +94,7 @@ uv run lj doctor --json
 
 ## 你需要真实画面
 
-灵剪不内置 Remotion/HyperFrames。当前已验证的发布级视觉路径是:先按 `visual_plan.json` 的 `expected_asset_path` 放置每镜 mp4/png,再让 lj 组装。Codex 桌面版的 HyperFrames、Remotion、imagegen 可用于自动生成这些资产,但属于可选进阶。
+灵剪不内置 Remotion/HyperFrames SDK。当前已验证的零 key 画面路径是:检测到 `npx hyperframes` 后,lj 会按 `visual_plan.json` 的 `expected_asset_path` 委托 HyperFrames 生成每镜 mp4,再统一组装。自备每镜 mp4/png 仍是最稳回落路径。
 
 自备素材路径:
 
@@ -88,14 +103,14 @@ projects/<项目>/assets/scenes/s1.mp4
 projects/<项目>/assets/scenes/s2.png
 ```
 
-如需让 Codex 宿主自动生成,可尝试:
+如需让 Codex 宿主自动生成更丰富画面,优先在 Codex app 的 Plugins / Add to Codex 中安装或启用对应插件。命令只是备用:
 
 ```bash
 npx skills add heygen-com/hyperframes
 npx skills add remotion-dev/skills
 ```
 
-上面两个标识符分别来自 HyperFrames 与 Remotion 的官方 skill 安装入口。若 skills CLI 或 Codex 插件市场发生变化,以官方文档为准:
+上面两个标识符分别来自 HyperFrames 与 Remotion 的官方 skill 安装入口。HyperFrames 需要 Node.js 22+ 与 FFmpeg,本地渲染零 key;Remotion 需要 Node.js/Chrome Headless,营利组织超过 3 人使用需核对商用 license。若 skills CLI 或 Codex 插件市场发生变化,以官方文档为准:
 
 - HyperFrames: https://hyperframes.heygen.com/quickstart
 - Remotion Agent Skills: https://www.remotion.dev/docs/ai/skills
@@ -118,8 +133,9 @@ uv run lj run ./projects/my-video --json
 
 发布档必须同时满足:
 
-- `uv run lj doctor --json` 中 `ready=true`。
+- Codex 能力门诊确认发布级必需能力已补齐。
 - QA 没有 hard failure。
+- `uv run lj qa --release --strict --json` 没有 hard failure。
 - 没有 `RELEASE_VISUAL_IS_BLANK_CARD`,否则说明全片还是回落卡片。
 - 没有 `RELEASE_AUDIO_IS_PREVIEW_VOICE`,否则说明配音只是预览级。
 - `ffprobe` 能看到 video 和 audio 流。

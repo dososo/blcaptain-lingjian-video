@@ -1,4 +1,4 @@
-command: uv run lj ingest text projects/verify_m1_20260702T081115Z --file examples/product_intro_zh.txt --json
+command: uv run lj ingest text projects/verify_m1_20260702T132326Z --file examples/product_intro_zh.txt --json
 exit_code: 0
 
 stdout:

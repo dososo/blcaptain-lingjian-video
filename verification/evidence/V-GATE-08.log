@@ -1,8 +1,8 @@
-command: uv run lj approve script projects/verify_m1_20260702T081115Z --approved-by tester --json
+command: uv run lj approve script projects/verify_m1_20260702T132326Z --approved-by tester --json
 exit_code: 0
 
 stdout:
-{"approval": {"approved_at": "2026-07-02T08:11:37.574356+00:00", "approved_by": "tester", "artifact_path": "artifacts/script.json", "artifact_sha256": "7e320f56aa49fe7d20b8ef31d8c73064e30bba33bba9b30e93b681cc166df819", "comment": null, "signature": "e33b56700b94ea07f5121f7c7aab0e0314bcba2d6032ffdf28f8963d5cb1efec", "target": "script"}, "ok": true}
+{"approval": {"approved_at": "2026-07-02T13:24:04.933878+00:00", "approved_by": "tester", "artifact_path": "artifacts/script.json", "artifact_sha256": "7e320f56aa49fe7d20b8ef31d8c73064e30bba33bba9b30e93b681cc166df819", "comment": null, "signature": "fbb75c17e9a1dd08b7aa6281a54442ab22f529993d9789e4a3449ec5ede54251", "target": "script"}, "ok": true}
 
 
 stderr:
