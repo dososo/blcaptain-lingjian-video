@@ -253,3 +253,19 @@
 - 不做边界:不自研/不 bundle Remotion/HyperFrames,不新增用户命令,不做平台知识包、爆款算法、声音克隆、ASR、本地权重或默认视频下载。
 - 验证: `uv run pytest -q` 96 passed;`uv run ruff check .` 通过;5 个扫描器 exit=0;`pnpm --dir apps/web lint` 与 `build` 通过;`run_verification.py` 52 PASS / 0 FAIL;`git diff --check` 通过。
 - 证据文档:`docs/dev/20_M2_REFERENCE_GAP_AUDIT.md`。
+
+## 开源首用路径补强清单
+
+- [x] 明确 Codex 桌面版完整工作流:灵剪核心不内置 Remotion/HyperFrames,但用户可安装/启用宿主插件或 skill,再由灵剪消费资产。
+- [x] 补齐缺画面能力时的引导:推荐 HyperFrames/Remotion/imagegen,安装后新开会话并重跑 `lj setup`。
+- [x] 补齐缺配音能力时的路径:TTS API 或用户已录好的口播音频,新增 `--audio-file` / `--voice-audio-file` 接入口。
+- [x] 新增创作者向文档 `docs/CREATOR_QUICKSTART.md` 与能力矩阵 `docs/CAPABILITY_MATRIX.md`。
+- [x] 更新 README、SKILL、ONBOARDING、providers、troubleshooting、skill-and-mcp 的主线说明。
+- [x] 重跑 pytest、ruff、5 扫描器、Web lint/build 与 verification。
+
+### Review: 开源首用路径补强
+
+- 实现: `apps/cli/lingjian_cli/main.py` 支持 `lj voice --audio-file` 与 `lj run --voice-audio-file`,写入 `provider_id=user_audio`、`provider_is_mock=false`,复制音频到项目 artifact。
+- 文档:普通用户入口拆为创作者快速开始与能力矩阵;明确插件/skill 不是灵剪内置,但 Codex 桌面版用户应被引导安装/启用。
+- 安全边界:用户录音只进入本地项目 artifact,导出 manifest 只写来源类型,不记录原始路径;Remotion/HyperFrames 仍不 import、不 bundle。
+- 验证:`uv run pytest -q` 为 99 passed;ruff、5 扫描器、Web lint/build 均通过;`run_verification.py` 为 52 PASS / 0 FAIL。

@@ -74,6 +74,8 @@ def _license_manifest_text(source_manifest: dict) -> str:
             lines.append(f"- {provider_id}: OpenAI-compatible API provider")
         if provider_id == "volcengine_tts":
             lines.append("- volcengine_tts: Volcengine Doubao TTS API provider")
+        if provider_id == "user_audio":
+            lines.append("- user_audio: User supplied recorded narration")
     return "\n".join(lines) + "\n"
 
 

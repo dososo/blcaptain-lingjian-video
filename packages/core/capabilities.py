@@ -403,8 +403,8 @@ def _visual_candidates(
             provider_type="host-plugin",
             hint="已检测到宿主 imagegen 时,可生成静态图并由 lj 加 Ken Burns 运镜。",
             setup_command=(
-                "在 Codex 中启用 imagegen 能力,"
-                "或提供 project/assets/scenes/<scene_id>.png。"
+                "在 Codex 桌面版启用 imagegen 能力;安装/启用后新开会话再跑 "
+                "uv run lj setup。也可提供 project/assets/scenes/<scene_id>.png。"
             ),
         ),
         CapabilityCandidate(
@@ -418,7 +418,12 @@ def _visual_candidates(
                 "未检测到可自动继承的宿主画面生成能力;"
                 "将消费已有 project/assets/scenes 产物,否则回落纯色卡片并给 QA warning。"
             ),
-            setup_command="在 Codex 启用 HyperFrames/Remotion/imagegen,或放置每镜 mp4/png 产物。",
+            setup_command=(
+                "Codex 桌面版安装/启用 HyperFrames、Remotion 或 imagegen;"
+                "推荐先试 npx skills add heygen-com/hyperframes 或 "
+                "npx skills add remotion-dev/skills。安装后新开会话再跑 uv run lj setup。"
+                "也可把每镜 mp4/png 放进 project/assets/scenes/。"
+            ),
         ),
     ]
 
@@ -541,7 +546,10 @@ def _host_visual_candidate(
         command_name=command,
         config={"command": command},
         hint=ready_hint if configured else f"未检测到 {label}。",
-        setup_command=f"在 Codex 中启用 {label} 插件,或提供 project/assets/scenes/<scene_id>.mp4。",
+        setup_command=(
+            f"在 Codex 桌面版安装/启用 {label} 对应插件或 skill;"
+            "安装后新开会话再跑 uv run lj setup。"
+        ),
     )
 
 

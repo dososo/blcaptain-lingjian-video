@@ -285,6 +285,38 @@ def test_lj_run_yes_completes_preview_flow_with_real_approvals(tmp_path):
     assert payload["export_dir"]
 
 
+def test_lj_run_accepts_user_recorded_voice_audio(tmp_path):
+    project = tmp_path / "run用户录音项目"
+    input_file = tmp_path / "input.txt"
+    input_file.write_text("灵剪使用用户录好的口播音频。", encoding="utf-8")
+    audio_file = tmp_path / "narration.mp3"
+    audio_file.write_bytes(b"USER AUDIO")
+
+    result = runner.invoke(
+        app,
+        [
+            "run",
+            str(project),
+            "--name",
+            "Run用户录音",
+            "--input-file",
+            str(input_file),
+            "--voice-audio-file",
+            str(audio_file),
+            "--yes",
+            "--json",
+        ],
+    )
+
+    assert result.exit_code == 0
+    voice_json = (project / "artifacts" / "voice_plan.json").read_text(encoding="utf-8")
+    assert '"provider_id": "user_audio"' in voice_json
+    assert '"provider_is_mock": false' in voice_json
+    assert (project / "artifacts" / "voice_segments" / "user_audio.mp3").read_bytes() == (
+        b"USER AUDIO"
+    )
+
+
 def test_cli_resolves_mock_provider_aliases_as_mock(tmp_path):
     project = tmp_path / "provider项目"
     runner.invoke(app, ["init", str(project), "--name", "Provider项目", "--json"])
@@ -420,6 +452,37 @@ def test_cli_voice_uses_configured_real_cli_provider(tmp_path, monkeypatch):
     assert '"provider_is_mock": false' in voice_json
     assert '"duration_sec": 2.5' in voice_json
     assert (project / "artifacts" / "voice_segments" / "s1.wav").read_bytes() == b"REAL AUDIO"
+
+
+def test_cli_voice_accepts_user_recorded_audio_file(tmp_path):
+    project = tmp_path / "user音频项目"
+    audio = tmp_path / "narration.m4a"
+    audio.write_bytes(b"USER RECORDED AUDIO")
+    runner.invoke(app, ["init", str(project), "--name", "User Voice", "--json"])
+
+    result = runner.invoke(
+        app,
+        [
+            "voice",
+            str(project),
+            "--provider",
+            "auto",
+            "--voice",
+            "user",
+            "--audio-file",
+            str(audio),
+            "--json",
+        ],
+    )
+
+    assert result.exit_code == 0
+    voice_json = (project / "artifacts" / "voice_plan.json").read_text(encoding="utf-8")
+    assert '"provider_id": "user_audio"' in voice_json
+    assert '"provider_is_mock": false' in voice_json
+    assert '"source_type": "user-recorded-audio"' in voice_json
+    assert (project / "artifacts" / "voice_segments" / "user_audio.m4a").read_bytes() == (
+        b"USER RECORDED AUDIO"
+    )
 
 
 def test_cli_voice_rejects_empty_real_cli_audio(tmp_path, monkeypatch):

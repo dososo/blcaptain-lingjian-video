@@ -8,6 +8,8 @@
 - 缺 `ffmpeg_drawtext`: 当前 FFmpeg 不支持 `drawtext/libfreetype`;先跑 `ffmpeg -hide_banner -h filter=drawtext` 自检。
 - 缺中文字体: 安装 PingFang/STHeiti 或配置 Noto Sans SC。
 - 缺真实 LLM/TTS: 配置 CLI provider 或 API provider。
+- 缺发布级 TTS:配置火山/OpenAI-compatible TTS,或使用 `--audio-file` / `--voice-audio-file` 提供已录好的口播音频。
+- visuals 只有 fallback:安装/启用 Codex 桌面版 HyperFrames、Remotion、imagegen 插件或 skill,安装后新开会话再跑 `uv run lj setup`;也可把每镜 mp4/png 放进 `project/assets/scenes/`。
 - CLI provider 已设置但仍缺失: 确认 `LINGJIAN_LLM_CLI` / `LINGJIAN_TTS_CLI` 指向可执行命令,且命令可从 stdin 读 JSON、向 stdout 写 JSON。
 
 ## render 返回 `APPROVAL_REQUIRED`
@@ -33,6 +35,8 @@ uv run lj approve visuals <project> --approved-by <name> --json
 - `RELEASE_VIDEO_IS_STUB`: release QA 检测到视频仍是离线 stub,不得发布。
 - `RENDER_NOT_VERIFIABLE`: release QA 无法用 ffprobe 确认有效视频流。
 - `RELEASE_AUDIO_MISSING`: release 视频缺少可验证音频流,请重新生成真实 voice 并重新 release render。
+- `RELEASE_AUDIO_IS_PREVIEW_VOICE`: 当前音轨来自 macOS say/Piper/espeak-ng,可配置发布级 TTS 或改用已录好的口播音频。
+- `RELEASE_VISUAL_IS_BLANK_CARD`: 当前画面全部是回落卡片,请安装/启用 HyperFrames/Remotion/imagegen,或按 `visual_plan.json` 放置每镜 mp4/png。
 - `QA_BLOCKING`: QA hard failure 未修复。
 
 ## CLI provider 失败

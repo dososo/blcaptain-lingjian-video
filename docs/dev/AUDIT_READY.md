@@ -162,3 +162,13 @@
 - 不做边界已明确:不自研/不 bundle Remotion/HyperFrames,不新增用户命令,不做平台知识包/爆款算法/声音克隆/ASR/默认下载视频。
 - 对标补充验证: `uv run pytest -q` 为 96 passed;ruff、5 个扫描器、Web lint/build、`run_verification.py` 与 `git diff --check` 均通过。
 - 详细说明: `docs/dev/20_M2_REFERENCE_GAP_AUDIT.md`。
+
+## 开源首用路径补强
+
+- 已明确 Codex 桌面版完整工作流:灵剪核心不内置 Remotion/HyperFrames,但用户可安装/启用 HyperFrames、Remotion、imagegen 插件或 skill,由宿主生成资产后交给 lj 组装。
+- `lj setup` 缺画面能力时会给出插件/skill 安装和新开会话提示;仍缺失时才允许用户素材或 fallback。
+- 已新增用户录音入口:`lj voice --audio-file` 与 `lj run --voice-audio-file`,写入 `provider_id=user_audio`、`provider_is_mock=false`。
+- 新增创作者文档:`docs/CREATOR_QUICKSTART.md` 与 `docs/CAPABILITY_MATRIX.md`。
+- 保持边界:不实现 MCP、不宣称 Web 完整可用、不 import/bundle Remotion/HyperFrames、不做平台知识包/爆款算法/声音克隆/ASR/默认下载视频。
+- 验证:`uv run pytest -q` 为 99 passed;ruff、5 个扫描器、Web lint/build 均通过;`run_verification.py` 为 52 PASS / 0 FAIL。
+- 详细说明: `docs/dev/21_OPEN_SOURCE_USABILITY.md`。

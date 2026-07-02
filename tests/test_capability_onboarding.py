@@ -221,6 +221,7 @@ def test_setup_text_names_preview_and_release_modes(monkeypatch):
     assert "预览档" in result.output
     assert "发布档" in result.output
     assert "下一步" in result.output
+    assert "npx skills add heygen-com/hyperframes" in result.output
 
 
 def test_capability_detection_reports_visual_generation_tier(monkeypatch):

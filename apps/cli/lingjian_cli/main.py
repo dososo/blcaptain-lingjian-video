@@ -1,6 +1,8 @@
 from __future__ import annotations
 
 import json
+import shutil
+import subprocess
 import sys
 from dataclasses import asdict
 from pathlib import Path
@@ -150,11 +152,109 @@ def _write_script_for_run(
 
 
 def _write_voice_for_run(project: ProjectRef, provider: str, voice_id: str) -> bool:
+    return _write_voice_plan(project, provider, voice_id, None)
+
+
+def _probe_audio_duration(audio_path: Path) -> float:
+    ffprobe = shutil.which("ffprobe")
+    if not ffprobe:
+        return 1.0
+    try:
+        completed = subprocess.run(
+            [
+                ffprobe,
+                "-v",
+                "error",
+                "-show_entries",
+                "format=duration",
+                "-of",
+                "json",
+                str(audio_path),
+            ],
+            text=True,
+            capture_output=True,
+            check=False,
+            timeout=10,
+        )
+    except (OSError, subprocess.TimeoutExpired):
+        return 1.0
+    if completed.returncode != 0:
+        return 1.0
+    try:
+        payload = json.loads(completed.stdout or "{}")
+        duration = float(payload.get("format", {}).get("duration") or 1.0)
+    except (TypeError, ValueError, json.JSONDecodeError):
+        return 1.0
+    return max(duration, 1.0)
+
+
+def _script_scene_ids(project: ProjectRef) -> list[str]:
+    from packages.core.artifacts import artifact_path, read_json
+
+    script_path = artifact_path(project, "script")
+    if not script_path.exists():
+        return ["s1"]
+    script_data = read_json(script_path)
+    scene_ids = [
+        str(scene.get("id") or scene.get("scene_id") or f"s{index}")
+        for index, scene in enumerate(script_data.get("scenes", []), start=1)
+        if isinstance(scene, dict)
+    ]
+    return scene_ids or ["s1"]
+
+
+def _write_user_audio_voice_plan(project: ProjectRef, audio_file: Path) -> None:
+    from packages.core.artifacts import write_artifact
+
+    if not audio_file.exists() or not audio_file.is_file():
+        raise LingjianError(
+            "USER_AUDIO_NOT_FOUND",
+            "未找到用户提供的口播音频。",
+            "请传入本机存在的 wav/mp3/m4a/aiff 音频文件。",
+            {"audio_file": str(audio_file)},
+        )
+    suffix = audio_file.suffix if audio_file.suffix else ".audio"
+    audio_path = project.path / "artifacts" / "voice_segments" / f"user_audio{suffix}"
+    audio_path.parent.mkdir(parents=True, exist_ok=True)
+    shutil.copyfile(audio_file, audio_path)
+    duration = _probe_audio_duration(audio_path)
+    scene_ids = _script_scene_ids(project)
+    per_scene_duration = max(duration / max(len(scene_ids), 1), 0.5)
+    segments = []
+    for index, scene_id in enumerate(scene_ids):
+        segment = {"scene_id": scene_id, "duration_sec": per_scene_duration}
+        if index == 0:
+            segment["audio_path"] = str(audio_path.relative_to(project.path))
+        segments.append(segment)
+    write_artifact(
+        project,
+        "voice",
+        {
+            "id": "voice",
+            "provider_id": "user_audio",
+            "provider_is_mock": False,
+            "source_type": "user-recorded-audio",
+            "voice_id": "user-recorded",
+            "segments": segments,
+            "total_duration_sec": duration,
+        },
+    )
+
+
+def _write_voice_plan(
+    project: ProjectRef,
+    provider: str,
+    voice_id: str,
+    audio_file: Path | None,
+) -> bool:
     from packages.core.artifacts import artifact_path, read_json, write_artifact
 
     current_path = artifact_path(project, "voice")
     if current_path.exists():
         return False
+    if audio_file is not None:
+        _write_user_audio_voice_plan(project, audio_file)
+        return True
     provider_ref = _resolve_tts_provider(provider)
     audio_path = project.path / "artifacts" / "voice_segments" / "s1.wav"
     audio_path.parent.mkdir(parents=True, exist_ok=True)
@@ -585,11 +685,22 @@ def voice(
     project: Path,
     provider: str = typer.Option("auto"),
     voice: str = typer.Option(...),
+    audio_file: Optional[Path] = typer.Option(None, "--audio-file"),
     json_output: bool = typer.Option(False, "--json"),
 ):
+    ref = ProjectRef(project, project.name)
+    if audio_file is not None:
+        try:
+            _write_voice_plan(ref, provider, voice, audio_file)
+        except LingjianError as exc:
+            _fail(exc, json_output)
+        _emit(
+            {"ok": True, "status": "awaiting_review", "artifact": "artifacts/voice_plan.json"},
+            json_output,
+        )
+        return
     from packages.core.artifacts import artifact_path, read_json, write_artifact
 
-    ref = ProjectRef(project, project.name)
     try:
         provider_ref = _resolve_tts_provider(provider)
     except LingjianError as exc:
@@ -857,6 +968,7 @@ def run_workflow(
     script_provider: str = typer.Option("mock", "--script-provider"),
     voice_provider: str = typer.Option("auto", "--voice-provider"),
     voice: str = typer.Option("test-voice", "--voice"),
+    voice_audio_file: Optional[Path] = typer.Option(None, "--voice-audio-file"),
     engine: str = typer.Option("ffmpeg_card", "--engine"),
     template: str = typer.Option("product", "--template"),
     release: bool = typer.Option(False, "--release"),
@@ -891,7 +1003,7 @@ def run_workflow(
                 return
             approve_target(ref, "script", approved_by)
             steps.append("approve_script")
-        if _write_voice_for_run(ref, voice_provider, voice):
+        if _write_voice_plan(ref, voice_provider, voice, voice_audio_file):
             steps.append("voice")
         if not _approval_exists(ref, "voice"):
             if not yes:

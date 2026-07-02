@@ -34,6 +34,11 @@ npx skills add <REPO_URL> --skill lingjian-video
 
 灵剪 M1/M2 是一个可审核、可复跑、可归档的短视频生产主干。当前实现覆盖 CLI、核心状态机、mock 预览链路、宿主画面生成委托与产物消费、审批门禁、QA、导出包、Next.js Web 控制台与离线验证脚本。
 
+普通创作者先看:
+
+- [`docs/CREATOR_QUICKSTART.md`](docs/CREATOR_QUICKSTART.md):按“有文案 / 有录音 / 有画面素材 / 要发布”选择路径。
+- [`docs/CAPABILITY_MATRIX.md`](docs/CAPABILITY_MATRIX.md):Skill、CLI、MCP、插件、TTS、FFmpeg 分别是什么状态。
+
 ## 当前边界
 
 - mock provider 只允许预览和离线测试,不能用于正式 release。
@@ -41,8 +46,9 @@ npx skills add <REPO_URL> --skill lingjian-video
 - `render --release` 必须具备 FFmpeg/ffprobe,且 FFmpeg 支持 `drawtext/libfreetype`;缺失时硬失败,不会写离线 stub。
 - 能提供本机 CLI provider 时,不强制提供 API key。必须使用 key 时,doctor 只输出脱敏状态,不会把 key 写入日志、artifact 或导出包。
 - 新用户先跑 `lj setup`,系统会优先继承已登录的官方 CLI 或本机能力,缺失时才引导提供 key。
-- M2 不 bundle HyperFrames/Remotion,`visuals` 会产出每镜可执行生成规格;render 前可委托宿主 imagegen/HyperFrames/Remotion CLI 写入 `project/assets/scenes/` 的 mp4/png,再由 lj 用 FFmpeg 统一组装。
+- M2 不 bundle HyperFrames/Remotion,`visuals` 会产出每镜可执行生成规格;Codex 桌面版用户可安装/启用 HyperFrames、Remotion、imagegen 插件或 skill,由宿主把每镜 mp4/png 写入 `project/assets/scenes/`,再由 lj 用 FFmpeg 统一组装。
 - 宿主 HyperFrames/Remotion/imagegen 能力取决于当前 Codex 环境是否启用;生成器不可用或失败时可消费用户自带素材,否则回落 `fallback_solid` 卡片并在 QA 中 warning。
+- 配音缺失时不要硬闯:优先配置发布级 TTS API;如果用户已有录好的口播,可用 `--voice-audio-file` 或 `lj voice --audio-file` 接入。
 
 ## 隐私与安全
 
@@ -98,6 +104,18 @@ uv run lj setup
 uv run lj run ./projects/demo --name "演示项目" --input-file examples/product_intro_zh.txt --json
 ```
 
+真做内容时建议显式继承当前订阅 CLI,不要使用 mock 脚本:
+
+```bash
+uv run lj run ./projects/demo --name "演示项目" --input-file examples/product_intro_zh.txt --script-provider auto --voice-provider auto --json
+```
+
+已有录好的口播音频时:
+
+```bash
+uv run lj run ./projects/demo --name "演示项目" --input-file examples/product_intro_zh.txt --script-provider auto --voice-audio-file narration.m4a --json
+```
+
 逐条命令备选:
 
 ```bash
@@ -110,10 +128,12 @@ uv run lj extract ./projects/demo --json
 uv run lj script ./projects/demo --type product --platform douyin --language zh-CN --ratio 9:16 --duration 45 --provider mock --json
 uv run lj approve script ./projects/demo --approved-by tester --json
 uv run lj voice ./projects/demo --provider mock --voice test-voice --json
+# 或者使用已经录好的口播音频:
+uv run lj voice ./projects/demo --provider auto --voice user --audio-file narration.m4a --json
 uv run lj approve voice ./projects/demo --approved-by tester --json
 uv run lj visuals ./projects/demo --engine ffmpeg_card --template product --json
 # visuals 会生成每镜 storyboard:包含 generator、visual_prompt、motion_spec、brief、expected_asset_path 与 duration_sec。
-# render 前会按 generator 委托宿主 HyperFrames/Remotion/imagegen CLI 写入 assets/scenes/<scene_id>.mp4|png;不可用时消费已有素材,最后 fallback_solid。
+# render 前会按 generator 委托宿主 HyperFrames/Remotion/imagegen CLI 写入 assets/scenes/<scene_id>.mp4|png;缺宿主能力时先引导安装/启用插件或 skill,允许用户放自有素材,最后才 fallback_solid。
 uv run lj approve visuals ./projects/demo --approved-by tester --json
 uv run lj render ./projects/demo --platform douyin --language zh-CN --ratio 9:16 --json
 uv run lj qa ./projects/demo --json
@@ -172,6 +192,14 @@ export VOLCENGINE_TTS_VOICE_TYPE=...   # 可选
 ```
 
 TTS provider ID 为 `volcengine_tts`,也可用别名 `volcengine` 或 `doubao`。Access Token 只从环境读取,不会写入 artifact、日志或 release 包。
+
+已有录音可不用 TTS:
+
+```bash
+uv run lj voice ./projects/demo --provider auto --voice user --audio-file narration.m4a --json
+```
+
+该路径会写 `provider_id=user_audio`,不会标 mock,也不会把原始文件路径写入导出包。
 
 配置后先跑 `uv run lj doctor --json`。required 缺失时 exit code 非 0,不得继续 release。
 

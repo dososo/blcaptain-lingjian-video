@@ -22,16 +22,17 @@ uv run lj doctor --json  # 逐项体检;required 缺失时 exit code 非 0
 ```
 - lj setup 优先继承已登录官方 CLI(claude/codex 作 LLM)与本机 TTS(macOS say / Piper / espeak-ng),尽量零 key。
 - doctor 未 ready 时不要继续 release。
+- 普通创作者路径见 `docs/CREATOR_QUICKSTART.md`;能力边界见 `docs/CAPABILITY_MATRIX.md`。
 
 画面能力:
 - visuals 会按场景生成 storyboard,字段包含 generator、visual_prompt、motion_spec、brief、expected_asset_path、duration_sec、asset_path、subtitle_burn。
 - generator 优先级:hyperframes -> remotion -> image-gen -> user-asset -> fallback_solid。
-- 宿主 agent 若启用了 HyperFrames/Remotion/imagegen,应按 storyboard 的 `visual_prompt` 与 `motion_spec` 渲染每镜产物到 `expected_asset_path`;lj 不 import、不 bundle 这些引擎,只通过官方/宿主 CLI 委托,再消费产物并用 FFmpeg 组装。
-- 宿主插件缺失时要诚实说明,可让用户放置自有 mp4/png;仍缺失则回落 fallback_solid,QA 会提示画面全部为回落卡片。
+- Codex 桌面版用户若已安装/启用 HyperFrames/Remotion/imagegen 插件或 skill,宿主 agent 应按 storyboard 的 `visual_prompt` 与 `motion_spec` 渲染每镜产物到 `expected_asset_path`;lj 不 import、不 bundle 这些引擎,只通过官方/宿主 CLI 委托,再消费产物并用 FFmpeg 组装。
+- 宿主插件缺失时要先引导用户安装/启用,例如 `npx skills add heygen-com/hyperframes` 或 `npx skills add remotion-dev/skills`,安装后新开会话再跑 `uv run lj setup`;用户也可放置自有 mp4/png。仍缺失才回落 fallback_solid,QA 会提示画面全部为回落卡片。
 
 两档模式:
 - 预览档(零配置):--provider mock 出脚本/配音,render 默认 preview。mock 产物仅预览,禁止当发布质量。
-- 发布档(需三项齐备才可 --release):① 真实 LLM(继承 claude/codex,或 OpenAI-compatible 需 key,或 LINGJIAN_LLM_CLI);② 真实非 mock TTS(订阅通常不含;火山豆包/OpenAI-compatible/真实 TTS CLI 为发布级,say[仅 macOS]/Piper/espeak-ng 为预览级,release 会 warning);③ FFmpeg/ffprobe 且支持 drawtext/libfreetype(默认 Homebrew 精简版可能无 —— 以 doctor 的 ready 为准,缺失硬失败不写 stub)。
+- 发布档(需三项齐备才可 --release):① 真实 LLM(继承 claude/codex,或 OpenAI-compatible 需 key,或 LINGJIAN_LLM_CLI);② 真实非 mock 音轨(订阅通常不含 TTS;火山豆包/OpenAI-compatible/真实 TTS CLI 为发布级,say[仅 macOS]/Piper/espeak-ng 为预览级,release 会 warning;用户录好的口播可用 `--voice-audio-file` 或 `lj voice --audio-file` 接入);③ FFmpeg/ffprobe 且支持 drawtext/libfreetype(默认 Homebrew 精简版可能无 —— 以 doctor 的 ready 为准,缺失硬失败不写 stub)。
 
 真实 provider 环境变量(仅从环境读取,不写入 artifact/日志/release 包):
 ```bash
@@ -58,6 +59,18 @@ uv run lj approve visuals ./projects/demo --approved-by <用户> --json
 uv run lj run ./projects/demo --json
 ```
 
+真做内容时优先继承当前订阅 CLI,不要默认用 mock:
+
+```bash
+uv run lj run ./projects/demo --name "演示项目" --input-file examples/product_intro_zh.txt --script-provider auto --voice-provider auto --json
+```
+
+已有录好的口播音频时:
+
+```bash
+uv run lj run ./projects/demo --name "演示项目" --input-file examples/product_intro_zh.txt --script-provider auto --voice-audio-file narration.m4a --json
+```
+
 逐条命令备选:
 ```bash
 uv run lj setup && uv run lj doctor --json
@@ -69,10 +82,12 @@ uv run lj extract ./projects/demo --json
 uv run lj script ./projects/demo --type product --platform douyin --language zh-CN --ratio 9:16 --duration 45 --provider mock --json
 uv run lj approve script ./projects/demo --approved-by <用户> --json
 uv run lj voice ./projects/demo --provider mock --voice test-voice --json
+# 或者用用户录好的口播音频:
+uv run lj voice ./projects/demo --provider auto --voice user --audio-file narration.m4a --json
 uv run lj approve voice ./projects/demo --approved-by <用户> --json
 uv run lj visuals ./projects/demo --engine ffmpeg_card --template product --json
 # 审阅 artifacts/visual_plan.json:确认每镜 generator、visual_prompt、motion_spec、expected_asset_path。
-# 宿主启用了 HyperFrames/Remotion/imagegen 时,按 expected_asset_path 生成 mp4/png;缺宿主能力时说明原因,允许用户放自有素材,否则回落卡片。
+# 宿主启用了 HyperFrames/Remotion/imagegen 时,按 expected_asset_path 生成 mp4/png;缺宿主能力时先引导安装/启用插件或 skill,允许用户放自有素材,最后才回落卡片。
 uv run lj approve visuals ./projects/demo --approved-by <用户> --json
 uv run lj render ./projects/demo --platform douyin --language zh-CN --ratio 9:16 --json   # 发布档追加 --release
 uv run lj qa ./projects/demo --json                                                       # 发布前:qa --release --platform douyin
@@ -89,6 +104,7 @@ uv run lj export ./projects/demo --platform douyin --language zh-CN --ratio 9:16
 - 发布前先 QA:qa --release 有 hard_failures 时不导出发布包。
 - 不假装动态画面:宿主生成器失败或产物不存在时只能回落 fallback_solid,必须把 QA warning 告诉用户。
 - 不假装发布级配音:say/Piper/espeak-ng 是预览级真实语音;release 可通过但必须报告 `RELEASE_AUDIO_IS_PREVIEW_VOICE` warning。
+- 配音缺失时不硬闯:引导用户配置发布级 TTS API,或让用户提供已录好的口播音频并用 `--voice-audio-file` 接入。
 
 ## Honesty(必须遵守)
 - 绝不编造产物/统计/成功结果:没真跑出来的不许写"已完成"。
@@ -100,6 +116,7 @@ uv run lj export ./projects/demo --platform douyin --language zh-CN --ratio 9:16
 ## 已知边界(如实告知用户)
 - mock 仅预览,非发布质量。
 - HyperFrames/Remotion/imagegen 由宿主 agent 能力提供;灵剪核心不内置、不 bundle、不 import。
+- Codex 桌面版用户可以安装/启用 HyperFrames/Remotion/imagegen 插件或 skill;缺失时应先引导安装,不是直接把 fallback 当真实画面。
 - ffmpeg_card/fallback_solid 是回落卡片路径,不是动态画面质量承诺。
 - 订阅通常不含 TTS;LLM 可继承 claude/codex,TTS 一般需本机或单独配置。
 - 中文发布级 TTS 首选火山豆包,次选 OpenAI-compatible/其他云 TTS;说不清质量时只称「发布级 provider 已配置」,不承诺音色质量。

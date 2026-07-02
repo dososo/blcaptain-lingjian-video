@@ -21,7 +21,7 @@ uv run lj doctor --json
 
 - LLM:先找 Claude Code 的 `claude`、Codex 的 `codex` 等官方订阅 CLI;再找 `ollama`、`llm`;最后才看 OpenAI-compatible key。
 - TTS:先找发布级云 TTS 或真实 TTS CLI;没有时使用本机预览级 TTS,如 macOS `say`、Piper、espeak-ng,并在发布 QA 中 warning。
-- 画面:检测宿主 HyperFrames/Remotion/imagegen 是否可用;不可用时消费用户自带 `assets/scenes/` 素材,否则回落卡片并在 QA warning。
+- 画面:检测宿主 HyperFrames/Remotion/imagegen 是否可用;不可用时先引导 Codex 桌面版用户安装/启用插件或 skill,也可消费用户自带 `assets/scenes/` 素材,最后才回落卡片并在 QA warning。
 - 渲染:检查本机 `ffmpeg`、`ffprobe`,并确认 `ffmpeg` 支持 `drawtext/libfreetype`。
 - 字体:macOS 用 PingFang;其他系统可放 `~/.cache/lingjian/fonts/NotoSansSC-Regular.otf`。
 
@@ -70,7 +70,19 @@ say "灵剪语音检测"
 uv run lj setup
 ```
 
-macOS 的 `say` 不需要 key。其他系统可安装 Piper 或 espeak-ng。确实需要云 TTS 时再配置:
+macOS 的 `say` 不需要 key。其他系统可安装 Piper 或 espeak-ng。
+
+如果你已经录好了口播音频,可以不用 TTS provider:
+
+```bash
+uv run lj voice ./projects/demo --provider auto --voice user --audio-file narration.m4a --json
+# 或主线:
+uv run lj run ./projects/demo --input-file input.txt --script-provider auto --voice-audio-file narration.m4a --json
+```
+
+这会写入 `provider_id=user_audio`,不标 mock,也不会把原始文件路径写进导出包。
+
+确实需要云 TTS 时再配置:
 
 Ubuntu/Debian:
 
@@ -169,7 +181,14 @@ ffmpeg -filters | findstr drawtext
 - `expected_asset_path`: 约定资产落点。
 - `duration_sec`: 与配音时长对齐。
 
-宿主 agent 使用已启用的 HyperFrames/Remotion/imagegen 产出:
+Codex 桌面版用户应先安装或启用宿主画面插件/skill。可尝试:
+
+```bash
+npx skills add heygen-com/hyperframes
+npx skills add remotion-dev/skills
+```
+
+安装后新开 Codex 会话,再跑 `uv run lj setup`。宿主 agent 使用已启用的 HyperFrames/Remotion/imagegen 产出:
 
 ```text
 project/assets/scenes/<scene_id>.mp4

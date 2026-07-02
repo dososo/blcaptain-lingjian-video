@@ -7,6 +7,7 @@
 - `cli`: 用户本机已有的真实 LLM/TTS 命令,可替代 API key。
 - `openai_compatible`: 通过 base URL、model 和 key 接入的真实 provider。
 - `volcengine_tts`: 火山豆包 TTS,中文发布级配音 provider。
+- `user_audio`: 用户已经录好的口播音频,通过 `--audio-file` 或 `--voice-audio-file` 接入。
 - `codex_host`: 仅表示宿主能协助编排,不能视为用户的真实发布 provider。
 
 ## 能力继承优先
@@ -30,6 +31,15 @@ TTS 优先级:
 4. 本机预览级 TTS:`say`、`piper`、`espeak-ng`。
 
 ChatGPT/Claude 订阅通常只提供 LLM,不代表 TTS 可用。继承订阅只走官方 CLI,不读取 OAuth token、cookie 或私密凭据文件。只有本机预览级 TTS 时 release 可继续,但 QA 会给 `RELEASE_AUDIO_IS_PREVIEW_VOICE` warning。
+
+如果用户已有录好的口播音频,不需要配置 TTS key:
+
+```bash
+uv run lj voice ./projects/demo --provider auto --voice user --audio-file narration.m4a --json
+uv run lj run ./projects/demo --input-file input.txt --script-provider auto --voice-audio-file narration.m4a --json
+```
+
+该路径会写 `provider_id=user_audio`、`provider_is_mock=false`,导出 license manifest 只记录用户提供音频,不记录原始路径。
 
 ## 自定义 CLI provider
 

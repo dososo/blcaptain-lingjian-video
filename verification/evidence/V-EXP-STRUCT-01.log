@@ -1,4 +1,4 @@
-command: test -f exports/verify_m1_20260702T060026Z/douyin/zh-CN/9x16/video.mp4
+command: test -f exports/verify_m1_20260702T062748Z/douyin/zh-CN/9x16/video.mp4
 exit_code: 0
 
 stdout:

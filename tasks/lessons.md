@@ -7,3 +7,5 @@
 - 能通过 CLI provider 完成的,不强制用户提供 API key;只有业务流程必须调用真实远端 provider 时才引导用户提供 key。key 必须脱敏、不得写日志、不得进入 release 包。
 - 用户要求“对标之前给的仓库实现”时,先找附件/参考包并做差距矩阵,再补代码;不能只按当前实现自证。每个补项要同时列出“不做边界”,尤其是 Remotion/HyperFrames 不自研不 bundle、不新增命令、不做爆款算法/平台知识包/克隆/ASR/默认下载视频。
 - 能力检测必须尽量行为化:仅二进制存在或 `exit 0` 不等于能力可用。发布级画面 CLI 至少要能按 contract 写出临时资产;发布级 TTS 要在 doctor 中用稳定分档字段标明。
+- “不内置 Remotion/HyperFrames”不能写成“用户自己解决画面”。正确产品路径是:Codex 桌面版先检测插件/skill,缺失时引导安装/启用 HyperFrames、Remotion、imagegen,安装后新开会话重跑 setup;仍缺失才允许用户素材或 fallback。
+- 配音能力缺失不能只引导 TTS key。自媒体用户常有录好的口播,主线必须提供 `--audio-file` / `--voice-audio-file` 这种明确入口,并保持本地、不泄漏路径、不标 mock。
