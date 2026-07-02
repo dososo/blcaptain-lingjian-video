@@ -13,6 +13,7 @@ from packages.core.artifacts import read_json
 from packages.core.errors import LingjianError
 from packages.core.paths import resolve_inside, safe_segment
 from packages.core.project import ProjectRef
+from packages.core.visual_generation import ensure_scene_asset
 
 RenderMode = Literal["preview", "release"]
 STUB_VIDEO_BYTES = b"LINGJIAN_STUB_MP4"
@@ -309,6 +310,7 @@ def _render_scene_clip(
     text: str,
     output_path: Path,
 ) -> dict[str, Any]:
+    scene = ensure_scene_asset(project, dict(scene))
     width, height = _video_dimensions(ratio)
     generator = str(scene.get("generator") or "fallback_solid")
     subtitle_burn = bool(scene.get("subtitle_burn", generator not in {"hyperframes", "remotion"}))

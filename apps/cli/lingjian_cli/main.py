@@ -155,7 +155,7 @@ def _write_voice_for_run(project: ProjectRef, provider: str, voice_id: str) -> b
     current_path = artifact_path(project, "voice")
     if current_path.exists():
         return False
-    provider_ref = resolve_provider(provider, "tts")
+    provider_ref = _resolve_tts_provider(provider)
     audio_path = project.path / "artifacts" / "voice_segments" / "s1.wav"
     audio_path.parent.mkdir(parents=True, exist_ok=True)
     duration = 1.0
@@ -193,6 +193,15 @@ def _write_voice_for_run(project: ProjectRef, provider: str, voice_id: str) -> b
     return True
 
 
+def _resolve_tts_provider(provider: str):
+    if provider != "auto":
+        return resolve_provider(provider, "tts")
+    try:
+        return resolve_provider("auto", "tts")
+    except LingjianError:
+        return resolve_provider("mock", "tts")
+
+
 def _visual_generator_for_scene(project: ProjectRef, scene_id: str) -> dict:
     assets_dir = project.path / "assets" / "scenes"
     video_asset = assets_dir / f"{scene_id}.mp4"
@@ -201,15 +210,19 @@ def _visual_generator_for_scene(project: ProjectRef, scene_id: str) -> dict:
         return {
             "generator": "user-asset",
             "asset_path": str(video_asset.relative_to(project.path)),
+            "expected_asset_path": str(video_asset.relative_to(project.path)),
             "subtitle_burn": False,
             "motion": {"main": "asset_video", "one_main_only": True},
+            "motion_spec": {"main": "asset_video", "one_main_only": True},
         }
     if image_asset.exists():
         return {
             "generator": "user-asset",
             "asset_path": str(image_asset.relative_to(project.path)),
+            "expected_asset_path": str(image_asset.relative_to(project.path)),
             "subtitle_burn": True,
             "motion": {"main": "kenburns_zoom_in", "one_main_only": True},
+            "motion_spec": {"main": "kenburns_zoom_in", "one_main_only": True},
         }
     capabilities = detect_capabilities()
     best_visual = capabilities.groups["visuals"].best.id
@@ -217,29 +230,45 @@ def _visual_generator_for_scene(project: ProjectRef, scene_id: str) -> dict:
         return {
             "generator": "hyperframes",
             "asset_path": f"assets/scenes/{scene_id}.mp4",
+            "expected_asset_path": f"assets/scenes/{scene_id}.mp4",
             "subtitle_burn": False,
             "motion": {"main": "kinetic_reveal", "one_main_only": True},
+            "motion_spec": {"main": "kinetic_reveal", "one_main_only": True},
         }
     if best_visual == "host_remotion":
         return {
             "generator": "remotion",
             "asset_path": f"assets/scenes/{scene_id}.mp4",
+            "expected_asset_path": f"assets/scenes/{scene_id}.mp4",
             "subtitle_burn": False,
             "motion": {"main": "programmatic_scene", "one_main_only": True},
+            "motion_spec": {"main": "programmatic_scene", "one_main_only": True},
         }
     if best_visual == "host_imagegen":
         return {
             "generator": "image-gen",
             "asset_path": f"assets/scenes/{scene_id}.png",
+            "expected_asset_path": f"assets/scenes/{scene_id}.png",
             "subtitle_burn": True,
             "motion": {"main": "kenburns_zoom_in", "one_main_only": True},
+            "motion_spec": {"main": "kenburns_zoom_in", "one_main_only": True},
         }
     return {
         "generator": "fallback_solid",
         "asset_path": None,
+        "expected_asset_path": None,
         "subtitle_burn": True,
         "motion": {"main": "solid_card", "one_main_only": True},
+        "motion_spec": {"main": "solid_card", "one_main_only": True},
     }
+
+
+def _visual_prompt(narration: str, ratio: str) -> str:
+    return (
+        "为竖屏短视频生成一镜画面。"
+        f"画幅 {ratio},风格为干净的中文产品说明动态图形,主体清晰,背景简洁。"
+        f"旁白/画面信息:{narration}"
+    )
 
 
 def _visual_scenes_for_project(project: ProjectRef, ratio: str) -> list[dict]:
@@ -260,11 +289,13 @@ def _visual_scenes_for_project(project: ProjectRef, ratio: str) -> list[dict]:
             continue
         scene_id = str(script_scene.get("id") or script_scene.get("scene_id") or f"s{index}")
         route = _visual_generator_for_scene(project, scene_id)
+        narration = str(script_scene.get("narration_text") or "")
         scenes.append(
             {
                 "scene_id": scene_id,
-                "narration_text": str(script_scene.get("narration_text") or ""),
+                "narration_text": narration,
                 "duration_sec": durations.get(scene_id, 1.0),
+                "visual_prompt": _visual_prompt(narration, ratio),
                 "brief": {
                     "aspect": ratio,
                     "safe_zone": "下三分之一留字幕",
@@ -278,9 +309,12 @@ def _visual_scenes_for_project(project: ProjectRef, ratio: str) -> list[dict]:
             "scene_id": "s1",
             "narration_text": "灵剪",
             "duration_sec": 1.0,
+            "visual_prompt": _visual_prompt("灵剪", ratio),
             "generator": "fallback_solid",
             "asset_path": None,
+            "expected_asset_path": None,
             "motion": {"main": "solid_card", "one_main_only": True},
+            "motion_spec": {"main": "solid_card", "one_main_only": True},
             "subtitle_burn": True,
             "brief": {
                 "aspect": ratio,
@@ -549,7 +583,7 @@ def approve_script(
 @app.command()
 def voice(
     project: Path,
-    provider: str = typer.Option("mock"),
+    provider: str = typer.Option("auto"),
     voice: str = typer.Option(...),
     json_output: bool = typer.Option(False, "--json"),
 ):
@@ -557,7 +591,7 @@ def voice(
 
     ref = ProjectRef(project, project.name)
     try:
-        provider_ref = resolve_provider(provider, "tts")
+        provider_ref = _resolve_tts_provider(provider)
     except LingjianError as exc:
         _fail(exc, json_output)
     audio_path = ref.path / "artifacts" / "voice_segments" / "s1.wav"
@@ -821,7 +855,7 @@ def run_workflow(
     ratio: str = typer.Option("9:16", "--ratio"),
     duration: int = typer.Option(45, "--duration"),
     script_provider: str = typer.Option("mock", "--script-provider"),
-    voice_provider: str = typer.Option("mock", "--voice-provider"),
+    voice_provider: str = typer.Option("auto", "--voice-provider"),
     voice: str = typer.Option("test-voice", "--voice"),
     engine: str = typer.Option("ffmpeg_card", "--engine"),
     template: str = typer.Option("product", "--template"),

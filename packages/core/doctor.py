@@ -12,7 +12,9 @@ from packages.core.capabilities import (
     provider_overrides_from_capabilities,
 )
 
-ProviderMethodType = Literal["cli", "openai_compatible", "anthropic", "codex_host", "mock"]
+ProviderMethodType = Literal[
+    "cli", "openai_compatible", "volcengine_tts", "anthropic", "codex_host", "mock"
+]
 
 
 class DoctorItem(BaseModel):
@@ -30,6 +32,7 @@ class ProviderMethodStatus(BaseModel):
     safe_for_release: bool = False
     source_type: str | None = None
     label_zh: str | None = None
+    quality_tier: str | None = None
     config_redacted: dict[str, Any] = Field(default_factory=dict)
     hint: str | None = None
     setup_command: str | None = None
@@ -52,6 +55,7 @@ class DoctorResult(BaseModel):
 
 SECRET_KEYS = {
     "api_key",
+    "access_token",
     "token",
     "password",
     "secret",
@@ -108,6 +112,14 @@ def _method_status(raw: dict[str, Any]) -> ProviderMethodStatus:
             and bool(config.get("base_url"))
             and bool(config.get("model"))
         )
+    elif method_type == "volcengine_tts":
+        safe_for_release = (
+            configured
+            and not is_mock
+            and bool(config.get("app_id"))
+            and bool(config.get("access_token"))
+            and bool(config.get("cluster"))
+        )
     else:
         safe_for_release = configured and not is_mock and method_type not in {"codex_host", "mock"}
     return ProviderMethodStatus(
@@ -118,6 +130,7 @@ def _method_status(raw: dict[str, Any]) -> ProviderMethodStatus:
         safe_for_release=safe_for_release,
         source_type=raw.get("source_type"),
         label_zh=raw.get("label_zh"),
+        quality_tier=raw.get("quality_tier"),
         config_redacted=_redact_value(raw.get("config", {})),
         hint=raw.get("hint"),
         setup_command=raw.get("setup_command"),
@@ -141,6 +154,7 @@ def _doctor_capabilities(capability_report: Any | None) -> dict[str, Any]:
             "safe_for_release": group.best.safe_for_release,
             "label_zh": group.best.label_zh,
             "command_name": group.best.command_name,
+            "quality_tier": group.best.quality_tier,
         }
         for kind, group in capability_report.groups.items()
     }
@@ -220,6 +234,17 @@ def run_doctor(
                 ok=False,
                 message_zh="缺少可用于正式发布的真实 TTS provider。",
                 hint="可配置 CLI TTS provider,或提供云 TTS 三件套。mock 只能预览,不能 release。",
+            )
+        )
+    elif not any(
+        method.quality_tier == "release" and method.safe_for_release
+        for method in providers["tts"].methods
+    ):
+        optional.append(
+            DoctorItem(
+                id="preview_tts_release_notice",
+                ok=True,
+                message_zh="当前 TTS 可用但属于预览级;正式发布建议配置火山豆包等发布级 TTS。",
             )
         )
 

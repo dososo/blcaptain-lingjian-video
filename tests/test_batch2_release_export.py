@@ -116,6 +116,28 @@ def test_export_license_manifest_records_openai_provider_without_secrets(tmp_pat
     assert "OPENAI_API_KEY" not in license_text
 
 
+def test_export_license_manifest_records_volcengine_tts_without_secrets(tmp_path):
+    project = _approved_mock_project(tmp_path)
+    render_result = render_project(project, "douyin", "zh-CN", "9:16", mode="preview")
+    manifest = json.loads(render_result.manifest_path.read_text(encoding="utf-8"))
+    manifest["providers"] = [
+        {"id": "claude_cli", "kind": "llm", "is_mock": False},
+        {"id": "volcengine_tts", "kind": "tts", "is_mock": False},
+        {"id": "delegated_scene_assembly", "kind": "renderer", "is_mock": False},
+    ]
+    render_result.manifest_path.write_text(
+        json.dumps(manifest, ensure_ascii=False, indent=2),
+        encoding="utf-8",
+    )
+
+    package = export_project(project, "douyin", "zh-CN", "9:16", release=False)
+
+    license_text = (package.export_dir / "license_manifest.md").read_text(encoding="utf-8")
+    assert "volcengine_tts: Volcengine Doubao TTS API provider" in license_text
+    assert "VOLCENGINE_TTS_ACCESS_TOKEN" not in license_text
+    assert "token" not in license_text.lower()
+
+
 def test_export_license_manifest_records_inherited_cli_provider_without_commands(tmp_path):
     project = _approved_mock_project(tmp_path)
     render_result = render_project(project, "douyin", "zh-CN", "9:16", mode="preview")

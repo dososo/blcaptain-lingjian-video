@@ -6,6 +6,7 @@ from providers.cli import CliProvider
 from providers.inherited_cli import InheritedLLMProvider, LocalTTSProvider
 from providers.mock.base import MockProvider
 from providers.openai_compatible import OpenAICompatibleLLMProvider, OpenAICompatibleTTSProvider
+from providers.volcengine_tts import VolcengineTTSProvider
 
 
 def registered_providers() -> list[Provider]:
@@ -19,6 +20,7 @@ def registered_providers() -> list[Provider]:
         LocalTTSProvider("macos_say", "macOS say", "say"),
         LocalTTSProvider("piper_cli", "Piper CLI", "piper"),
         LocalTTSProvider("espeak_ng", "espeak-ng", "espeak-ng"),
+        VolcengineTTSProvider(),
         OpenAICompatibleLLMProvider(),
         OpenAICompatibleTTSProvider(),
         MockProvider("mock_llm", "Mock LLM", "llm", ["generate_script"]),
@@ -46,6 +48,8 @@ def resolve_provider(provider_id: str, kind: str) -> Provider:
         ("espeak-ng", "tts"): "espeak_ng",
         ("openai", "llm"): "openai_compatible",
         ("openai", "tts"): "openai_compatible_tts",
+        ("volcengine", "tts"): "volcengine_tts",
+        ("doubao", "tts"): "volcengine_tts",
     }.get((provider_id, kind), provider_id)
     for provider in registered_providers():
         if provider.id == alias and provider.kind == kind:

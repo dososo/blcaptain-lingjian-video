@@ -2,7 +2,7 @@ command: uv run lj doctor --json
 exit_code: 0
 
 stdout:
-{"ready":true,"exit_code":0,"required":[],"optional":[{"id":"host_visual_delegation_notice","ok":true,"message_zh":"HyperFrames/Remotion/imagegen 为宿主委托能力;灵剪不默认、不捆绑、不 import 相关 SDK。"}],"providers":{"llm":{"ready":true,"usable_real":true,"methods":[{"id":"claude_cli","type":"cli","configured":true,"is_mock":false,"safe_for_release":true,"source_type":"inherited-cli","label_zh":"Claude Code CLI","config_redacted":{"command":"***"},"hint":"已检测到 Claude Code CLI，将继承当前登录订阅能力。"},{"id":"codex_cli","type":"cli","configured":true,"is_mock":false,"safe_for_release":true,"source_type":"inherited-cli","label_zh":"Codex CLI","config_redacted":{"command":"***"},"hint":"已检测到 Codex CLI，将继承当前登录订阅能力。"},{"id":"llm_cli","type":"cli","configured":false,"is_mock":false,"safe_for_release":false,"source_type":"local-cli","label_zh":"自定义 LLM CLI","config_redacted":{"command":""},"hint":"未检测到 自定义 LLM CLI。"},{"id":"ollama_cli","type":"cli","configured":false,"is_mock":false,"safe_for_release":false,"source_type":"local-cli","label_zh":"Ollama CLI","config_redacted":{"command":"***"},"hint":"未检测到 Ollama CLI。"},{"id":"llm_local_cli","type":"cli","configured":false,"is_mock":false,"safe_for_release":false,"source_type":"local-cli","label_zh":"llm CLI","config_redacted":{"command":"***"},"hint":"未检测到 llm CLI。"},{"id":"openai_compatible","type":"openai_compatible","configured":false,"is_mock":false,"safe_for_release":false,"source_type":"api-key","label_zh":"OpenAI-compatible LLM","config_redacted":{"api_key":"","base_url":"","model":""},"hint":"可配置 OpenAI-compatible 三件套,或优先使用可继承的 CLI 能力。"}]},"tts":{"ready":true,"usable_real":true,"methods":[{"id":"macos_say","type":"cli","configured":true,"is_mock":false,"safe_for_release":true,"source_type":"local-cli","label_zh":"macOS say","config_redacted":{"command":"***"},"hint":"已检测到 macOS say，本机零 key TTS 可用。"},{"id":"tts_cli","type":"cli","configured":false,"is_mock":false,"safe_for_release":false,"source_type":"local-cli","label_zh":"自定义 TTS CLI","config_redacted":{"command":""},"hint":"未检测到 自定义 TTS CLI。"},{"id":"piper_cli","type":"cli","configured":false,"is_mock":false,"safe_for_release":false,"source_type":"local-cli","label_zh":"Piper CLI","config_redacted":{"command":"***"},"hint":"未检测到 Piper CLI。"},{"id":"espeak_ng","type":"cli","configured":false,"is_mock":false,"safe_for_release":false,"source_type":"local-cli","label_zh":"espeak-ng","config_redacted":{"command":"***"},"hint":"未检测到 espeak-ng。"},{"id":"openai_compatible_tts","type":"openai_compatible","configured":false,"is_mock":false,"safe_for_release":false,"source_type":"api-key","label_zh":"OpenAI-compatible TTS","config_redacted":{"api_key":"","base_url":"","model":""},"hint":"可配置 OpenAI-compatible 三件套,或优先使用可继承的 CLI 能力。"}]}},"capabilities":{"llm":{"id":"claude_cli","source_type":"inherited-cli","configured":true,"safe_for_release":true,"label_zh":"Claude Code CLI","command_name":"claude"},"tts":{"id":"macos_say","source_type":"local-cli","configured":true,"safe_for_release":true,"label_zh":"macOS say","command_name":"say"},"visuals":{"id":"fallback_solid","source_type":"fallback","configured":true,"safe_for_release":false,"label_zh":"回落卡片画面","command_name":null},"render":{"id":"ffmpeg_suite","source_type":"local-cli","configured":true,"safe_for_release":true,"label_zh":"FFmpeg/ffprobe","command_name":"ffmpeg"},"font":{"id":"cjk_font","source_type":"local-cli","configured":true,"safe_for_release":true,"label_zh":"中文字体","command_name":null}}}
+{"ready":true,"exit_code":0,"required":[],"optional":[{"id":"preview_tts_release_notice","ok":true,"message_zh":"当前 TTS 可用但属于预览级;正式发布建议配置火山豆包等发布级 TTS。"},{"id":"host_visual_delegation_notice","ok":true,"message_zh":"HyperFrames/Remotion/imagegen 为宿主委托能力;灵剪不默认、不捆绑、不 import 相关 SDK。"}],"providers":{"llm":{"ready":true,"usable_real":true,"methods":[{"id":"claude_cli","type":"cli","configured":true,"is_mock":false,"safe_for_release":true,"source_type":"inherited-cli","label_zh":"Claude Code CLI","config_redacted":{"command":"***"},"hint":"已检测到 Claude Code CLI，将继承当前登录订阅能力。"},{"id":"codex_cli","type":"cli","configured":true,"is_mock":false,"safe_for_release":true,"source_type":"inherited-cli","label_zh":"Codex CLI","config_redacted":{"command":"***"},"hint":"已检测到 Codex CLI，将继承当前登录订阅能力。"},{"id":"llm_cli","type":"cli","configured":false,"is_mock":false,"safe_for_release":false,"source_type":"local-cli","label_zh":"自定义 LLM CLI","config_redacted":{"command":""},"hint":"未检测到 自定义 LLM CLI。"},{"id":"ollama_cli","type":"cli","configured":false,"is_mock":false,"safe_for_release":false,"source_type":"local-cli","label_zh":"Ollama CLI","config_redacted":{"command":"***"},"hint":"未检测到 Ollama CLI。"},{"id":"llm_local_cli","type":"cli","configured":false,"is_mock":false,"safe_for_release":false,"source_type":"local-cli","label_zh":"llm CLI","config_redacted":{"command":"***"},"hint":"未检测到 llm CLI。"},{"id":"openai_compatible","type":"openai_compatible","configured":false,"is_mock":false,"safe_for_release":false,"source_type":"api-key","label_zh":"OpenAI-compatible LLM","config_redacted":{"api_key":"","base_url":"","model":""},"hint":"可配置 OpenAI-compatible 三件套,或优先使用可继承的 CLI 能力。"}]},"tts":{"ready":true,"usable_real":true,"methods":[{"id":"macos_say","type":"cli","configured":true,"is_mock":false,"safe_for_release":true,"source_type":"local-cli","label_zh":"macOS say","quality_tier":"preview","config_redacted":{"command":"***"},"hint":"已检测到 macOS say，本机零 key TTS 可用。"},{"id":"volcengine_tts","type":"volcengine_tts","configured":false,"is_mock":false,"safe_for_release":false,"source_type":"api-key","label_zh":"火山豆包 TTS","quality_tier":"release","config_redacted":{"app_id":"","access_token":"","cluster":"","voice_type":""},"hint":"可配置火山豆包 TTS 三件套,或优先使用可继承/本机 CLI 能力。"},{"id":"openai_compatible_tts","type":"openai_compatible","configured":false,"is_mock":false,"safe_for_release":false,"source_type":"api-key","label_zh":"OpenAI-compatible TTS","quality_tier":"release","config_redacted":{"api_key":"","base_url":"","model":""},"hint":"可配置 OpenAI-compatible 三件套,或优先使用可继承的 CLI 能力。"},{"id":"tts_cli","type":"cli","configured":false,"is_mock":false,"safe_for_release":false,"source_type":"local-cli","label_zh":"自定义 TTS CLI","quality_tier":"release","config_redacted":{"command":""},"hint":"未检测到 自定义 TTS CLI。"},{"id":"piper_cli","type":"cli","configured":false,"is_mock":false,"safe_for_release":false,"source_type":"local-cli","label_zh":"Piper CLI","quality_tier":"preview","config_redacted":{"command":"***"},"hint":"未检测到 Piper CLI。"},{"id":"espeak_ng","type":"cli","configured":false,"is_mock":false,"safe_for_release":false,"source_type":"local-cli","label_zh":"espeak-ng","quality_tier":"preview","config_redacted":{"command":"***"},"hint":"未检测到 espeak-ng。"}]}},"capabilities":{"llm":{"id":"claude_cli","source_type":"inherited-cli","configured":true,"safe_for_release":true,"label_zh":"Claude Code CLI","command_name":"claude","quality_tier":null},"tts":{"id":"macos_say","source_type":"local-cli","configured":true,"safe_for_release":true,"label_zh":"macOS say","command_name":"say","quality_tier":"preview"},"visuals":{"id":"fallback_solid","source_type":"fallback","configured":true,"safe_for_release":false,"label_zh":"回落卡片画面","command_name":null,"quality_tier":null},"render":{"id":"ffmpeg_suite","source_type":"local-cli","configured":true,"safe_for_release":true,"label_zh":"FFmpeg/ffprobe","command_name":"ffmpeg","quality_tier":null},"font":{"id":"cjk_font","source_type":"local-cli","configured":true,"safe_for_release":true,"label_zh":"中文字体","command_name":null,"quality_tier":null}}}
 
 
 stderr:
@@ -92,11 +92,11 @@ stderr:
 
 ---
 
-command: uv run lj init projects/verify_real_20260702T032511Z --name 真实发布补验 --json
+command: uv run lj init projects/verify_real_20260702T043332Z --name 真实发布补验 --json
 exit_code: 0
 
 stdout:
-{"name": "真实发布补验", "ok": true, "project": "/Users/manxiaochu/Documents/Codex/lingjian-video/projects/verify_real_20260702T032511Z"}
+{"name": "真实发布补验", "ok": true, "project": "/Users/manxiaochu/Documents/Codex/lingjian-video/projects/verify_real_20260702T043332Z"}
 
 
 stderr:
@@ -104,7 +104,7 @@ stderr:
 
 ---
 
-command: uv run lj ingest text projects/verify_real_20260702T032511Z --file examples/product_intro_zh.txt --json
+command: uv run lj ingest text projects/verify_real_20260702T043332Z --file examples/product_intro_zh.txt --json
 exit_code: 0
 
 stdout:
@@ -116,11 +116,11 @@ stderr:
 
 ---
 
-command: uv run lj extract projects/verify_real_20260702T032511Z --json
+command: uv run lj extract projects/verify_real_20260702T043332Z --json
 exit_code: 0
 
 stdout:
-{"ok": true, "project": "projects/verify_real_20260702T032511Z", "routing": {"legacy_provider": null, "ocr_provider": "none", "url_extractor": "trafilatura"}, "status": "extracted"}
+{"ok": true, "project": "projects/verify_real_20260702T043332Z", "routing": {"legacy_provider": null, "ocr_provider": "none", "url_extractor": "trafilatura"}, "status": "extracted"}
 
 
 stderr:
@@ -128,7 +128,7 @@ stderr:
 
 ---
 
-command: uv run lj script projects/verify_real_20260702T032511Z --type product --platform douyin --language zh-CN --ratio 9:16 --duration 45 --provider claude_cli --json
+command: uv run lj script projects/verify_real_20260702T043332Z --type product --platform douyin --language zh-CN --ratio 9:16 --duration 45 --provider claude_cli --json
 exit_code: 0
 
 stdout:
@@ -140,11 +140,11 @@ stderr:
 
 ---
 
-command: uv run lj approve script projects/verify_real_20260702T032511Z --approved-by ci --json
+command: uv run lj approve script projects/verify_real_20260702T043332Z --approved-by ci --json
 exit_code: 0
 
 stdout:
-{"approval": {"approved_at": "2026-07-02T03:26:11.625122+00:00", "approved_by": "ci", "artifact_path": "artifacts/script.json", "artifact_sha256": "abe1e294d38b322d17efa681d48734d090d41c4605fb6754252fca7fa2197c00", "comment": null, "signature": "7ab186971c99337542dbe9e556d700c629e3ffd5045bb8cd026ff976d736bf51", "target": "script"}, "ok": true}
+{"approval": {"approved_at": "2026-07-02T04:34:35.491741+00:00", "approved_by": "ci", "artifact_path": "artifacts/script.json", "artifact_sha256": "b44f34ee253e7e4af0430cd56e71791f602f5ef3969a481334ffdf38df2c86a1", "comment": null, "signature": "2526c212327bb088ca5f3f8181b970eaca9b6dd7f160ad25fa8a5ce9c1601f84", "target": "script"}, "ok": true}
 
 
 stderr:
@@ -152,7 +152,7 @@ stderr:
 
 ---
 
-command: uv run lj voice projects/verify_real_20260702T032511Z --provider macos_say --voice release-voice --json
+command: uv run lj voice projects/verify_real_20260702T043332Z --provider macos_say --voice release-voice --json
 exit_code: 0
 
 stdout:
@@ -164,11 +164,11 @@ stderr:
 
 ---
 
-command: uv run lj approve voice projects/verify_real_20260702T032511Z --approved-by ci --json
+command: uv run lj approve voice projects/verify_real_20260702T043332Z --approved-by ci --json
 exit_code: 0
 
 stdout:
-{"approval": {"approved_at": "2026-07-02T03:26:12.701268+00:00", "approved_by": "ci", "artifact_path": "artifacts/voice_plan.json", "artifact_sha256": "34d7f310b5d39c5e807d253b14a13df066e99933e148f036ef94b740844a9970", "comment": null, "signature": "eecfc397c025d07976ec0147a5b4927319c52726bae2db71d2c1083ad31cb98e", "target": "voice"}, "ok": true}
+{"approval": {"approved_at": "2026-07-02T04:34:36.455193+00:00", "approved_by": "ci", "artifact_path": "artifacts/voice_plan.json", "artifact_sha256": "34df9997b75424703aebc3912cf0882359530fc20a47d40991450a059f4377a8", "comment": null, "signature": "6ed546da8ff89eebe9f74edb7038569a2611b0060fc5a8d10eda55568973027e", "target": "voice"}, "ok": true}
 
 
 stderr:
@@ -176,7 +176,7 @@ stderr:
 
 ---
 
-command: uv run lj visuals projects/verify_real_20260702T032511Z --engine ffmpeg_card --template product --json
+command: uv run lj visuals projects/verify_real_20260702T043332Z --engine ffmpeg_card --template product --json
 exit_code: 0
 
 stdout:
@@ -188,11 +188,11 @@ stderr:
 
 ---
 
-command: uv run lj approve visuals projects/verify_real_20260702T032511Z --approved-by ci --json
+command: uv run lj approve visuals projects/verify_real_20260702T043332Z --approved-by ci --json
 exit_code: 0
 
 stdout:
-{"approval": {"approved_at": "2026-07-02T03:26:13.164303+00:00", "approved_by": "ci", "artifact_path": "artifacts/visual_plan.json", "artifact_sha256": "371410b2f8eda5438957c34e9bd6b1380d9b86a79b1b6fb45cfd25db0c75b1b6", "comment": null, "signature": "ae8d9f9dee7c52b767c5ee22db9288cddf43fc87829b01373d701f4fac543825", "target": "visuals"}, "ok": true}
+{"approval": {"approved_at": "2026-07-02T04:34:36.864328+00:00", "approved_by": "ci", "artifact_path": "artifacts/visual_plan.json", "artifact_sha256": "425608589ec470eb3f4b95d821e56a3a14f73695c565d7d6c4aabcd1717b1948", "comment": null, "signature": "fb70e32893b6330e187d41bc1fdc7b8071b416e2eee54d0716e324c7fc77181c", "target": "visuals"}, "ok": true}
 
 
 stderr:
@@ -200,11 +200,11 @@ stderr:
 
 ---
 
-command: uv run lj render projects/verify_real_20260702T032511Z --platform douyin --language zh-CN --ratio 9:16 --release --json
+command: uv run lj render projects/verify_real_20260702T043332Z --platform douyin --language zh-CN --ratio 9:16 --release --json
 exit_code: 0
 
 stdout:
-{"language": "zh-CN", "mode": "release", "ok": true, "platform": "douyin", "ratio": "9:16", "status": "rendered", "video_path": "/Users/manxiaochu/Documents/Codex/lingjian-video/projects/verify_real_20260702T032511Z/renders/release/douyin/video.mp4"}
+{"language": "zh-CN", "mode": "release", "ok": true, "platform": "douyin", "ratio": "9:16", "status": "rendered", "video_path": "/Users/manxiaochu/Documents/Codex/lingjian-video/projects/verify_real_20260702T043332Z/renders/release/douyin/video.mp4"}
 
 
 stderr:
@@ -212,11 +212,11 @@ stderr:
 
 ---
 
-command: uv run lj qa projects/verify_real_20260702T032511Z --release --platform douyin --json
+command: uv run lj qa projects/verify_real_20260702T043332Z --release --platform douyin --json
 exit_code: 0
 
 stdout:
-{"hard_failures": [], "info": [{"code": "QA_STUB", "message_zh": "Batch 2 最小 QA 已执行。", "severity": "info"}], "ok": true, "release_ready": true, "warnings": [{"code": "RELEASE_VISUAL_IS_BLANK_CARD", "message_zh": "release 画面全部为回落卡片,未消费宿主动态图形/图片产物。", "severity": "warning"}]}
+{"hard_failures": [], "info": [{"code": "QA_STUB", "message_zh": "Batch 2 最小 QA 已执行。", "severity": "info"}], "ok": true, "release_ready": true, "warnings": [{"code": "RELEASE_VISUAL_IS_BLANK_CARD", "message_zh": "release 画面全部为回落卡片,未消费宿主动态图形/图片产物。", "severity": "warning"}, {"code": "RELEASE_AUDIO_IS_PREVIEW_VOICE", "message_zh": "release 音轨来自本机预览级 TTS;建议配置火山豆包等发布级 TTS。", "severity": "warning"}]}
 
 
 stderr:
@@ -224,11 +224,11 @@ stderr:
 
 ---
 
-command: uv run lj export projects/verify_real_20260702T032511Z --platform douyin --language zh-CN --ratio 9:16 --release --json
+command: uv run lj export projects/verify_real_20260702T043332Z --platform douyin --language zh-CN --ratio 9:16 --release --json
 exit_code: 0
 
 stdout:
-{"export_dir": "/Users/manxiaochu/Documents/Codex/lingjian-video/exports/verify_real_20260702T032511Z/douyin/zh-CN/9x16", "export_manifest": {"approvals": [{"approved_at": "2026-07-02T03:26:11.625122+00:00", "approved_by": "ci", "artifact_path": "artifacts/script.json", "artifact_sha256": "abe1e294d38b322d17efa681d48734d090d41c4605fb6754252fca7fa2197c00", "comment": null, "signature": "7ab186971c99337542dbe9e556d700c629e3ffd5045bb8cd026ff976d736bf51", "target": "script"}, {"approved_at": "2026-07-02T03:26:13.164303+00:00", "approved_by": "ci", "artifact_path": "artifacts/visual_plan.json", "artifact_sha256": "371410b2f8eda5438957c34e9bd6b1380d9b86a79b1b6fb45cfd25db0c75b1b6", "comment": null, "signature": "ae8d9f9dee7c52b767c5ee22db9288cddf43fc87829b01373d701f4fac543825", "target": "visuals"}, {"approved_at": "2026-07-02T03:26:12.701268+00:00", "approved_by": "ci", "artifact_path": "artifacts/voice_plan.json", "artifact_sha256": "34d7f310b5d39c5e807d253b14a13df066e99933e148f036ef94b740844a9970", "comment": null, "signature": "eecfc397c025d07976ec0147a5b4927319c52726bae2db71d2c1083ad31cb98e", "target": "voice"}], "language": "zh-CN", "platform": "douyin", "project_id": "verify_real_20260702T032511Z", "ratio": "9:16", "release": true}, "exports": [{"export_dir": "/Users/manxiaochu/Documents/Codex/lingjian-video/exports/verify_real_20260702T032511Z/douyin/zh-CN/9x16", "export_manifest": {"approvals": [{"approved_at": "2026-07-02T03:26:11.625122+00:00", "approved_by": "ci", "artifact_path": "artifacts/script.json", "artifact_sha256": "abe1e294d38b322d17efa681d48734d090d41c4605fb6754252fca7fa2197c00", "comment": null, "signature": "7ab186971c99337542dbe9e556d700c629e3ffd5045bb8cd026ff976d736bf51", "target": "script"}, {"approved_at": "2026-07-02T03:26:13.164303+00:00", "approved_by": "ci", "artifact_path": "artifacts/visual_plan.json", "artifact_sha256": "371410b2f8eda5438957c34e9bd6b1380d9b86a79b1b6fb45cfd25db0c75b1b6", "comment": null, "signature": "ae8d9f9dee7c52b767c5ee22db9288cddf43fc87829b01373d701f4fac543825", "target": "visuals"}, {"approved_at": "2026-07-02T03:26:12.701268+00:00", "approved_by": "ci", "artifact_path": "artifacts/voice_plan.json", "artifact_sha256": "34d7f310b5d39c5e807d253b14a13df066e99933e148f036ef94b740844a9970", "comment": null, "signature": "eecfc397c025d07976ec0147a5b4927319c52726bae2db71d2c1083ad31cb98e", "target": "voice"}], "language": "zh-CN", "platform": "douyin", "project_id": "verify_real_20260702T032511Z", "ratio": "9:16", "release": true}, "platform": "douyin"}], "ok": true, "release": true}
+{"export_dir": "/Users/manxiaochu/Documents/Codex/lingjian-video/exports/verify_real_20260702T043332Z/douyin/zh-CN/9x16", "export_manifest": {"approvals": [{"approved_at": "2026-07-02T04:34:35.491741+00:00", "approved_by": "ci", "artifact_path": "artifacts/script.json", "artifact_sha256": "b44f34ee253e7e4af0430cd56e71791f602f5ef3969a481334ffdf38df2c86a1", "comment": null, "signature": "2526c212327bb088ca5f3f8181b970eaca9b6dd7f160ad25fa8a5ce9c1601f84", "target": "script"}, {"approved_at": "2026-07-02T04:34:36.864328+00:00", "approved_by": "ci", "artifact_path": "artifacts/visual_plan.json", "artifact_sha256": "425608589ec470eb3f4b95d821e56a3a14f73695c565d7d6c4aabcd1717b1948", "comment": null, "signature": "fb70e32893b6330e187d41bc1fdc7b8071b416e2eee54d0716e324c7fc77181c", "target": "visuals"}, {"approved_at": "2026-07-02T04:34:36.455193+00:00", "approved_by": "ci", "artifact_path": "artifacts/voice_plan.json", "artifact_sha256": "34df9997b75424703aebc3912cf0882359530fc20a47d40991450a059f4377a8", "comment": null, "signature": "6ed546da8ff89eebe9f74edb7038569a2611b0060fc5a8d10eda55568973027e", "target": "voice"}], "language": "zh-CN", "platform": "douyin", "project_id": "verify_real_20260702T043332Z", "ratio": "9:16", "release": true}, "exports": [{"export_dir": "/Users/manxiaochu/Documents/Codex/lingjian-video/exports/verify_real_20260702T043332Z/douyin/zh-CN/9x16", "export_manifest": {"approvals": [{"approved_at": "2026-07-02T04:34:35.491741+00:00", "approved_by": "ci", "artifact_path": "artifacts/script.json", "artifact_sha256": "b44f34ee253e7e4af0430cd56e71791f602f5ef3969a481334ffdf38df2c86a1", "comment": null, "signature": "2526c212327bb088ca5f3f8181b970eaca9b6dd7f160ad25fa8a5ce9c1601f84", "target": "script"}, {"approved_at": "2026-07-02T04:34:36.864328+00:00", "approved_by": "ci", "artifact_path": "artifacts/visual_plan.json", "artifact_sha256": "425608589ec470eb3f4b95d821e56a3a14f73695c565d7d6c4aabcd1717b1948", "comment": null, "signature": "fb70e32893b6330e187d41bc1fdc7b8071b416e2eee54d0716e324c7fc77181c", "target": "visuals"}, {"approved_at": "2026-07-02T04:34:36.455193+00:00", "approved_by": "ci", "artifact_path": "artifacts/voice_plan.json", "artifact_sha256": "34df9997b75424703aebc3912cf0882359530fc20a47d40991450a059f4377a8", "comment": null, "signature": "6ed546da8ff89eebe9f74edb7038569a2611b0060fc5a8d10eda55568973027e", "target": "voice"}], "language": "zh-CN", "platform": "douyin", "project_id": "verify_real_20260702T043332Z", "ratio": "9:16", "release": true}, "platform": "douyin"}], "ok": true, "release": true}
 
 
 stderr:
@@ -236,7 +236,7 @@ stderr:
 
 ---
 
-command: ffprobe -v error -show_entries stream=codec_type,codec_name -of json exports/verify_real_20260702T032511Z/douyin/zh-CN/9x16/video.mp4
+command: ffprobe -v error -show_entries stream=codec_type,codec_name -of json exports/verify_real_20260702T043332Z/douyin/zh-CN/9x16/video.mp4
 exit_code: 0
 
 stdout:

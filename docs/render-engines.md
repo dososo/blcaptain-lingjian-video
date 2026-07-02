@@ -1,7 +1,7 @@
 # 渲染引擎
 
 M1 只实现 `ffmpeg_card` 范围内的静态卡片渲染。
-M2 允许消费宿主 agent 生成的每镜 mp4/png 产物并由 lj 端用 FFmpeg 组装,但仍不把 Remotion/HyperFrames 作为核心引擎 bundle 或 import。
+M2 允许按 `visual_plan.json` 委托宿主 agent/CLI 生成每镜 mp4/png 产物,再由 lj 端用 FFmpeg 组装,但仍不把 Remotion/HyperFrames 作为核心引擎 bundle 或 import。
 
 ## M1 允许
 
@@ -13,7 +13,8 @@ M2 允许消费宿主 agent 生成的每镜 mp4/png 产物并由 lj 端用 FFmpe
 
 ## M2 允许
 
-- `visual_plan.json` 记录每镜 `generator`、`asset_path`、`motion`、`subtitle_burn` 与 `brief`。
+- `visual_plan.json` 记录每镜 `generator`、`visual_prompt`、`motion_spec`、`brief`、`expected_asset_path`、`duration_sec`、`asset_path` 与 `subtitle_burn`。
+- render 前可通过 `LINGJIAN_HOST_IMAGEGEN_CLI`、`LINGJIAN_HOST_HYPERFRAMES_CLI`、`LINGJIAN_HOST_REMOTION_CLI` 委托宿主生成器写入 `expected_asset_path`。
 - 消费 `project/assets/scenes/<scene_id>.mp4|png` 中的宿主产物或用户素材。
 - 视频镜头统一 scale/pad/FPS;图片镜头使用 Ken Burns/zoompan;缺资产时回落纯色卡片。
 - `render_manifest.json` 记录 `visual_real_count`、`visual_total` 与每镜 `render_source`。

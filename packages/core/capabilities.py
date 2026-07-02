@@ -23,6 +23,7 @@ class CapabilityCandidate:
     label_zh: str
     provider_type: str | None = None
     command_name: str | None = None
+    quality_tier: str | None = None
     config: dict[str, Any] = field(default_factory=dict)
     hint: str | None = None
     setup_command: str | None = None
@@ -37,6 +38,7 @@ class CapabilityCandidate:
             "label_zh": self.label_zh,
             "provider_type": self.provider_type,
             "command_name": self.command_name,
+            "quality_tier": self.quality_tier,
             "config_redacted": _redact_config(self.config),
             "hint": self.hint,
             "setup_command": self.setup_command,
@@ -138,6 +140,7 @@ def provider_overrides_from_capabilities(
                     "command": candidate.command_name or "",
                     "config": raw_config,
                     "source_type": candidate.source_type,
+                    "quality_tier": candidate.quality_tier,
                     "label_zh": candidate.label_zh,
                     "hint": _doctor_hint(candidate),
                     "setup_command": None,
@@ -245,44 +248,34 @@ def _llm_candidates(env: Mapping[str, str], lookup: PathLookup) -> list[Capabili
 def _tts_candidates(env: Mapping[str, str], lookup: PathLookup) -> list[CapabilityCandidate]:
     tts_cli = _first_argv(env.get("LINGJIAN_TTS_CLI", ""))
     candidates = [
-        _cli_candidate(
-            "tts_cli",
-            "tts",
-            "local-cli",
-            "自定义 TTS CLI",
-            tts_cli,
-            lookup,
-            "已检测到 LINGJIAN_TTS_CLI。",
-            setup_command='export LINGJIAN_TTS_CLI="/path/to/real-tts"',
-        ),
-        _cli_candidate(
-            "macos_say",
-            "tts",
-            "local-cli",
-            "macOS say",
-            "say",
-            lookup,
-            "已检测到 macOS say，本机零 key TTS 可用。",
-        ),
-        _cli_candidate(
-            "piper_cli",
-            "tts",
-            "local-cli",
-            "Piper CLI",
-            "piper",
-            lookup,
-            "已检测到 Piper 本机 TTS。",
-            setup_command="brew install piper",
-        ),
-        _cli_candidate(
-            "espeak_ng",
-            "tts",
-            "local-cli",
-            "espeak-ng",
-            "espeak-ng",
-            lookup,
-            "已检测到 espeak-ng 本机 TTS。",
-            setup_command="brew install espeak-ng",
+        CapabilityCandidate(
+            id="volcengine_tts",
+            kind="tts",
+            source_type="api-key",
+            configured=bool(
+                env.get("VOLCENGINE_TTS_APP_ID")
+                and env.get("VOLCENGINE_TTS_ACCESS_TOKEN")
+                and env.get("VOLCENGINE_TTS_CLUSTER")
+            ),
+            safe_for_release=bool(
+                env.get("VOLCENGINE_TTS_APP_ID")
+                and env.get("VOLCENGINE_TTS_ACCESS_TOKEN")
+                and env.get("VOLCENGINE_TTS_CLUSTER")
+            ),
+            label_zh="火山豆包 TTS",
+            provider_type="volcengine_tts",
+            quality_tier="release",
+            config={
+                "app_id": env.get("VOLCENGINE_TTS_APP_ID", ""),
+                "access_token": env.get("VOLCENGINE_TTS_ACCESS_TOKEN", ""),
+                "cluster": env.get("VOLCENGINE_TTS_CLUSTER", ""),
+                "voice_type": env.get("VOLCENGINE_TTS_VOICE_TYPE", ""),
+            },
+            hint="中文发布级配音首选;配置 VOLCENGINE_TTS_APP_ID、ACCESS_TOKEN、CLUSTER。",
+            setup_command=(
+                "export VOLCENGINE_TTS_APP_ID=... "
+                "VOLCENGINE_TTS_ACCESS_TOKEN=... VOLCENGINE_TTS_CLUSTER=..."
+            ),
         ),
         _api_candidate(
             "openai_compatible_tts",
@@ -299,6 +292,50 @@ def _tts_candidates(env: Mapping[str, str], lookup: PathLookup) -> list[Capabili
                 "model": env.get("OPENAI_TTS_MODEL", ""),
             },
             "配置 OPENAI_TTS_API_KEY、OPENAI_TTS_BASE_URL、OPENAI_TTS_MODEL。",
+            quality_tier="release",
+        ),
+        _cli_candidate(
+            "tts_cli",
+            "tts",
+            "local-cli",
+            "自定义 TTS CLI",
+            tts_cli,
+            lookup,
+            "已检测到 LINGJIAN_TTS_CLI。",
+            setup_command='export LINGJIAN_TTS_CLI="/path/to/real-tts"',
+            quality_tier="release",
+        ),
+        _cli_candidate(
+            "macos_say",
+            "tts",
+            "local-cli",
+            "macOS say",
+            "say",
+            lookup,
+            "已检测到 macOS say，本机零 key TTS 可用。",
+            quality_tier="preview",
+        ),
+        _cli_candidate(
+            "piper_cli",
+            "tts",
+            "local-cli",
+            "Piper CLI",
+            "piper",
+            lookup,
+            "已检测到 Piper 本机 TTS。",
+            setup_command="brew install piper",
+            quality_tier="preview",
+        ),
+        _cli_candidate(
+            "espeak_ng",
+            "tts",
+            "local-cli",
+            "espeak-ng",
+            "espeak-ng",
+            lookup,
+            "已检测到 espeak-ng 本机 TTS。",
+            setup_command="brew install espeak-ng",
+            quality_tier="preview",
         ),
         _missing(
             "tts",
@@ -339,10 +376,22 @@ def _visual_candidates(
             id="host_imagegen",
             kind="visuals",
             source_type="host-plugin",
-            configured=env.get("LINGJIAN_HOST_IMAGEGEN_READY") == "1"
-            or bool(tool_overrides and tool_overrides.get("host_imagegen")),
-            safe_for_release=env.get("LINGJIAN_HOST_IMAGEGEN_READY") == "1"
-            or bool(tool_overrides and tool_overrides.get("host_imagegen")),
+            configured=_visual_env_or_cli_ready(
+                env,
+                lookup,
+                tool_overrides,
+                "LINGJIAN_HOST_IMAGEGEN_READY",
+                "LINGJIAN_HOST_IMAGEGEN_CLI",
+                "host_imagegen",
+            ),
+            safe_for_release=_visual_env_or_cli_ready(
+                env,
+                lookup,
+                tool_overrides,
+                "LINGJIAN_HOST_IMAGEGEN_READY",
+                "LINGJIAN_HOST_IMAGEGEN_CLI",
+                "host_imagegen",
+            ),
             label_zh="宿主 imagegen 静态图",
             provider_type="host-plugin",
             hint="已检测到宿主 imagegen 时,可生成静态图并由 lj 加 Ken Burns 运镜。",
@@ -440,6 +489,7 @@ def _cli_candidate(
     lookup: PathLookup,
     configured_hint: str,
     setup_command: str | None = None,
+    quality_tier: str | None = None,
 ) -> CapabilityCandidate:
     configured = bool(command and lookup(command))
     return CapabilityCandidate(
@@ -451,6 +501,7 @@ def _cli_candidate(
         label_zh=label,
         provider_type="cli",
         command_name=command if command else None,
+        quality_tier=quality_tier,
         config={"command": command or ""},
         hint=configured_hint if configured else f"未检测到 {label}。",
         setup_command=setup_command,
@@ -485,6 +536,25 @@ def _host_visual_candidate(
     )
 
 
+def _visual_env_or_cli_ready(
+    env: Mapping[str, str],
+    lookup: PathLookup,
+    overrides: dict[str, bool] | None,
+    ready_env: str,
+    cli_env: str,
+    override_key: str,
+) -> bool:
+    if env.get(ready_env) == "1" or bool(overrides and overrides.get(override_key)):
+        return True
+    command = _first_argv(env.get(cli_env, ""))
+    if not command:
+        return False
+    path = Path(command)
+    if path.is_absolute() or len(path.parts) > 1:
+        return path.exists()
+    return lookup(command) is not None
+
+
 def _api_candidate(
     provider_id: str,
     kind: str,
@@ -492,6 +562,7 @@ def _api_candidate(
     configured: bool,
     config: dict[str, Any],
     hint: str,
+    quality_tier: str | None = None,
 ) -> CapabilityCandidate:
     return CapabilityCandidate(
         id=provider_id,
@@ -501,6 +572,7 @@ def _api_candidate(
         safe_for_release=configured,
         label_zh=label,
         provider_type="openai_compatible",
+        quality_tier=quality_tier,
         config=config,
         hint=hint,
     )
@@ -631,7 +703,14 @@ def _redact_config(config: dict[str, Any]) -> dict[str, Any]:
     redacted: dict[str, Any] = {}
     for key, value in config.items():
         lower = key.lower()
-        if lower in {"api_key", "token", "password", "secret", "authorization"}:
+        if lower in {
+            "api_key",
+            "access_token",
+            "token",
+            "password",
+            "secret",
+            "authorization",
+        }:
             redacted[key] = "***" if value else ""
         elif lower in {"base_url", "model", "command", "value"} and value:
             redacted[key] = "***"
@@ -642,6 +721,8 @@ def _redact_config(config: dict[str, Any]) -> dict[str, Any]:
 
 def _doctor_hint(candidate: CapabilityCandidate) -> str | None:
     if candidate.source_type == "api-key":
+        if candidate.id == "volcengine_tts":
+            return "可配置火山豆包 TTS 三件套,或优先使用可继承/本机 CLI 能力。"
         return "可配置 OpenAI-compatible 三件套,或优先使用可继承的 CLI 能力。"
     if candidate.id.startswith("missing_"):
         return "请运行 lj setup 查看最短开通步骤。"

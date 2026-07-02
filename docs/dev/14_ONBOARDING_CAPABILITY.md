@@ -10,7 +10,7 @@
 
 - `packages/core/capabilities.py:74`:新增 `detect_capabilities`,统一检测 LLM/TTS/渲染/字体。
 - `packages/core/capabilities.py:159`:LLM 优先级为 `claude_cli`、`codex_cli`、`llm_cli`、`ollama_cli`、`llm_local_cli`、`openai_compatible`、missing。
-- `packages/core/capabilities.py:242`:TTS 优先级为 `tts_cli`、`macos_say`、`piper_cli`、`espeak_ng`、`openai_compatible_tts`、missing。
+- `packages/core/capabilities.py:248`:TTS 优先级为 `volcengine_tts`、`openai_compatible_tts`、`tts_cli`、`macos_say`、`piper_cli`、`espeak_ng`、missing;前三者为发布级,本机 say/Piper/espeak-ng 为预览级。
 - `packages/core/capabilities.py:313`:渲染能力不只认本机 `ffmpeg` + `ffprobe`,还会探测 `drawtext/libfreetype`;缺失时仍阻塞 release。
 - `packages/core/capabilities.py:459`:新增 `ffmpeg_drawtext_available`,优先执行 `ffmpeg -hide_banner -h filter=drawtext`,失败时回退 `ffmpeg -hide_banner -filters`。
 - `packages/core/capabilities.py:351`:字体能力检测 macOS PingFang/STHeiti 与 `~/.cache/lingjian/fonts/NotoSansSC-Regular.otf`。

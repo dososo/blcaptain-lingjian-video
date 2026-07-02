@@ -242,8 +242,8 @@ def test_doctor_optional_notice_describes_host_visual_delegation(monkeypatch):
         },
     )
 
-    assert any(item.id == "host_visual_delegation_notice" for item in result.optional)
-    assert "不 import" in result.optional[0].message_zh
+    notice = next(item for item in result.optional if item.id == "host_visual_delegation_notice")
+    assert "不 import" in notice.message_zh
 
 
 def test_credentials_status_and_forget_are_safe_without_secret_store(monkeypatch):

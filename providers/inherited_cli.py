@@ -121,28 +121,35 @@ def _run_text(provider_id: str, argv: list[str], input_text: str | None) -> str:
             "请运行 lj setup 查看可继承能力。",
             {"provider": provider_id},
         )
-    try:
-        completed = subprocess.run(
-            argv,
-            input=input_text,
-            text=True,
-            capture_output=True,
-            check=False,
-            timeout=INHERITED_CLI_TIMEOUT_SEC,
-        )
-    except subprocess.TimeoutExpired as exc:
-        raise LingjianError(
-            "PROVIDER_TIMEOUT",
-            "继承 CLI provider 执行超时。",
-            "请确认 CLI 已登录且可在 60 秒内返回。",
-            {"provider": provider_id},
-        ) from exc
+    completed = None
+    for attempt in range(2):
+        try:
+            completed = subprocess.run(
+                argv,
+                input=input_text,
+                text=True,
+                capture_output=True,
+                check=False,
+                timeout=INHERITED_CLI_TIMEOUT_SEC,
+            )
+        except subprocess.TimeoutExpired as exc:
+            if attempt == 0:
+                continue
+            raise LingjianError(
+                "PROVIDER_TIMEOUT",
+                "继承 CLI provider 执行超时。",
+                "请确认 CLI 已登录且可在 60 秒内返回,或稍后重试。",
+                {"provider": provider_id},
+            ) from exc
+        if completed.returncode == 0:
+            break
+    assert completed is not None
     if completed.returncode != 0:
         raise LingjianError(
             "PROVIDER_CLI_FAILED",
             "继承 CLI provider 执行失败。",
-            "请先单独运行对应官方 CLI 确认已登录。",
-            {"provider": provider_id, "exit_code": completed.returncode},
+            "外部 CLI 偶发失败时可重试;若持续失败,请单独运行对应官方 CLI 确认已登录。",
+            {"provider": provider_id, "exit_code": completed.returncode, "attempts": 2},
         )
     return (completed.stdout or "").strip()
 

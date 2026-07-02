@@ -43,6 +43,6 @@ uv run python scripts/ci/check_ffmpeg_card_scope.py
 
 iter_8 复核: 新增 skill 打包、`lj run` 引导主线与 V-REAL-01 provenance 后,5 个扫描器仍全部 exit=0;未引入 yt-dlp、youtube-dl、Remotion、HyperFrames、Playwright 到 core/provider/engine 主路径,未增加 release 绕过入口。
 
-M2 画面委托口径:允许 `visual_plan.json` 记录 `hyperframes`/`remotion`/`image-gen` 作为宿主 generator 名称,并允许 lj 消费宿主落盘的 mp4/png 产物;仍禁止在 `packages/core`、`providers`、`engines` 中 import 或 bundle Remotion/HyperFrames SDK。`ffmpeg_card` 仍不得扩展为复杂引擎;Ken Burns/zoompan 位于 lj 组装路径,不进入 `engines/ffmpeg_card`。
+M2 画面委托口径:允许 `visual_plan.json` 记录 `hyperframes`/`remotion`/`image-gen` 作为宿主 generator 名称,并允许 lj 通过官方/宿主 CLI 委托生成或消费宿主落盘的 mp4/png 产物;仍禁止在 `packages/core`、`providers`、`engines` 中 import 或 bundle Remotion/HyperFrames SDK。`ffmpeg_card` 仍不得扩展为复杂引擎;Ken Burns/zoompan 位于 lj 组装路径,见 `docs/render-engines.md`,不进入 `engines/ffmpeg_card`。FS-06 只覆盖 `engines/ffmpeg_card` 卡片引擎冻结,不等同于声明全系统无动效。
 
 结论: 13 项均在代码路径上真跑,当前无发现项。

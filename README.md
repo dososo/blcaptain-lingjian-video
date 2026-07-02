@@ -32,7 +32,7 @@ uv run lj doctor --json
 npx skills add <REPO_URL> --skill lingjian-video
 ```
 
-灵剪 M1/M2 是一个可审核、可复跑、可归档的短视频生产主干。当前实现覆盖 CLI、核心状态机、mock 预览链路、宿主画面产物消费、审批门禁、QA、导出包、Next.js Web 控制台与离线验证脚本。
+灵剪 M1/M2 是一个可审核、可复跑、可归档的短视频生产主干。当前实现覆盖 CLI、核心状态机、mock 预览链路、宿主画面生成委托与产物消费、审批门禁、QA、导出包、Next.js Web 控制台与离线验证脚本。
 
 ## 当前边界
 
@@ -41,8 +41,8 @@ npx skills add <REPO_URL> --skill lingjian-video
 - `render --release` 必须具备 FFmpeg/ffprobe,且 FFmpeg 支持 `drawtext/libfreetype`;缺失时硬失败,不会写离线 stub。
 - 能提供本机 CLI provider 时,不强制提供 API key。必须使用 key 时,doctor 只输出脱敏状态,不会把 key 写入日志、artifact 或导出包。
 - 新用户先跑 `lj setup`,系统会优先继承已登录的官方 CLI 或本机能力,缺失时才引导提供 key。
-- M2 不 bundle HyperFrames/Remotion,只消费宿主 agent 落到 `project/assets/scenes/` 的每镜 mp4/png 产物,再由 lj 用 FFmpeg 统一组装。
-- 宿主 HyperFrames/Remotion/imagegen 能力取决于当前 Codex 环境是否启用;缺失时可消费用户自带素材,否则回落 `fallback_solid` 卡片并在 QA 中 warning。
+- M2 不 bundle HyperFrames/Remotion,`visuals` 会产出每镜可执行生成规格;render 前可委托宿主 imagegen/HyperFrames/Remotion CLI 写入 `project/assets/scenes/` 的 mp4/png,再由 lj 用 FFmpeg 统一组装。
+- 宿主 HyperFrames/Remotion/imagegen 能力取决于当前 Codex 环境是否启用;生成器不可用或失败时可消费用户自带素材,否则回落 `fallback_solid` 卡片并在 QA 中 warning。
 
 ## 隐私与安全
 
@@ -86,7 +86,7 @@ winget install Gyan.FFmpeg
 ffmpeg -filters | findstr drawtext
 ```
 
-TTS 继承优先级:macOS 优先 `say`;Linux/Windows 可用 Piper 或 espeak-ng;都不可用时再配置 OpenAI-compatible TTS key。ChatGPT/Claude 订阅通常只覆盖 LLM,不等于包含 TTS。
+TTS 分两档:火山豆包、OpenAI-compatible TTS 或自定义真实 TTS CLI 属发布级;macOS `say`、Piper、espeak-ng 属预览级零 key 语音。只有预览级 TTS 时 release 不阻断,但 QA 会给 `RELEASE_AUDIO_IS_PREVIEW_VOICE` warning。ChatGPT/Claude 订阅通常只覆盖 LLM,不等于包含 TTS。
 
 ## 快速开始
 
@@ -112,7 +112,8 @@ uv run lj approve script ./projects/demo --approved-by tester --json
 uv run lj voice ./projects/demo --provider mock --voice test-voice --json
 uv run lj approve voice ./projects/demo --approved-by tester --json
 uv run lj visuals ./projects/demo --engine ffmpeg_card --template product --json
-# visuals 会生成每镜 storyboard:优先宿主 HyperFrames/Remotion/imagegen,其次消费 assets/scenes/<scene_id>.mp4|png,最后 fallback_solid。
+# visuals 会生成每镜 storyboard:包含 generator、visual_prompt、motion_spec、brief、expected_asset_path 与 duration_sec。
+# render 前会按 generator 委托宿主 HyperFrames/Remotion/imagegen CLI 写入 assets/scenes/<scene_id>.mp4|png;不可用时消费已有素材,最后 fallback_solid。
 uv run lj approve visuals ./projects/demo --approved-by tester --json
 uv run lj render ./projects/demo --platform douyin --language zh-CN --ratio 9:16 --json
 uv run lj qa ./projects/demo --json
@@ -137,7 +138,7 @@ pnpm --dir apps/web dev
 uv run lj setup
 ```
 
-若已登录 Claude Code `claude` 或 Codex `codex` CLI,灵剪会优先继承 LLM 能力,无需 key。TTS 通常不包含在订阅内,会优先检测 macOS `say`、Piper、espeak-ng 等本机 TTS。
+若已登录 Claude Code `claude` 或 Codex `codex` CLI,灵剪会优先继承 LLM 能力,无需 key。TTS 通常不包含在订阅内;默认自动选择当前最高档 TTS,有发布级云 TTS 时优先云 TTS,否则回落 macOS `say`、Piper、espeak-ng 等预览级本机 TTS。
 
 自定义 CLI provider:
 
@@ -160,6 +161,17 @@ export OPENAI_TTS_MODEL=...
 ```
 
 LLM provider ID 为 `openai_compatible`;TTS provider ID 为 `openai_compatible_tts`。API key、base URL、model 值只从环境读取,不会写入 artifact、日志或 release 包。
+
+火山豆包 TTS:
+
+```bash
+export VOLCENGINE_TTS_APP_ID=...
+export VOLCENGINE_TTS_ACCESS_TOKEN=...
+export VOLCENGINE_TTS_CLUSTER=...
+export VOLCENGINE_TTS_VOICE_TYPE=...   # 可选
+```
+
+TTS provider ID 为 `volcengine_tts`,也可用别名 `volcengine` 或 `doubao`。Access Token 只从环境读取,不会写入 artifact、日志或 release 包。
 
 配置后先跑 `uv run lj doctor --json`。required 缺失时 exit code 非 0,不得继续 release。
 

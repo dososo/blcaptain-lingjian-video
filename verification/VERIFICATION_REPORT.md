@@ -31,8 +31,9 @@
 - M3 preview real:默认 preview 仍为 stub;`--real` opt-in 在无 FFmpeg 时回落 stub,有 FFmpeg 时走 ffmpeg_card 路径。
 - M3 release 时长:release FFmpeg 输入时长读取 `voice_plan.total_duration_sec`,缺失时继续兜底。
 - Onboarding 能力层:`lj setup` 会先继承订阅/本机 CLI 能力;`resolve_provider("auto", kind)` 可解析到当前最优真实 provider。
-- M2 画面委托:`visual_plan.json` 可按镜记录 host/user/fallback generator;release/real-preview 消费每镜 mp4/png 产物并组装;缺产物回落 `fallback_solid` 且 QA 给 `RELEASE_VISUAL_IS_BLANK_CARD` warning。
+- M2 画面委托:`visual_plan.json` 可按镜记录 host/user/fallback generator、`visual_prompt`、`motion_spec` 与 `expected_asset_path`;release/real-preview 会先委托可用宿主 CLI 生成缺失资产,再消费每镜 mp4/png 产物并组装;缺产物回落 `fallback_solid` 且 QA 给 `RELEASE_VISUAL_IS_BLANK_CARD` warning。
 - M2 宿主能力分档:`lj setup --json` 输出 `capabilities.visuals`;HyperFrames/Remotion/imagegen 为宿主委托能力,不作为 release 硬门。
+- M2 发布级配音分档:`capabilities.tts` 记录 `quality_tier`;火山豆包/OpenAI-compatible/真实 TTS CLI 为 release tier,say/Piper/espeak-ng 为 preview tier。
 - Web: `pnpm --dir apps/web lint` 与 `pnpm --dir apps/web build`;build 输出包含 5 个主流程路由。
 - Web smoke: Playwright 打开 `/` 与 `/export`,截图写入 `output/playwright/web-smoke.png`。
 - 审批门禁: 未审 render 返回 `APPROVAL_REQUIRED`;改稿后 render 返回 `APPROVAL_STALE`;三审后 preview render 成功。
@@ -41,6 +42,7 @@
 - release render 环境门禁: 无 FFmpeg/ffprobe 时返回 `RELEASE_RENDER_REQUIRES_FFMPEG`,不写 stub;有 FFmpeg 但无 `drawtext/libfreetype` 时 doctor 不 ready,render 失败返回 `FFMPEG_FILTER_UNAVAILABLE` 与 stderr 摘要。
 - release 真出片: `ffmpeg_card` 生成 H.264/yuv420p MP4,并合入 TTS 音频为 AAC 音轨。
 - release 画面质量提示:当前机器未检测到宿主 HyperFrames/Remotion/imagegen,`V-REAL-01` 使用回落卡片并给 warning;这不影响非 stub、视频流、音频流和真实 provider hard gate。
+- release 配音质量提示:当前机器使用 macOS `say` 时,QA 会给 `RELEASE_AUDIO_IS_PREVIEW_VOICE` warning;这不影响真实非 mock 音轨与 AAC hard gate。
 - ffprobe timeout: 子进程 20 秒超时会进入 `RENDER_NOT_VERIFIABLE`。
 - export: canonical 包结构、YouTube 附加文件、多平台导出均通过。
 - license: `license_manifest.md` 记录用户自带 CLI/API provider 类型,不记录 key/base URL/model/命令值。
@@ -63,7 +65,7 @@
 - `/opt/homebrew/bin/ffmpeg`: version 8.1.2,配置含 `--enable-libfreetype`;`ffmpeg -hide_banner -h filter=drawtext` 返回 `Draw text on top of video frames using libfreetype library`。
 - `ffprobe`: version 8.1.2。
 - LLM:检测到 `claude_cli` 与 `codex_cli`,可继承当前 CLI 登录能力。
-- TTS:检测到 `macos_say`,本机零 key TTS 可用。
+- TTS:检测到 `macos_say`,本机零 key TTS 可用,质量分档为 preview。
 - OpenAI-compatible LLM/TTS env:未配置,但当前不是阻塞项。
 - `V-REAL-01.log` 最终 ffprobe:
   - `codec_name=h264`, `codec_type=video`

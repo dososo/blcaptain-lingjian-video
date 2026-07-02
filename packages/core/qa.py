@@ -106,6 +106,18 @@ def _check_release_video_body(project: ProjectRef, manifest: dict, report: QARep
                 "release 画面全部为回落卡片,未消费宿主动态图形/图片产物。",
             )
         )
+    preview_tts_ids = {"macos_say", "piper_cli", "espeak_ng"}
+    if any(
+        provider.get("kind") == "tts" and provider.get("id") in preview_tts_ids
+        for provider in manifest.get("providers", [])
+    ):
+        report.warnings.append(
+            QAIssue(
+                "RELEASE_AUDIO_IS_PREVIEW_VOICE",
+                "warning",
+                "release 音轨来自本机预览级 TTS;建议配置火山豆包等发布级 TTS。",
+            )
+        )
 
 
 def run_qa(project: ProjectRef, release: bool = False, platform: str = "douyin") -> QAReport:

@@ -4,7 +4,7 @@
 
 ## 置顶结论
 
-本轮 iter_9 为 M1 封版与开源发布准备就绪,但真实仓库 URL 仍待用户提供:
+本轮 iter_10 为 M2 第2步「真实画面生成侧 + 发布级配音分档」交付就绪;M1 封版与开源发布准备仍保持可复现,真实仓库 URL 仍待用户提供:
 
 - 真实环境项: `V-REAL-01=PASS`,主 `verification/results.json` 为 52 PASS / 0 FAIL。
 - 默认环境规格: macOS,默认 `/opt/homebrew/bin/ffmpeg` 已链接到 `ffmpeg-full`,继承 `claude_cli` LLM,本机 `macos_say` TTS。
@@ -12,7 +12,8 @@
 - 离线回落项:隐藏 `claude/codex` 并清空 provider env 后,`verification/results.offline_fallback_20260702.json` 为 51 PASS / 1 BLOCKED_ENV / 0 FAIL。
 - skill 交付项:根目录 `SKILL.md` 已落盘,README 顶部有对话式安装提示词,`scripts/install_skill_links.sh` 已验证可安装软链。
 - 发布准备项:`CHANGELOG.md`、`ROADMAP.md`、隐私/安全说明、跨平台 FFmpeg/TTS 指南、干净 clone 首用自检证据已落盘。
-- M2 画面委托项:visuals 生成每镜 storyboard,render 消费宿主/用户 mp4/png 产物并组装;缺产物回落卡片且 QA warning,不削弱 release hard gate。
+- M2 画面委托项:visuals 生成每镜可执行规格,render 前可委托宿主 imagegen/HyperFrames/Remotion CLI 生成 mp4/png 并组装;缺产物回落卡片且 QA warning,不削弱 release hard gate。
+- M2 配音分档项:火山豆包/OpenAI-compatible/真实 TTS CLI 为发布级;macOS say/Piper/espeak-ng 为预览级,release 只给 warning,不伪装发布级音色。
 
 ## 证据入口
 
@@ -30,6 +31,7 @@
 - `docs/dev/16_CLOSING.md`
 - `docs/dev/17_RELEASE_PREP.md`
 - `docs/dev/18_M2_VISUAL_DELEGATION.md`
+- `docs/dev/19_M2_VISUAL_GEN_AND_TTS.md`
 - `verification/release_prep/*`
 
 ## results 对照表
@@ -141,3 +143,12 @@
 - `packages/core/qa.py` 已新增 `RELEASE_VISUAL_IS_BLANK_CARD` warning,不作为 hard failure。
 - `packages/core/capabilities.py` 已新增 `capabilities.visuals`,报告 HyperFrames/Remotion/imagegen 或回落卡片。
 - 扫描语义不回退:仍禁止 core/providers import Remotion/HyperFrames/Playwright;只允许 generator 字符串和宿主产物消费。
+
+## M2 第2步 生成侧与发布级配音
+
+- `apps/cli/lingjian_cli/main.py` 已让 `visuals` 每镜写入 `visual_prompt`、`motion_spec`、`brief`、`expected_asset_path` 与 `duration_sec`,作为宿主生成契约。
+- `packages/core/visual_generation.py` 新增宿主委托层,按 `LINGJIAN_HOST_IMAGEGEN_CLI`、`LINGJIAN_HOST_HYPERFRAMES_CLI`、`LINGJIAN_HOST_REMOTION_CLI` 或同名 CLI 生成缺失资产;失败只记录状态并回落,不伪造产物。
+- `providers/volcengine_tts.py` 已注册火山豆包 TTS provider,配置 `VOLCENGINE_TTS_APP_ID`、`VOLCENGINE_TTS_ACCESS_TOKEN`、`VOLCENGINE_TTS_CLUSTER` 后作为发布级中文 TTS。
+- `packages/core/qa.py` 已新增 `RELEASE_AUDIO_IS_PREVIEW_VOICE` warning;release 音轨来自 say/Piper/espeak-ng 时提示升级发布级 TTS,但不削弱非 mock、音频流、ffprobe 等 hard gate。
+- `providers/inherited_cli.py` 已给继承/本机 CLI 调用增加一次轻量重试;失败错误保持稳定并标明外部 CLI 调用失败。
+- 详细说明: `docs/dev/19_M2_VISUAL_GEN_AND_TTS.md`。

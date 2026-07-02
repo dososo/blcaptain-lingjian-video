@@ -5,7 +5,7 @@
 ## 心智模型
 
 - 预览档:零配置使用 mock provider,用于离线体验、门禁验证和流程演示。
-- 发布档:必须同时具备真实 LLM、真实 TTS、FFmpeg/ffprobe、中文字体。缺一项都不能 release。
+- 发布档:必须同时具备真实 LLM、真实非 mock TTS、FFmpeg/ffprobe、中文字体。缺一项都不能 release;只有本机预览级 TTS 时可出 release,但 QA 会提示建议升级发布级 TTS。
 
 mock 永远不能用于正式 release。doctor 未 ready 时,真实终验必须停下,不得伪造 PASS。
 
@@ -20,7 +20,7 @@ uv run lj doctor --json
 `lj setup` 会按优先级检测:
 
 - LLM:先找 Claude Code 的 `claude`、Codex 的 `codex` 等官方订阅 CLI;再找 `ollama`、`llm`;最后才看 OpenAI-compatible key。
-- TTS:先找本机 TTS,如 macOS `say`、Piper、espeak-ng;再看 TTS API key。
+- TTS:先找发布级云 TTS 或真实 TTS CLI;没有时使用本机预览级 TTS,如 macOS `say`、Piper、espeak-ng,并在发布 QA 中 warning。
 - 画面:检测宿主 HyperFrames/Remotion/imagegen 是否可用;不可用时消费用户自带 `assets/scenes/` 素材,否则回落卡片并在 QA warning。
 - 渲染:检查本机 `ffmpeg`、`ffprobe`,并确认 `ffmpeg` 支持 `drawtext/libfreetype`。
 - 字体:macOS 用 PingFang;其他系统可放 `~/.cache/lingjian/fonts/NotoSansSC-Regular.otf`。
@@ -58,7 +58,12 @@ uv run lj doctor --json
 
 ## TTS:订阅通常不包含
 
-ChatGPT/Claude 订阅通常只提供 LLM,不代表 TTS 也可用。TTS 优先走本机:
+ChatGPT/Claude 订阅通常只提供 LLM,不代表 TTS 也可用。TTS 分两档:
+
+- 发布级:火山豆包、OpenAI-compatible TTS、自定义真实 TTS CLI。默认自动择优,有发布级就优先发布级。
+- 预览级:macOS `say`、Piper、espeak-ng。零 key、可验证流程,但 release QA 会给 `RELEASE_AUDIO_IS_PREVIEW_VOICE` warning。
+
+先确认本机预览级是否可用:
 
 ```bash
 say "灵剪语音检测"
@@ -89,6 +94,18 @@ ffmpeg -filters | findstr drawtext
 ```
 
 Windows 本机 TTS 当前建议通过 Piper、espeak-ng 或 OpenAI-compatible TTS 接入;macOS `say` 仅在 macOS 可用。
+
+中文发布级 TTS 首选火山豆包:
+
+```bash
+export VOLCENGINE_TTS_APP_ID=...
+export VOLCENGINE_TTS_ACCESS_TOKEN=...
+export VOLCENGINE_TTS_CLUSTER=...
+export VOLCENGINE_TTS_VOICE_TYPE=...   # 可选
+uv run lj doctor --json
+```
+
+也可以使用 OpenAI-compatible TTS:
 
 ```bash
 export OPENAI_TTS_BASE_URL=https://api.example.com/v1
@@ -143,7 +160,16 @@ ffmpeg -filters | findstr drawtext
 
 ## 画面能力:宿主委托优先
 
-灵剪核心不内置 Remotion/HyperFrames。它会在 visuals 阶段生成每镜 storyboard,由宿主 agent 使用已启用的 HyperFrames/Remotion/imagegen 产出:
+灵剪核心不内置 Remotion/HyperFrames。它会在 visuals 阶段生成每镜 storyboard,每镜包含:
+
+- `generator`: `hyperframes`、`remotion`、`image-gen`、`user-asset` 或 `fallback_solid`。
+- `visual_prompt`: 给 imagegen 的画面提示词。
+- `motion_spec`: 给 HyperFrames/Remotion 的主运动结构描述。
+- `brief`: 比例、安全区、禁项。
+- `expected_asset_path`: 约定资产落点。
+- `duration_sec`: 与配音时长对齐。
+
+宿主 agent 使用已启用的 HyperFrames/Remotion/imagegen 产出:
 
 ```text
 project/assets/scenes/<scene_id>.mp4
@@ -153,6 +179,16 @@ project/assets/scenes/<scene_id>.png
 如果宿主没有这些能力,你也可以自己把 mp4/png 放进这个目录。仍然没有产物时,lj 会回落纯色卡片并在 release QA 中给 `RELEASE_VISUAL_IS_BLANK_CARD` warning。
 
 这不是 release 硬门:没有宿主画面能力仍可出片,但不能声称已经生成动态画面。
+
+CLI 委托入口可选:
+
+```bash
+export LINGJIAN_HOST_IMAGEGEN_CLI=/path/to/real-imagegen
+export LINGJIAN_HOST_HYPERFRAMES_CLI=/path/to/hyperframes
+export LINGJIAN_HOST_REMOTION_CLI=/path/to/remotion
+```
+
+这些命令只接收 storyboard JSON 并把资产写到 `expected_asset_path`;灵剪不会读取它们的凭据文件。
 
 ## 安全承诺
 

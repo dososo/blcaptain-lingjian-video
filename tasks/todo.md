@@ -222,3 +222,19 @@
 - 扫描纪律:未在 core/providers import Remotion/HyperFrames/Playwright;FORBIDDEN_SCAN 记录“宿主产物消费允许,SDK bundle 禁止”。
 - 验证结果:`uv run pytest -q` 为 87 passed;`uv run python scripts/ci/run_verification.py` 为 52 PASS / 0 FAIL;ruff、5 扫描器、Web lint/build 均通过。
 - 交付包:`lingjian_M2_visual_delegation_iter_1.zip`,已通过 `unzip -t`,并排除 `.git`、`.venv`、`node_modules`、`projects`、`exports` 与旧 zip。
+
+## M2 第2步 真实画面生成与发布级配音清单
+
+- [x] RED:测试 visual_plan 生成规格包含 `visual_prompt`、`motion_spec`、`expected_asset_path`,并用假生成器 CLI 写入资产。
+- [x] RED:测试渲染前会对缺失资产执行生成委托,成功后 `visual_real_count>0` 且无 blank-card warning;生成失败时诚实回落。
+- [x] RED:测试 TTS 分档,火山豆包 TTS provider 用脱敏 env 配置并返回音频;本机 say/piper/espeak release QA 给预览音 warning。
+- [x] GREEN:实现宿主生成委托层、火山 TTS provider、TTS 分档与自动择优;外部 CLI 失败增加一次轻量重试和清晰错误。
+- [x] 文档与证据:更新 README/SKILL/ONBOARDING/FORBIDDEN_SCAN/AUDIT_READY,新增 `docs/dev/19_M2_VISUAL_GEN_AND_TTS.md`,重跑验证并打包 iter_10。
+
+### Review: M2 第2步
+
+- 已完成:visuals 每镜写入可执行生成规格;render 前按 `LINGJIAN_HOST_IMAGEGEN_CLI`、`LINGJIAN_HOST_HYPERFRAMES_CLI`、`LINGJIAN_HOST_REMOTION_CLI` 或同名 CLI 做 best-effort 委托,失败不伪造产物。
+- 已完成:新增火山豆包 TTS provider;TTS 能力有 `quality_tier`,发布级优先,本机 say/Piper/espeak-ng 保持真实可用但 release QA warning。
+- 已完成:继承/本机 CLI 失败轻量重试一次;doctor JSON 保持脱敏,不输出 key 值或完整命令。
+- 验证: `uv run pytest -q` 94 passed;`uv run ruff check .` 通过;5 个扫描器 exit=0;`pnpm --dir apps/web lint` 与 `build` 通过;`run_verification.py` 52 PASS / 0 FAIL,V-REAL-01=PASS。
+- 证据: `verification/evidence/V-REAL-01.log` 含 `RELEASE_AUDIO_IS_PREVIEW_VOICE` 与 `RELEASE_VISUAL_IS_BLANK_CARD` warnings,最终 ffprobe 含 h264 视频流与 aac 音频流。
