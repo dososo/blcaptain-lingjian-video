@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>灵剪 · 分帧动效导演板</title>
+</head>
+<body>
+  <div id="app"></div>
+  <script src="render.js"></script>
+  <script>
+    // 可跑入口：读示例分镜数据 → 渲染导演板。
+    // 产品集成时把 fetch 换成你的 board 数据来源即可（见 README）。
+    fetch('examples/lingjian-intro.board.json')
+      .then(function (r) { if (!r.ok) throw new Error('HTTP ' + r.status); return r.json(); })
+      .then(function (data) {
+        var handle = renderDirectorBoard(document.getElementById('app'), data, {
+          onConfirmChange: function (s) {
+            // 产品侧钩子：某镜确认/撤回时回调。此处可上报状态、控制「进入渲染」按钮启用。
+            if (s.count === s.total) console.log('全部 ' + s.total + ' 镜已确认，可放行下一步');
+          }
+        });
+        window.__ljboard = handle; // 暴露句柄：handle.allConfirmed() / handle.confirmedCount
+      })
+      .catch(function (e) {
+        document.getElementById('app').innerHTML =
+          '<div style="font-family:system-ui,sans-serif;padding:40px;max-width:660px;margin:0 auto;color:#1A1A18;line-height:1.6">' +
+          '<h2 style="font-weight:800">需通过本地服务打开</h2>' +
+          '<p>本页用 <code>fetch</code> 读取同目录的 <code>examples/lingjian-intro.board.json</code>；浏览器安全策略禁止 <code>file://</code> 直接读取本地 JSON（' + e.message + '）。在本目录起一个静态服务再打开：</p>' +
+          '<pre style="background:#F0ECE5;padding:14px;border-radius:8px;overflow:auto">cd director-board\npython3 -m http.server 8080\n# 浏览器打开 http://localhost:8080/standalone.html</pre>' +
+          '<p>产品集成则无需本页，直接调用：<code>renderDirectorBoard(el, boardData)</code>。</p></div>';
+      });
+  </script>
+</body>
+</html>

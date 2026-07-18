@@ -1,0 +1,110 @@
+{
+  "schemaVersion": "1.0",
+  "meta": {
+    "gate": "P4 · 分镜关",
+    "project": "灵剪产品介绍片",
+    "profile": "产品介绍",
+    "style": "Vox 编辑风",
+    "ratio": "9:16",
+    "motif": "散乱素材 → 理顺 → 成片；朱砂 marker 贯穿；首尾墨黑呼应",
+    "kicker": "灵剪 · 分镜 / 动效关",
+    "title": "分帧动效**导演板**",
+    "subtitle": "7 镜逐镜拆解：脚本 · 分帧 beat · signature 动效 · 进/出转场。每镜按能量曲线从转场库选配，请你逐镜确认——不点头，不进渲染。",
+    "curveTitle": "整片能量曲线 · 一条线看全片律动",
+    "legend": "能量档 <b>■</b> high 强冲击<br>■ medium 中 · ■ calm 弱<br>转场取自<b>灵剪转场库 v1</b>（40+ 谱系）",
+    "footNote": "这是灵剪「分镜/动效关」界面：转场是固化能力（库里选），不是临时挑；你是这一关的关主。"
+  },
+  "shots": [
+    {
+      "n": 1, "id": "HOOK", "name": "钩子", "energy": 4, "durationSec": 5.6,
+      "script": "做短视频,最难的从来不是剪辑——**是不知道下一镜该拍什么**。",
+      "signature": "AI 整图 + Seedance 让底图物体真动 + 大字逐句揭示",
+      "beats": [
+        { "t": "0.0s", "x": "墨黑→米底,大字进" },
+        { "t": "1.2s", "x": "「最难的/从来不是剪辑」" },
+        { "t": "2.4s", "x": "「下一镜?」朱砂 accent" },
+        { "t": "4.0s", "x": "引导线指向手机 · 锁帧微动" }
+      ],
+      "transitionIn": { "type": "—", "name": "开场", "why": "首帧即钩子", "energy": 0, "ref": null },
+      "transitionOut": { "type": "→", "name": "甩镜 Whip Pan", "why": "混乱一把甩到理顺", "energy": 5, "ref": "whip-pan" }
+    },
+    {
+      "n": 2, "id": "TURN", "name": "转折", "energy": 2, "durationSec": 4.2,
+      "script": "灵剪换了个办法:你说一句话,剩下的它来**当导演**。",
+      "signature": "散乱素材 → 声波理顺 → 归位成排 → 场记板打板",
+      "beats": [
+        { "t": "0.5s", "x": "散乱素材(接 hook)" },
+        { "t": "1.5s", "x": "「一句话」发声波" },
+        { "t": "2.0s", "x": "素材被扫拢、对齐" },
+        { "t": "3.0s", "x": "场记板啪打板 · 导演" }
+      ],
+      "transitionIn": { "type": "←", "name": "甩镜 Whip Pan", "why": "被 hook 甩着进场", "energy": 5, "ref": "whip-pan" },
+      "transitionOut": { "type": "→", "name": "匹配剪辑 Match Cut", "why": "场记板→模板,构图对齐", "energy": 1, "ref": "match-cut" }
+    },
+    {
+      "n": 3, "id": "WHAT", "name": "是什么", "energy": 3, "durationSec": 4.59,
+      "script": "它不是一套模板,而是一条你能**一步步审**的生产流程。",
+      "signature": "素材排 → 压成锁死模板 → 朱砂否定 → 翻转成可审流程线",
+      "beats": [
+        { "t": "0.5s", "x": "素材排(接 scene2)" },
+        { "t": "1.0s", "x": "压成锁死模板 + 锁" },
+        { "t": "1.6s", "x": "朱砂否定叉" },
+        { "t": "2.5s", "x": "翻转 → 流程线依次审 ✓" }
+      ],
+      "transitionIn": { "type": "←", "name": "匹配剪辑 Match Cut", "why": "模板从上一镜长出", "energy": 1, "ref": "match-cut" },
+      "transitionOut": { "type": "→", "name": "推 Push", "why": "流程线顺势推成流水线", "energy": 3, "ref": "push" }
+    },
+    {
+      "n": 4, "id": "PIPELINE", "name": "流程", "energy": 4, "durationSec": 7.98,
+      "script": "一句话进去,它自动排好:素材、脚本、配音、画面、字幕、渲染、质检,**一直到导出**。",
+      "signature": "一句话注入 → 朱砂能量脉冲沿流水线流 → 8 节点逐个点亮 → 导出喷发",
+      "beats": [
+        { "t": "0.5s", "x": "一句话注入 · 脊柱描下" },
+        { "t": "1.6s", "x": "脉冲向下流" },
+        { "t": "1.7–5.4s", "x": "8 节点逐个点亮" },
+        { "t": "6.5s", "x": "导出喷发(累积到位)" }
+      ],
+      "transitionIn": { "type": "←", "name": "推 Push", "why": "流程线推进而来", "energy": 3, "ref": "push" },
+      "transitionOut": { "type": "→", "name": "急推 Zoom Punch", "why": "全片最猛 · 冲进顶峰", "energy": 5, "ref": "zoom-punch" }
+    },
+    {
+      "n": 5, "id": "GATES", "name": "三道闸", "energy": 5, "durationSec": 6.6,
+      "script": "最关键的是三道人工闸:脚本、配音、画面——**你不点头,它绝不往下走**。",
+      "signature": "三道闸描入 → 朱砂「你点头」章依次猛盖 → 第四道栏杆猛压锁死",
+      "beats": [
+        { "t": "0.4s", "x": "三道闸描入" },
+        { "t": "1.6–3.0s", "x": "三章依次 stamp-slam" },
+        { "t": "4.4s", "x": "第四道锁死 + 冲击闪" },
+        { "t": "5.4s", "x": "锁死紧绷微振" }
+      ],
+      "transitionIn": { "type": "←", "name": "急推 Zoom Punch", "why": "被急推撞进顶峰", "energy": 5, "ref": "zoom-punch" },
+      "transitionOut": { "type": "→", "name": "闪黑 Flash Black", "why": "从顶峰猛切到静 · 反差", "energy": 5, "ref": "flash-black" }
+    },
+    {
+      "n": 6, "id": "HONESTY", "name": "诚实", "energy": 2, "durationSec": 6.99,
+      "script": "它不承诺爆款,只保证每一步可复跑、可审计;糊弄的画面,**它自己先拦下来**。",
+      "signature": "三承诺从容亮起 →「爆款」轻划 → 糊弄假卡滑入 →「拦」稳稳截下",
+      "beats": [
+        { "t": "0.5–1.9s", "x": "三承诺从容亮" },
+        { "t": "1.0s", "x": "「爆款」轻划(不吹)" },
+        { "t": "2.6s", "x": "糊弄假卡滑入" },
+        { "t": "4.6s", "x": "「拦」稳截 · 诚实一拍" }
+      ],
+      "transitionIn": { "type": "←", "name": "闪黑 Flash Black", "why": "黑一下,喘口气进场", "energy": 5, "ref": "flash-black" },
+      "transitionOut": { "type": "→", "name": "水墨擦除 Ink Wipe", "why": "东方晕染 · 翻墨黑", "energy": 2, "ref": "ink-wipe" }
+    },
+    {
+      "n": 7, "id": "CTA", "name": "收尾", "energy": 3, "durationSec": 4.3,
+      "script": "所以你要做的,**只有一句话**。",
+      "signature": "墨黑收束(呼应 hook)→「一句话」朱砂巨字 → 光标闪 +「轮到你说」邀请",
+      "beats": [
+        { "t": "0.0s", "x": "硬切回墨黑(首尾呼应)" },
+        { "t": "1.2s", "x": "「一句话」朱砂巨字" },
+        { "t": "2.0s", "x": "灵剪 lockup" },
+        { "t": "2.7s→", "x": "光标续闪 · 轮到你说" }
+      ],
+      "transitionIn": { "type": "←", "name": "水墨擦除 Ink Wipe", "why": "墨迹晕染翻入墨黑", "energy": 2, "ref": "ink-wipe" },
+      "transitionOut": { "type": "■", "name": "收束 · payoff 即止", "why": "落地邀请,不拖尾", "energy": 0, "ref": null }
+    }
+  ]
+}

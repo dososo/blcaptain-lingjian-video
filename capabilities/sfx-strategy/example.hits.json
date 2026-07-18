@@ -1,0 +1,198 @@
+[
+ {
+  "t": 1.0,
+  "sfx": "whoosh-short",
+  "vol": 0.3,
+  "trim": null,
+  "for": "hook 大字「最难的」揭示入"
+ },
+ {
+  "t": 2.36,
+  "sfx": "ping",
+  "vol": 0.42,
+  "trim": 0.4,
+  "for": "hook「下一镜?」揭示"
+ },
+ {
+  "t": 4.05,
+  "sfx": "whoosh",
+  "vol": 0.5,
+  "trim": null,
+  "for": "甩镜转场 hook→turn"
+ },
+ {
+  "t": 5.8,
+  "sfx": "whoosh-short",
+  "vol": 0.28,
+  "trim": null,
+  "for": "turn 声波「你说一句话」发出"
+ },
+ {
+  "t": 7.67,
+  "sfx": "impact-bass-1",
+  "vol": 0.3,
+  "trim": 0.16,
+  "for": "turn 打板·分量「啪」(叠)"
+ },
+ {
+  "t": 7.67,
+  "sfx": "click",
+  "vol": 0.5,
+  "trim": 0.4,
+  "for": "turn 场记板打板·脆响「嗒」"
+ },
+ {
+  "t": 9.3,
+  "sfx": "whoosh-short",
+  "vol": 0.3,
+  "trim": null,
+  "for": "what 否定叉划过"
+ },
+ {
+  "t": 10.11,
+  "sfx": "chime",
+  "vol": 0.34,
+  "trim": null,
+  "for": "what 流程「一步步审」审✓"
+ },
+ {
+  "t": 14.13,
+  "sfx": "chime",
+  "vol": 0.5,
+  "trim": 0.55,
+  "for": "pipeline 节点1 素材·叮"
+ },
+ {
+  "t": 14.63,
+  "sfx": "chime",
+  "vol": 0.5,
+  "trim": 0.55,
+  "for": "节点2 脚本"
+ },
+ {
+  "t": 15.06,
+  "sfx": "chime",
+  "vol": 0.5,
+  "trim": 0.55,
+  "for": "节点3 配音"
+ },
+ {
+  "t": 15.5,
+  "sfx": "chime",
+  "vol": 0.5,
+  "trim": 0.55,
+  "for": "节点4 画面"
+ },
+ {
+  "t": 15.96,
+  "sfx": "chime",
+  "vol": 0.5,
+  "trim": 0.55,
+  "for": "节点5 字幕"
+ },
+ {
+  "t": 16.39,
+  "sfx": "chime",
+  "vol": 0.5,
+  "trim": 0.55,
+  "for": "节点6 渲染"
+ },
+ {
+  "t": 16.87,
+  "sfx": "chime",
+  "vol": 0.5,
+  "trim": 0.55,
+  "for": "节点7 质检"
+ },
+ {
+  "t": 17.36,
+  "sfx": "impact-bass-1",
+  "vol": 0.46,
+  "trim": null,
+  "for": "节点8 导出喷发·留余韵"
+ },
+ {
+  "t": 17.59,
+  "sfx": "whoosh",
+  "vol": 0.4,
+  "trim": null,
+  "for": "急推转场 pipeline→gates"
+ },
+ {
+  "t": 20.25,
+  "sfx": "impact-bass-1",
+  "vol": 0.38,
+  "trim": 0.3,
+  "for": "gates 章1 脚本·截短"
+ },
+ {
+  "t": 20.68,
+  "sfx": "impact-bass-1",
+  "vol": 0.38,
+  "trim": 0.3,
+  "for": "章2 配音·截短"
+ },
+ {
+  "t": 21.1,
+  "sfx": "impact-bass-1",
+  "vol": 0.44,
+  "trim": 0.3,
+  "for": "章3 画面·截短"
+ },
+ {
+  "t": 22.26,
+  "sfx": "impact-bass-2",
+  "vol": 0.55,
+  "trim": null,
+  "for": "锁死 slam「绝不往下走」·留余震"
+ },
+ {
+  "t": 23.09,
+  "sfx": "whoosh-short",
+  "vol": 0.4,
+  "trim": null,
+  "for": "闪黑转场 gates→honesty"
+ },
+ {
+  "t": 23.46,
+  "sfx": "click-soft",
+  "vol": 0.3,
+  "trim": null,
+  "for": "honesty 承诺1 不承诺爆款·轻"
+ },
+ {
+  "t": 24.64,
+  "sfx": "click-soft",
+  "vol": 0.3,
+  "trim": null,
+  "for": "承诺2 可复跑"
+ },
+ {
+  "t": 25.6,
+  "sfx": "click-soft",
+  "vol": 0.32,
+  "trim": null,
+  "for": "承诺3 可审计"
+ },
+ {
+  "t": 25.7,
+  "sfx": "whoosh-short",
+  "vol": 0.3,
+  "trim": null,
+  "for": "honesty 糊弄假卡滑入"
+ },
+ {
+  "t": 27.19,
+  "sfx": "impact-bass-1",
+  "vol": 0.38,
+  "trim": 0.28,
+  "for": "拦章·截短去拖(honesty 舒缓收尾)"
+ },
+ {
+  "t": 30.68,
+  "sfx": "ping",
+  "vol": 0.42,
+  "trim": 0.5,
+  "for": "cta「一句话」payoff·清脆呼应 hook ping(不用低频拖尾)"
+ }
+]

@@ -1,0 +1,240 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>灵剪 lingjian · 作品画廊</title>
+<style>
+  :root{
+    --paper:#f4f1ea; --card:#fcfbf7; --ink:#1a1a18; --muted:#6b6960; --line:#ddd7cb;
+    --accent:#1f4e79; --gold:#b08a3e;
+  }
+  @media (prefers-color-scheme: dark){
+    :root{ --paper:#14140f; --card:#1c1c17; --ink:#ece9e0; --muted:#9a978c; --line:#33322a; --accent:#7fa9cf; --gold:#c9a968; }
+  }
+  :root[data-theme="light"]{ --paper:#f4f1ea; --card:#fcfbf7; --ink:#1a1a18; --muted:#6b6960; --line:#ddd7cb; --accent:#1f4e79; --gold:#b08a3e; }
+  :root[data-theme="dark"]{ --paper:#14140f; --card:#1c1c17; --ink:#ece9e0; --muted:#9a978c; --line:#33322a; --accent:#7fa9cf; --gold:#c9a968; }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  html,body{background:var(--paper); color:var(--ink);
+    font-family:"PingFang SC","Hiragino Sans GB",system-ui,-apple-system,sans-serif; -webkit-font-smoothing:antialiased;}
+  .shell{ width:min(1120px, calc(100% - 40px)); margin:0 auto; }
+  a{ color:inherit; }
+
+  nav{ position:sticky; top:0; z-index:9; backdrop-filter:blur(10px);
+    background:color-mix(in srgb, var(--paper) 82%, transparent);
+    border-bottom:1px solid var(--line); }
+  nav .in{ display:flex; align-items:center; justify-content:space-between; height:56px; }
+  nav .brand{ font-weight:800; letter-spacing:.02em; font-size:16px; }
+  nav .brand b{ color:var(--accent); }
+  nav .links{ display:flex; gap:22px; font-size:13.5px; color:var(--muted); }
+  nav .links a{ text-decoration:none; }
+  nav .links a:hover{ color:var(--ink); }
+  @media(max-width:640px){ nav .links{ gap:14px; font-size:12.5px; } }
+
+  header{ padding:74px 0 40px; }
+  .eyebrow{ font-size:12px; letter-spacing:.34em; font-weight:800; color:var(--muted);
+    display:flex; align-items:center; gap:10px; }
+  .eyebrow i{ width:8px; height:8px; border-radius:50%; background:var(--accent); display:inline-block; }
+  h1{ font-size:clamp(32px,6vw,60px); font-weight:800; line-height:1.08; letter-spacing:-.02em; margin:16px 0 14px; }
+  h1 em{ font-style:normal; color:var(--accent); }
+  .lead{ font-size:clamp(15px,2vw,18px); color:var(--muted); line-height:1.8; max-width:720px; }
+  .lead b{ color:var(--ink); }
+  .stats{ display:flex; flex-wrap:wrap; gap:10px; margin:26px 0 6px; }
+  .stats span{ font-size:12.5px; color:var(--muted); border:1px solid var(--line);
+    background:var(--card); border-radius:100px; padding:7px 14px; }
+  .stats span b{ color:var(--ink); }
+
+  /* ── 视频卡:封面 <img> 与播放按钮直接写在 HTML,无 JS 也显示,不会一坨黑 ── */
+  .v{ position:relative; overflow:hidden; border:1px solid var(--line); border-radius:20px;
+    background:#000; aspect-ratio:16/9; }
+  .v.port{ aspect-ratio:9/16; }
+  .v .poster{ position:absolute; inset:0; width:100%; height:100%; object-fit:cover; display:block; }
+  .v video{ position:absolute; inset:0; width:100%; height:100%; object-fit:contain; background:#000; display:block; }
+  .v .shade{ position:absolute; inset:0; background:linear-gradient(transparent 52%, rgba(0,0,0,.34)); pointer-events:none; }
+  /* 中央播放/重播按钮 */
+  .v .pbtn{ position:absolute; left:50%; top:50%; transform:translate(-50%,-50%);
+    display:inline-flex; align-items:center; gap:9px; color:#fff; cursor:pointer;
+    background:rgba(18,18,16,.5); border:1.5px solid rgba(255,255,255,.55); border-radius:100px;
+    width:74px; height:74px; justify-content:center; backdrop-filter:blur(5px);
+    transition:transform .15s, background .15s; }
+  .v .pbtn:hover{ transform:translate(-50%,-50%) scale(1.08); background:rgba(18,18,16,.72); }
+  .v .pbtn.replay{ width:auto; height:auto; padding:13px 22px; }
+  .v .pbtn.replay span{ font-size:14px; font-weight:700; padding-right:4px; }
+  .v .pbtn svg{ display:block; }
+
+  section{ padding:34px 0; }
+  .hero{ margin-top:30px; }
+  .cap{ font-size:13px; color:var(--muted); margin-top:12px; line-height:1.7; }
+  .cap b{ color:var(--ink); }
+  .section-head{ margin-bottom:20px; }
+  .section-head .k{ font-size:11.5px; letter-spacing:.3em; color:var(--muted); font-weight:800; }
+  .section-head h2{ font-size:clamp(22px,3.2vw,30px); font-weight:800; letter-spacing:-.01em; margin-top:8px; }
+  .section-head p{ font-size:14px; color:var(--muted); line-height:1.75; max-width:680px; margin-top:8px; }
+
+  .style{ margin-top:38px; }
+  .style .meta{ display:flex; align-items:baseline; justify-content:space-between; gap:16px; margin-bottom:14px; flex-wrap:wrap; }
+  .style .name{ font-size:19px; font-weight:800; }
+  .style .name b{ color:var(--gold); }
+  .style .tag{ font-size:12px; color:var(--muted); font-family:ui-monospace,monospace; }
+  .style .desc{ font-size:13.5px; color:var(--muted); line-height:1.7; margin-top:12px; max-width:760px; }
+  .style .desc b{ color:var(--ink); }
+  .portrow{ display:flex; gap:24px; align-items:center; }
+  .portrow .v{ width:min(300px,64vw); flex:none; }
+  .portrow .ptext{ font-size:14px; color:var(--muted); line-height:1.8; }
+  .portrow .ptext b{ color:var(--ink); }
+  @media(max-width:640px){ .portrow{ flex-direction:column; align-items:flex-start; } }
+
+  .diff{ display:grid; grid-template-columns:repeat(auto-fit,minmax(200px,1fr)); gap:14px; margin-top:8px; }
+  .diff div{ border:1px solid var(--line); background:var(--card); border-radius:14px; padding:16px 17px; }
+  .diff .n{ font-size:12px; color:var(--accent); font-weight:800; letter-spacing:.04em; }
+  .diff .t{ font-size:14.5px; font-weight:800; margin:7px 0 5px; }
+  .diff .d{ font-size:12.5px; color:var(--muted); line-height:1.65; }
+
+  .final{ margin:44px 0 60px; border:1px solid var(--line); border-radius:22px; background:var(--card);
+    padding:44px 34px; text-align:center; }
+  .final h3{ font-size:clamp(22px,3.4vw,30px); font-weight:800; letter-spacing:-.01em; }
+  .final p{ color:var(--muted); font-size:14px; margin-top:12px; line-height:1.8; }
+  .final .btns{ display:flex; gap:12px; justify-content:center; margin-top:22px; flex-wrap:wrap; }
+  .final a{ text-decoration:none; font-size:14px; font-weight:700; border-radius:100px; padding:11px 22px; }
+  .final .p{ background:var(--accent); color:#fff; }
+  .final .s{ border:1px solid var(--line); color:var(--ink); }
+  footer{ text-align:center; color:var(--muted); font-size:12.5px; padding:24px 0 50px; line-height:1.9; }
+  footer a{ color:var(--accent); text-decoration:none; }
+</style>
+</head>
+<body>
+
+<nav><div class="shell in">
+  <div class="brand"><b>灵剪</b> lingjian</div>
+  <div class="links">
+    <a href="#styles">四套风格</a>
+    <a href="#why">为什么不同</a>
+    <a href="https://github.com/dososo/blcaptain-lingjian-video">GitHub</a>
+  </div>
+</div></nav>
+
+<header class="shell">
+  <div class="eyebrow"><i></i>LINGJIAN · 一句话，一部能审的短视频</div>
+  <h1>一句话进 —— 全自动出片，<em>但每一关都能审</em></h1>
+  <p class="lead">市面 AI「一句话出片」是黑箱：镜头不对，你只能重摇一次骰子。<b>灵剪反过来：脚本 / 分镜 / 配音 / 画面 / 配乐 / 字幕 / 音效全自动往下走，但每一关先把候选摆给你看，你点头才继续。</b></p>
+  <div class="stats">
+    <span><b>4</b> 套视觉风格</span>
+    <span>脚本 · 配音 · 画面 <b>三道人工门</b></span>
+    <span>每关 <b>本地导演控制台</b></span>
+    <span>门禁 <b>可审计</b></span>
+  </div>
+
+  <div class="v hero" data-src="../assets/videos/vox-16x9.mp4">
+    <img class="poster" src="../assets/posters/vox-16x9.jpg" alt="VOX 清爽科技 16:9 封面">
+    <div class="shade"></div>
+    <button class="pbtn" aria-label="播放"><svg viewBox="0 0 24 24" width="28" height="28"><path d="M8 5v14l11-7z" fill="currentColor"/></svg></button>
+  </div>
+  <p class="cap"><b>主介绍片 · VOX 清爽科技 · 16:9</b> —— 本片由灵剪全流程产出。</p>
+</header>
+
+<section class="shell" id="styles">
+  <div class="section-head">
+    <div class="k">FOUR STYLES</div>
+    <h2>四套风格,同一套能力换皮</h2>
+    <p>底层能力(蓝图 · 关卡确认 · 渲染 · 门禁)跨风格通用;换的是视觉语言,不是重做。</p>
+  </div>
+
+  <div class="style">
+    <div class="meta"><div class="name">① VOX · <b>清爽科技</b></div><div class="tag">9:16 + 16:9</div></div>
+    <div class="portrow">
+      <div class="v port" data-src="../assets/videos/vox-9x16.mp4">
+        <img class="poster" src="../assets/posters/vox-9x16.jpg" alt="VOX 竖版 9:16 封面">
+        <div class="shade"></div>
+        <button class="pbtn" aria-label="播放"><svg viewBox="0 0 24 24" width="26" height="26"><path d="M8 5v14l11-7z" fill="currentColor"/></svg></button>
+      </div>
+      <div class="ptext">明亮、直给,产品介绍的本行。<b>横版 16:9 见顶部主介绍片</b>;左边是同一套风格的 <b>9:16 竖版</b>,换皮不重做。</div>
+    </div>
+  </div>
+
+  <div class="style">
+    <div class="meta"><div class="name">② DARK KEYNOTE · <b>暗场史诗</b></div><div class="tag">16:9</div></div>
+    <div class="v" data-src="../assets/videos/dark-keynote.mp4">
+      <img class="poster" src="../assets/posters/dark-keynote.jpg" alt="DARK KEYNOTE 暗场史诗 封面">
+      <div class="shade"></div>
+      <button class="pbtn" aria-label="播放"><svg viewBox="0 0 24 24" width="28" height="28"><path d="M8 5v14l11-7z" fill="currentColor"/></svg></button>
+    </div>
+    <div class="desc">厚重、发布会仪式感。暗场高级质感,叙事弧线扛全片。</div>
+  </div>
+
+  <div class="style">
+    <div class="meta"><div class="name">③ CINEMATIC · <b>电影级人文短片</b></div><div class="tag">16:9</div></div>
+    <div class="v" data-src="../assets/videos/cinematic.mp4">
+      <img class="poster" src="../assets/posters/cinematic.jpg" alt="CINEMATIC 一根线的三千年 封面">
+      <div class="shade"></div>
+      <button class="pbtn" aria-label="播放"><svg viewBox="0 0 24 24" width="28" height="28"><path d="M8 5v14l11-7z" fill="currentColor"/></svg></button>
+    </div>
+    <div class="desc">《一根线的三千年》—— 一根金线串起叙事,电影级质感的视频随笔。</div>
+  </div>
+
+  <div class="style">
+    <div class="meta"><div class="name">④ NEUE SACHLICHKEIT · <b>实证纪实</b></div><div class="tag">16:9</div></div>
+    <div class="v" data-src="../assets/videos/neue-sachlichkeit.mp4">
+      <img class="poster" src="../assets/posters/neue-sachlichkeit.jpg" alt="NEUE SACHLICHKEIT 实证纪实 封面">
+      <div class="shade"></div>
+      <button class="pbtn" aria-label="播放"><svg viewBox="0 0 24 24" width="28" height="28"><path d="M8 5v14l11-7z" fill="currentColor"/></svg></button>
+    </div>
+    <div class="desc">手 + 实物 + 一个真实物理现象扛全片,无旁白。作者退场,让对象自己说话。</div>
+  </div>
+</section>
+
+<section class="shell" id="why">
+  <div class="section-head">
+    <div class="k">WHY DIFFERENT</div>
+    <h2>独家差异化:一句话进,但每一关都能审</h2>
+  </div>
+  <div class="diff">
+    <div><div class="n">01</div><div class="t">蓝图先行</div><div class="d">一部片由一张贯穿全片的蓝图统领(能量曲线 + 母题 + 每关产物),不是逐镜各自为政。</div></div>
+    <div><div class="n">02</div><div class="t">本地导演控制台</div><div class="d">每一关在你自己电脑的本地页面打开可交互导演板,把候选逐镜摆给你看。绝不用云端地址。</div></div>
+    <div><div class="n">03</div><div class="t">调研贯穿始终</div><div class="d">调研不是只在开头,而是每一关持续吸收顶级证据、内化基线、牵引产出。</div></div>
+    <div><div class="n">04</div><div class="t">关卡确认</div><div class="d">每一关不是问「行不行」,而是给候选让你挑、让你改,你点头才进下一关。</div></div>
+    <div><div class="n">05</div><div class="t">可审计</div><div class="d">每关产物、门禁、证据可追溯;审批签名绑定内容,内容一改,批准自动失效。</div></div>
+  </div>
+</section>
+
+<div class="shell">
+  <div class="final">
+    <h3>一句话,一部能直接发的短视频</h3>
+    <p>灵剪是一个开源的通用 Agent 短视频生产 Skill —— 一句话进,脚本 · 配音 · 画面 · 配乐 · 字幕 · 音效全自动,但每一关都能审。</p>
+    <div class="btns">
+      <a class="p" href="https://github.com/dososo/blcaptain-lingjian-video">GitHub 仓库</a>
+      <a class="s" href="https://github.com/dososo/blcaptain-lingjian-video#readme">阅读 README</a>
+    </div>
+  </div>
+</div>
+
+<footer class="shell">
+  灵剪 lingjian-video · 由 <a href="https://github.com/dososo">爆裂队长NEXT（BLCaptain）</a> 独立创作与维护 · Apache-2.0<br>
+  四套视频均由灵剪全流程产出。
+</footer>
+
+<script>
+  (function(){ try{ var p=new URLSearchParams(location.search).get('theme'); if(p==='dark'||p==='light') document.documentElement.setAttribute('data-theme',p);}catch(e){} })();
+
+  var REPLAY='<svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path d="M12 5V1L7 6l5 5V7a5 5 0 1 1-5 5H5a7 7 0 1 0 7-7z" fill="currentColor"/></svg>';
+
+  document.querySelectorAll('.v').forEach(function(el){
+    var src=el.getAttribute('data-src');
+    var poster=el.querySelector('.poster').getAttribute('src');
+    var btn=el.querySelector('.pbtn');
+    if(!src||!btn) return;
+    btn.addEventListener('click', function(){
+      var v=document.createElement('video');
+      v.src=src; v.poster=poster; v.controls=true; v.autoplay=true; v.playsInline=true; v.setAttribute('playsinline','');
+      el.innerHTML=''; el.appendChild(v);
+      var p=v.play(); if(p&&p.catch) p.catch(function(){});
+      v.addEventListener('ended', function(){
+        var r=document.createElement('button'); r.className='pbtn replay'; r.setAttribute('aria-label','重播');
+        r.innerHTML=REPLAY+'<span>重播</span>';
+        el.appendChild(r);
+        r.addEventListener('click', function(){ r.remove(); v.currentTime=0; v.play(); });
+      });
+    });
+  });
+</script>
+</body>
+</html>

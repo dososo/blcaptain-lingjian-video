@@ -1,0 +1,9 @@
+id: xiaohongshu
+name_zh: 小红书
+default_ratio: "3:4"
+safe_area:
+  top_pct: 8
+  bottom_pct: 12
+captions:
+  max_lines: 2
+  cjk_chars_per_line: 16

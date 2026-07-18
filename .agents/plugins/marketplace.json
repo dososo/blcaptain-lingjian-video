@@ -1,0 +1,20 @@
+{
+  "name": "blcaptain-lingjian-video",
+  "interface": {
+    "displayName": "BLCaptain 灵剪"
+  },
+  "plugins": [
+    {
+      "name": "lingjian-video",
+      "source": {
+        "source": "local",
+        "path": "./"
+      },
+      "policy": {
+        "installation": "AVAILABLE",
+        "authentication": "ON_INSTALL"
+      },
+      "category": "Video"
+    }
+  ]
+}

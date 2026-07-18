@@ -1,0 +1,82 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://lingjian/capabilities/director-board/board.schema.json",
+  "title": "灵剪 · 分帧动效导演板数据契约",
+  "description": "描述一次关卡确认所需的分镜/动效/转场数据。上游（脚本→分镜→转场匹配）产出本结构，render.js 渲染成可交互的导演板；用户逐镜确认。",
+  "type": "object",
+  "required": ["schemaVersion", "shots"],
+  "additionalProperties": false,
+  "properties": {
+    "schemaVersion": { "type": "string", "description": "契约版本，用于兼容演进。当前 1.0。", "const": "1.0" },
+    "meta": {
+      "type": "object",
+      "description": "整块导演板的头部与语境。同一渲染器可复用于不同关卡（P1 风格/P2 脚本/P3 配音/P4 分镜/P5 画面），只换文案。",
+      "additionalProperties": false,
+      "properties": {
+        "gate": { "type": "string", "description": "所属关卡，如 'P4 · 分镜关'。" },
+        "project": { "type": "string", "description": "项目/片名。" },
+        "profile": { "type": "string", "description": "内容类型 Profile：产品介绍/教程/测评/科普/带货/开源介绍。牵引转场与节奏匹配。" },
+        "style": { "type": "string", "description": "锁定风格，如 'Vox 编辑风'。" },
+        "ratio": { "type": "string", "description": "画幅，如 '9:16'。" },
+        "motif": { "type": "string", "description": "贯穿全片的视觉母题一句话。" },
+        "kicker": { "type": "string", "description": "头部小标（eyebrow）。" },
+        "title": { "type": "string", "description": "头部大标，可用 **强调** 标记朱砂色。" },
+        "subtitle": { "type": "string", "description": "头部副标说明。" },
+        "curveTitle": { "type": "string", "description": "能量曲线区标题。" },
+        "legend": { "type": "string", "description": "右上角图例，允许有限 HTML（<b>/<br>）。" },
+        "footNote": { "type": "string", "description": "底部说明。" }
+      }
+    },
+    "shots": {
+      "type": "array",
+      "description": "分镜数组，按放映顺序。能量曲线由各镜 energy 自动生成。",
+      "minItems": 1,
+      "maxItems": 40,
+      "items": { "$ref": "#/definitions/shot" }
+    }
+  },
+  "definitions": {
+    "shot": {
+      "type": "object",
+      "required": ["n", "id", "name", "energy", "script", "signature", "beats"],
+      "additionalProperties": false,
+      "properties": {
+        "n": { "type": "integer", "minimum": 1, "description": "镜号（1 起）。" },
+        "id": { "type": "string", "description": "镜位英文代号，如 HOOK/TURN/CTA，显示于曲线与卡片。" },
+        "name": { "type": "string", "description": "镜位中文名，如 钩子/转折/收尾。" },
+        "energy": { "type": "integer", "minimum": 1, "maximum": 5, "description": "能量档 1–5（1 弱 calm → 5 顶峰 high）。驱动能量曲线高低与配色。" },
+        "durationSec": { "type": "number", "minimum": 0, "description": "本镜时长（秒），一般=配音时长+尾拍。" },
+        "script": { "type": "string", "description": "本镜旁白台词。**双星包裹** 的片段渲染为朱砂强调。" },
+        "signature": { "type": "string", "description": "本镜招牌（signature）动效一句话，指出这一镜的独特手法。" },
+        "beats": {
+          "type": "array",
+          "description": "分帧 beat 时序：元素依次入场的关键节点（binghe 分帧逻辑，每镜 ≥3 个）。治『一张静图等口播』的 PPT 病。",
+          "minItems": 1,
+          "items": {
+            "type": "object",
+            "required": ["t", "x"],
+            "additionalProperties": false,
+            "properties": {
+              "t": { "type": "string", "description": "时间点，如 '0.0s' 或区间 '1.7–5.4s'。" },
+              "x": { "type": "string", "description": "该拍发生什么（一个动作/一次揭示）。" }
+            }
+          }
+        },
+        "transitionIn": { "$ref": "#/definitions/transition", "description": "进场转场（承接上一镜）。" },
+        "transitionOut": { "$ref": "#/definitions/transition", "description": "出场转场（甩向下一镜）。末镜为收束。" }
+      }
+    },
+    "transition": {
+      "type": "object",
+      "required": ["name"],
+      "additionalProperties": false,
+      "properties": {
+        "type": { "type": "string", "description": "方向记号：'←' 进 / '→' 出 / '■' 收束 / '—' 开场。" },
+        "name": { "type": "string", "description": "转场名（中英），如 '甩镜 Whip Pan'。" },
+        "why": { "type": "string", "description": "为什么这么切（motivated 理由）。防『均匀撒花哨转场』的 AI 味。" },
+        "energy": { "type": "integer", "minimum": 0, "maximum": 5, "description": "转场冲击能量 0–5，用于色点。" },
+        "ref": { "type": ["string", "null"], "description": "可选:转场库条目 id（内容匹配接口;转场库随 Roadmap 接入,当前仓库未附带 transitions.json）。收束/开场或未接入时为 null。" }
+      }
+    }
+  }
+}

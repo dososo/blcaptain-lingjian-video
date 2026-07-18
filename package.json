@@ -1,0 +1,13 @@
+{
+  "name": "lingjian-video-studio-workspace",
+  "version": "0.2.0",
+  "private": true,
+  "packageManager": "pnpm@11.7.0",
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "lint": "pnpm --dir apps/web lint",
+    "build": "pnpm --dir apps/web build"
+  }
+}

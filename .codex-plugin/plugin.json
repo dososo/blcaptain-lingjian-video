@@ -1,0 +1,6 @@
+{
+  "name": "lingjian-video",
+  "version": "0.2.0",
+  "description": "通用 Agent 发布级中文短视频生产 Skill(在 Claude Code 打磨成形,Claude Code / Codex 等通用):检测并继承能力,引导补齐发布级 TTS/画面/渲染,编排脚本、配音、画面、底部字幕、QA 与导出。",
+  "skills": "./skills/"
+}

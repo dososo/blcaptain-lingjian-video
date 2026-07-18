@@ -1,0 +1,58 @@
+[project]
+name = "lingjian-video-studio"
+version = "0.2.0"
+description = "LingJian Video Studio"
+readme = "README.md"
+requires-python = ">=3.11,<3.13"
+license = { text = "Apache-2.0" }
+dependencies = [
+  "fastapi>=0.115.0",
+  "kokoro-onnx>=0.5.0",
+  "pydantic>=2.8.0",
+  "pyyaml>=6.0.2",
+  "soundfile>=0.14.0",
+  "typer>=0.12.5",
+]
+
+[build-system]
+requires = ["setuptools>=75.0"]
+build-backend = "setuptools.build_meta"
+
+[dependency-groups]
+dev = [
+  "pytest>=8.3.0",
+  "ruff>=0.6.0",
+]
+
+[tool.uv]
+package = true
+
+[tool.setuptools]
+script-files = ["bin/lj"]
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = [
+  "apps*",
+  "packages*",
+  "providers*",
+  "engines*",
+]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["."]
+markers = [
+  "integration: requires real provider credentials or network",
+  "web_smoke: web smoke tests",
+]
+
+[tool.ruff]
+line-length = 100
+target-version = "py311"
+# capabilities/ 是随仓发布的「固化能力」参考工具(独立单文件脚本,与 dev 工作区逐字一致,
+# 不被核心代码 import),按参考资产对待、不纳入核心 lint —— 同 director-board/*.js 的定位。
+extend-exclude = ["capabilities"]
+
+[tool.ruff.lint]
+select = ["E", "F", "I"]
