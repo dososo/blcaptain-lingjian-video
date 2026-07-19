@@ -200,7 +200,7 @@ uv run lj console ./projects/demo --json
 ## 后续计划（Roadmap）
 
 - **结构项补全**（进行中）：整片能量曲线自动生成、律动关、调研证据门、风格关 / 音乐关候选式关卡、脚本多版本候选（Seedance 文生视频、Whisper 对齐、silencedetect 卡点、转场库 + 匹配器、cadence、音效策略、版式安全均已随仓库发布）。
-- **`lj console`**：一键起本地服务 + 右侧自动打开 + 从流水线产物自动生成 `board.json`。
+- **`lj console` 深化**：画面关（`visual_plan`）专用视图、逐项确认自动转 `lj approve`、`lj run` 每关自动调起控制台（基础的 `lj console` —— 起本机服务、按当前关自动生成候选页、确认写回 —— 已在 **v1.1.0** 发布）。
 - **更多 Agent 打包**：Gemini、Cursor 等专属安装方式。
 - **MCP server**：让宿主 agent 通过 MCP 调用主线工具。
 - **平台知识包**：抖音 / 小红书 / Bilibili / YouTube 的发布结构与字幕模板。

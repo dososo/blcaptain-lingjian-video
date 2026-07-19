@@ -200,7 +200,7 @@ uv run lj console ./projects/demo --json
 ## Roadmap
 
 - **Structural completion** (in progress): whole-film energy-curve auto-generation, rhythm gate, research-evidence gate, style / music candidate gates, multi-version scripts (Seedance text-to-video, Whisper alignment, silencedetect beat points, the transition library + matcher, cadence, SFX strategy, and layout safety all ship with the repo).
-- **`lj console`**: one command to start the local server, auto-open on the right, and auto-generate `board.json` from pipeline artifacts.
+- **`lj console` deepening**: a dedicated visual-gate (`visual_plan`) view, confirmations auto-promoting to `lj approve`, and `lj run` invoking the console at each gate (the base `lj console` — local server, auto-built per-gate candidate page, write-back — shipped in **v1.1.0**).
 - **More agent packaging**: dedicated install for Gemini, Cursor, etc.
 - **MCP server**: let host agents call the main-line tools via MCP.
 - **Platform knowledge packs**: publish structures and subtitle templates for Douyin / Xiaohongshu / Bilibili / YouTube.
