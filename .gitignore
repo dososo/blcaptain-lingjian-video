@@ -46,3 +46,7 @@ output/
 /--*
 /-filters
 /filter=*
+
+# lj console 本机服务临时目录
+**/.lj-console/
+console_state.json

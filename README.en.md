@@ -174,17 +174,17 @@ Voiceover, real providers, and secure key setup (incl. Volcengine): see [`docs/O
 
 ## Local director console (director-board)
 
-lingjian's gate console is a **data-driven local director board**, shipped with the repo (`director-board/`):
+lingjian's gate console is a **data-driven local director board**, shipped with the repo (`director-board/`). **One command starts a local server and lays out the current gate's candidates automatically:**
 
 ```bash
-cd director-board
-python3 -m http.server 8080
-# open http://localhost:8080/standalone.html
+uv run lj console ./projects/demo --json
+# prints http://127.0.0.1:<port>/ — open it in a browser; that's the gate console
 ```
 
-- **Opens only on `localhost`**, showing each shot's energy tier, lines, beat timing, signature motion, and in/out transitions, with a single "confirm" button. All confirmed before the next gate is released.
-- Vanilla JS + SVG, no third-party libs, no network requests (beyond reading local data), reproducible rendering.
-- A `lj console` one-command (start local server + auto-open on the right + auto-generate `board.json` from pipeline artifacts) is in progress (see Roadmap).
+- **Auto-builds the candidate page for the current gate**: **voice gate** = voice cards + inline audition players; **script / storyboard gate** = the energy-curve director board (per-shot lines, beat timing, signature motion, in/out transitions, and a "confirm" button).
+- **Binds `127.0.0.1` only, never public**; confirmations write back to `artifacts/console_state.json`. Vanilla JS + SVG, no third-party libs, no network requests (beyond local data), reproducible.
+- You can also start the static server manually: `cd director-board && python3 -m http.server 8080`, open `standalone.html` (sample storyboard).
+- In progress (see Roadmap): a dedicated visual-gate (`visual_plan`) view, confirmations auto-promoting to `lj approve`, and `lj run` invoking the console at each gate.
 
 ---
 

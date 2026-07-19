@@ -209,7 +209,7 @@ Director Router 不能只写好看的解释字段。每镜 `engine_policy.genera
 - **转场** 必过 `capabilities/transition-library` 内容匹配器(`match.js`:按相邻镜能量差 ΔE + 语义 + 母题 + 风格荐转场)+ **稀缺守卫**(强转场全片默认 ≤3,超配额自动降级为隐形硬切/匹配剪辑);反廉价护栏(90% 隐形硬切、闪白/闪黑任一秒 ≤3 次)。默认硬切,强转场只压 2–3 个能量拐点。
 - **卡点** 画面砸词/揭示/音效必用 `capabilities/cadence/cadence.py`(silencedetect 测配音停顿→语音段起点,`noise=-30dB d=0.05`):画面事件 start **绝不早于**对应词起点(可 −0.05~0.1s 让加速段提前、峰值正压词)。主线 `voice_plan.voice_cadence` 已按同一逻辑自动测。
 - **版式** 字幕/大字排版按 `capabilities/layout-safety/TYPOGRAPHY_RULES.md`,防大字压标签、越界等 inspect 查不出的字形级溢出。
-- **控制台** 每关候选用本机导演板 `director-board/` 在 `localhost` 摆给用户逐镜确认(见上文控制台红线)。
+- **控制台** 每关候选用 **`lj console <项目> [--gate auto/voice/script/board] --json`** 起本机导演板:它按当前关自动生成候选页(配音关=音色卡+播放器;脚本/分镜关=`render.js` 能量曲线板+每镜确认),打印 `http://127.0.0.1:<port>/`,宿主 agent 在右侧浏览器打开、用户逐项确认(写回 `console_state.json`)。**别再把候选当文件甩进对话** —— 用控制台(见上文红线)。
 这些能力全比例、全风格通用:换比例/换风格是**复用它们换皮重排,不重做**。
 
 ### 通则
@@ -385,6 +385,6 @@ uv run lj export ./projects/demo --platform douyin --language zh-CN --ratio 9:16
 - 中文商用发布 TTS 首选用户录音或火山豆包,次选 OpenAI-compatible/其他云 TTS;Kokoro 是零 key 中文默认,不承诺音色质量。Piper 为 GPL 用户自装路径。
 - say 仅 macOS;espeak-ng 属预览级本机 TTS,不属于发布级最小集合。
 - 默认 Homebrew FFmpeg 可能缺 drawtext;render --release 会硬失败,以 doctor 为准。
-- 本地导演控制台(`director-board/`)的渲染器 + 数据契约 + 可跑入口随仓库发布,可用本地静态服务在 `localhost` 打开、逐镜确认;`lj console` 一键起本地服务 + 右侧自动打开 + 从流水线产物自动生成 `board.json` 的集成仍在推进,尚未是单条命令,不要宣称它已全自动驱动完整审批流。`apps/web`(Next.js)仍是前端骨架,不是当前控制台路径,不要把它当已可用能力宣传。
+- 本地导演控制台:**`lj console <项目>` 已实现(v1.1.0)** —— 起本机 `localhost` 服务 + 按当前关自动生成候选页(配音关=音色卡+内联播放器;脚本/分镜关=`render.js` 能量曲线导演板 + 每镜「确认」)+ `/confirm` 写回 `artifacts/console_state.json`;宿主 agent 把打印的 URL 在右侧浏览器打开、用户逐项确认。渲染器 `render.js` + 契约 `board.schema.json` 随仓库发布。**仍在推进(别宣称已做)**:画面关(`visual_plan.json`)专用视图、确认写回自动转 `lj approve`、`lj run` 自动在每关调起 console。`apps/web`(Next.js)仍是骨架,非当前控制台路径。
 - MCP 尚未实现(packages/mcp_server 仅有 README),不能对外宣称 MCP 可用。
 - 平台知识包/爆款算法非核心,只能作明确标注的可选后续。

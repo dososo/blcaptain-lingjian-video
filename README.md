@@ -174,17 +174,17 @@ winget install Gyan.FFmpeg
 
 ## 本地导演控制台（director-board）
 
-灵剪的关卡控制台是一个**数据驱动的本地导演板**，随仓库发布（`director-board/`）：
+灵剪的关卡控制台是一个**数据驱动的本地导演板**，随仓库发布（`director-board/`）。**一条命令起本机服务、按当前关自动摆出候选**：
 
 ```bash
-cd director-board
-python3 -m http.server 8080
-# 浏览器打开 http://localhost:8080/standalone.html
+uv run lj console ./projects/demo --json
+# 打印 http://127.0.0.1:<port>/ —— 浏览器打开即是本关控制台
 ```
 
-- **只在本机 `localhost` 打开**，逐镜展示能量档、台词、分帧节奏、招牌动效、进出转场，一个「确认」按钮。全部确认才放行下一关。
-- 纯原生 JS + SVG，无第三方库、无网络请求（读本地数据除外），渲染可复现。
-- `lj console` 一键起本地服务 + 右侧自动打开 + 从流水线产物自动生成 `board.json` 的集成正在推进（见 Roadmap）。
+- **按当前关自动生成候选页**：**配音关** = 音色卡 + 内联试听播放器；**脚本 / 分镜关** = 能量曲线导演板（每镜台词、分帧节奏、招牌动效、进出转场 + 一个「确认」按钮）。
+- **只绑 `127.0.0.1`，永不对外**；逐项确认写回 `artifacts/console_state.json`。纯原生 JS + SVG，无第三方库、无网络请求（读本地数据除外），渲染可复现。
+- 也可手动起静态服务:`cd director-board && python3 -m http.server 8080`，打开 `standalone.html`（示例分镜）。
+- 仍在推进（见 Roadmap）:画面关（`visual_plan`）专用视图、确认自动转 `lj approve`、`lj run` 每关自动调起 console。
 
 ---
 

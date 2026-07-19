@@ -5839,5 +5839,75 @@ def status(project: Path, json_output: bool = typer.Option(False, "--json")):
     _emit({"ok": True, **status_project(project)}, json_output)
 
 
+@app.command()
+def console(
+    project: Path,
+    gate: str = typer.Option("auto", "--gate", help="关卡:auto/voice/script/board"),
+    port: int = typer.Option(0, "--port", help="本机端口;0=系统自动分配空闲端口"),
+    open_browser: bool = typer.Option(
+        False, "--open/--no-open", help="用系统浏览器直接打开(宿主 agent 通常自行在右侧开)"
+    ),
+    json_output: bool = typer.Option(False, "--json"),
+) -> None:
+    """起本机 localhost 导演控制台:当前关候选逐项摆给你确认(命根子)。只绑 127.0.0.1,永不对外。"""
+    import webbrowser
+
+    from packages.core.console import build_console, make_server
+
+    try:
+        serve_dir, resolved_gate = build_console(Path(project), gate)
+    except LingjianError as exc:
+        _fail(exc, json_output)
+    except (FileNotFoundError, KeyError, ValueError) as exc:
+        _fail(
+            LingjianError(
+                "CONSOLE_NO_ARTIFACT",
+                "当前关没有可展示的候选产物。",
+                "先产出 artifacts(script.json / voice_options.json)后再开控制台。",
+                {"error": str(exc)},
+            ),
+            json_output,
+        )
+    try:
+        httpd = make_server(serve_dir, Path(project), port)
+    except OSError as exc:
+        _fail(
+            LingjianError(
+                "CONSOLE_PORT_BUSY",
+                "本机端口起服务失败。",
+                "换个 --port 再试。",
+                {"error": str(exc)},
+            ),
+            json_output,
+        )
+    actual_port = httpd.server_address[1]
+    url = f"http://127.0.0.1:{actual_port}/"
+    _emit(
+        {
+            "ok": True,
+            "status": "console_serving",
+            "gate": resolved_gate,
+            "url": url,
+            "serve_dir": str(serve_dir),
+            "message_zh": (
+                f"本机导演控制台已起在 {url}({resolved_gate} 关)。"
+                "宿主 agent 在右侧浏览器打开此 URL;用户逐项确认,"
+                "选择写回 artifacts/console_state.json。服务持续运行,结束按 Ctrl-C。"
+            ),
+        },
+        json_output,
+    )
+    sys.stdout.flush()
+    if open_browser:
+        try:
+            webbrowser.open(url)
+        except OSError:
+            pass
+    try:
+        httpd.serve_forever()
+    except KeyboardInterrupt:
+        httpd.shutdown()
+
+
 if __name__ == "__main__":
     sys.exit(app())

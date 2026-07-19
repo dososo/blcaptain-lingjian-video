@@ -2,6 +2,17 @@
 
 本项目变更遵循 [Keep a Changelog](https://keepachangelog.com/zh-CN/) 与语义化版本。
 
+## [v1.1.0] — 2026-07-19 · 本机导演控制台一键命令
+
+### 新增(Added)
+- **`lj console <项目>`** —— 命根子落地成单条命令:起本机 `localhost` 服务(只绑 `127.0.0.1`、永不对外),按当前关**自动生成候选页** —— 配音关 = 音色卡 + 内联试听播放器;脚本 / 分镜关 = `render.js` 能量曲线导演板 + 每镜「确认」。打印 `http://127.0.0.1:<port>/` 供宿主 agent 在右侧浏览器打开;逐项确认经 `/confirm` 写回 `artifacts/console_state.json`。`--gate auto` 按已有产物自动判关。从此每个装 skill 的用户在配音/脚本/分镜关都能在**本机控制台**逐项审候选,不再靠 agent 手搭、也不把候选当文件甩进对话。
+
+### 变更(Changed)
+- README / SKILL 控制台章节更新:`lj console` 已是主用法(手动 `python3 -m http.server` 留作备选);去掉 SKILL「尚未是单条命令」的旧诚实边界。
+
+### 说明
+- 仍在推进(未宣称已做):画面关(`visual_plan`)专用视图、确认自动转 `lj approve`、`lj run` 每关自动调起 console。
+
 ## [v1.0.9] — 2026-07-18 · 首个公开开源发布
 
 ### 新增(Added)
