@@ -7,10 +7,10 @@
 > 一句话进 —— 脚本 / 分镜 / 配音 / 画面 / 配乐 / 字幕 / 音效全自动，**但每一关，都能审**。
 
 <div align="center">
-  <video src="https://github.com/user-attachments/assets/f96e4b95-c723-40a0-a1f5-e16cc686d6c1" controls playsinline width="82%"></video>
+  <video src="https://github.com/user-attachments/assets/8627e492-e0ff-41dd-8466-aff1e0a00801" controls playsinline width="82%"></video>
 </div>
 
-> **▶ 主介绍片 · VOX 清爽科技 · 16:9** —— 网页版上方播放器可直接播放。本片由灵剪端到端产出。
+> **▶ 灵剪 · 开源介绍片 · 16:9** —— 网页版上方播放器可直接播放。本片由灵剪端到端产出。
 >
 > 📱 GitHub 手机 App 不显示内嵌播放器 —— 点链接进 [在线画廊](https://dososo.github.io/blcaptain-lingjian-video/docs/gallery.html) 在线观看全部四套作品。
 

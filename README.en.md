@@ -7,10 +7,10 @@
 > One sentence in — script / storyboard / voiceover / visuals / music / subtitles / SFX, all automatic. **But every gate is auditable.**
 
 <div align="center">
-  <video src="https://github.com/user-attachments/assets/f96e4b95-c723-40a0-a1f5-e16cc686d6c1" controls playsinline width="82%"></video>
+  <video src="https://github.com/user-attachments/assets/8627e492-e0ff-41dd-8466-aff1e0a00801" controls playsinline width="82%"></video>
 </div>
 
-> **▶ Main intro · VOX · Clean Tech · 16:9** — play it in the embedded player above (desktop/mobile web). Produced end-to-end by lingjian.
+> **▶ lingjian · open-source intro · 16:9** — play it in the embedded player above (desktop/mobile web). Produced end-to-end by lingjian.
 >
 > 📱 The GitHub mobile app doesn't render embedded video — open the [online gallery](https://dososo.github.io/blcaptain-lingjian-video/docs/gallery.html) to watch all four styles.
 
